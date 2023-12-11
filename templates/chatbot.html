@@ -1,18 +1,25 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
 
 {% block styles %}
 <style>
-    body, html {
-      height: 100%;
-    }
+  body, html {
+    height: 100%;
+    margin: 0; /* Reset margin to prevent spacing */
+    padding: 0; /* Reset padding to prevent spacing */
+  }
 
     .messages-box {
-      flex: 1;
-      overflow-y: auto;
+      max-height: 800px;
+      overflow-y: auto; /* Use 'auto' to show scrollbar only when necessary */
+      padding-bottom: 70px; /* Adjust to accommodate the chat form's height */
     }
-
+    
+    
     .messages-list {
-      padding-left: 0;
+      padding: 0;
+      margin: 0;
+      list-style-type: none;
     }
 
     .message {
@@ -37,12 +44,16 @@
 
     .message-form {
       display: flex;
+      width:70%;
+      max-width:800px;
+      margin: 0 auto; 
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       padding: 10px;
       background-color: #f8f9fa;
+      z-index: 1; /* Ensure the chat form appears above the chat box */
     }
 
     .message-input {
@@ -56,10 +67,11 @@
     }
 
     .chat-container {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
+      width: 70%;
+      height: 90%;
+      margin: 0 auto; /* Center the chat container */
+      max-width: 800px; /* Optional: You can set a max-width to prevent it from being too wide on large screens */
+  }
   </style>
 {% endblock %}
 
@@ -77,7 +89,7 @@
       
       <ul class="list-unstyled messages-list">
         
-        <!-- <li class="message received">
+        <li class="message received">
           <div class="message-text">
             <div class="message-sender">
               <b>AI Chatbot</b>
@@ -86,7 +98,7 @@
               Hi {{user.username}}, I am your AI Chatbot, you can ask me anything.
             </div>
           </div>
-        </li> -->
+        </li>
 
         {% for chat in chats %}
           {% if chat.user == request.user %}
@@ -108,7 +120,7 @@
               <b>AI Chatbot</b>
             </div>
             <div class="message-content">
-              {{chat.response}}
+              {{chat.response|format_output|safe}}
             </div>
           </div>
         </li>
@@ -186,8 +198,16 @@
         </div>
           `;
         messagesList.appendChild(messageItem);
+        // Auto-scroll to the latest message
+        scrollToBottom();
       });
   });
 
+  function scrollToBottom() {
+    const messagesBox = document.querySelector('.messages-box');
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+  }
+  scrollToBottom();
 </script>
+  
 {% endblock %}
