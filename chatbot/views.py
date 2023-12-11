@@ -96,6 +96,8 @@ def login(request):
 
 
 def register(request):
+    return redirect("login")
+
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
