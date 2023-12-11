@@ -27,6 +27,12 @@ def ask_openai(message, chat_context):
 def chatbot(request):
     chats = []
 
+    if not request.user.is_authenticated:
+        return redirect(
+            "login"
+        )  # Redirect to the login page if the user is not authenticated
+
+    chats = Chat.objects.filter(user=request.user)
     if request.user.is_authenticated:
         chats = Chat.objects.filter(user=request.user)
 
