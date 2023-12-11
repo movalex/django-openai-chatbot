@@ -11,3 +11,11 @@ class Chat(models.Model):
 
     def __str__(self):
         return f"{self.user.username}: {self.message}"
+
+
+class ChatSession(models.Model):
+    session_id = models.CharField(max_length=255, unique=True)
+    context = models.TextField()
+
+    def __str__(self):
+        return self.session_id
