@@ -3,76 +3,84 @@
 
 {% block styles %}
 <style>
-  body, html {
+  body,
+  html {
     height: 100%;
-    margin: 0; /* Reset margin to prevent spacing */
-    padding: 0; /* Reset padding to prevent spacing */
+    margin: 0;
+    /* Reset margin to prevent spacing */
+    padding: 0;
+    /* Reset padding to prevent spacing */
   }
 
-    .messages-box {
-      max-height: 800px;
-      overflow-y: auto; /* Use 'auto' to show scrollbar only when necessary */
-      padding-bottom: 70px; /* Adjust to accommodate the chat form's height */
-    }
-    
-    
-    .messages-list {
-      padding: 0;
-      margin: 0;
-      list-style-type: none;
-    }
-
-    .message {
-      margin-bottom: 15px;
-      list-style: none;
-    }
-
-    .message-text {
-      padding: 10px;
-      border-radius: 5px;
-    }
-
-    .sent {
-      background-color: #dcf8c6;
-      align-self: flex-end;
-    }
-
-    .received {
-      background-color: #f1f0f0;
-      align-self: flex-start;
-    }
-
-    .message-form {
-      display: flex;
-      width:90%;
-      max-width:800px;
-      margin: 0 auto; 
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 10px;
-      background-color: #f8f9fa;
-      z-index: 1; /* Ensure the chat form appears above the chat box */
-    }
-
-    .message-input {
-      flex: 1;
-      border-radius: 0;
-      border-right: none;
-    }
-
-    .btn-send {
-      border-radius: 0;
-    }
-
-    .chat-container {
-      width: 90%;
-      height: 90%;
-      margin: 0 auto; /* Center the chat container */
-      max-width: 800px; /* Optional: You can set a max-width to prevent it from being too wide on large screens */
+  .messages-box {
+    max-height: 800px;
+    overflow-y: auto;
+    /* Use 'auto' to show scrollbar only when necessary */
+    padding-bottom: 70px;
+    /* Adjust to accommodate the chat form's height */
   }
-  </style>
+
+
+  .messages-list {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+  }
+
+  .message {
+    margin-bottom: 15px;
+    list-style: none;
+  }
+
+  .message-text {
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  .sent {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+  }
+
+  .received {
+    background-color: #f1f0f0;
+    align-self: flex-start;
+  }
+
+  .message-form {
+    display: flex;
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    background-color: #f8f9fa;
+    z-index: 1;
+    /* Ensure the chat form appears above the chat box */
+  }
+
+  .message-input {
+    flex: 1;
+    border-radius: 0;
+    border-right: none;
+  }
+
+  .btn-send {
+    border-radius: 0;
+  }
+
+  .chat-container {
+    width: 90%;
+    height: 90%;
+    margin: 0 auto;
+    /* Center the chat container */
+    max-width: 800px;
+    /* Optional: You can set a max-width to prevent it from being too wide on large screens */
+  }
+</style>
 {% endblock %}
 
 
@@ -81,14 +89,16 @@
   <div class="card flex-grow-1">
     <div class="card-header bg-primary text-white">Chat</div>
     {% if user.is_authenticated %}
-    <div class="card-header bg-primary text-white"><b>Welcome, {{user.username}}</b>   <a style="color: yellow;" href="logout">Logout</a></div>
+    <div class="card-header bg-primary text-white"><b>Welcome, {{user.username}}</b> <a style="color: yellow;"
+        href="logout">Logout</a></div>
     {% else %}
-    <div class="card-header bg-primary text-white"><a style="color: yellow" href="login">Login</a>   <a style="color: yellow;" href="register">Register</a></div>
+    <div class="card-header bg-primary text-white"><a style="color: yellow" href="login">Login</a> <a
+        style="color: yellow;" href="register">Register</a></div>
     {% endif %}
     <div class="card-body messages-box">
-      
+
       <ul class="list-unstyled messages-list">
-        
+
         <li class="message received">
           <div class="message-text">
             <div class="message-sender">
@@ -101,9 +111,9 @@
         </li>
 
         {% for chat in chats %}
-          {% if chat.user == request.user %}
+        {% if chat.user == request.user %}
 
-            <li class="message sent">
+        <li class="message sent">
           <div class="message-text">
             <div class="message-sender">
               <b>You</b>
@@ -125,11 +135,11 @@
           </div>
         </li>
 
-          {% endif %}
+        {% endif %}
         {% endfor %}
-        
+
       </ul>
-      
+
     </div>
     <br><br>
     <br><br>
@@ -159,6 +169,7 @@
       return;
     }
 
+    // Add the message the user sent to the chat
     const messageItem = document.createElement('li');
     messageItem.classList.add('message', 'sent');
     messageItem.innerHTML = `
@@ -172,7 +183,17 @@
         </div>`;
     messagesList.appendChild(messageItem);
 
+    // Clear the input field
     messageInput.value = '';
+
+    // Create and add the loading message to the chat
+    const loadingMessageItem = document.createElement('li');
+    loadingMessageItem.classList.add('message', 'loading');
+    loadingMessageItem.textContent = 'Loading...'; // You can style this as you wish, or use an animation
+    messagesList.appendChild(loadingMessageItem);
+
+    // Scroll to the bottom to show the loading message
+    scrollToBottom();
 
     fetch('', {
       method: 'POST',
@@ -184,22 +205,31 @@
     })
       .then(response => response.json())
       .then(data => {
+        // Remove the loading message from the chat
+        messagesList.removeChild(loadingMessageItem);
+
+        // Add the response from the chatbot to the chat
         const response = data.response;
-        const messageItem = document.createElement('li');
-        messageItem.classList.add('message', 'received');
-        messageItem.innerHTML = `
-        <div class="message-text">
-            <div class="message-sender">
-              <b>AI Chatbot</b>
-            </div>
-            <div class="message-content">
-                ${response}
-            </div>
-        </div>
-          `;
-        messagesList.appendChild(messageItem);
+        const responseMessageItem = document.createElement('li');
+        responseMessageItem.classList.add('message', 'received');
+        responseMessageItem.innerHTML = `
+            <div class="message-text">
+                <div class="message-sender">
+                    <b>AI Chatbot</b>
+                </div>
+                <div class="message-content">
+                    ${response}
+                </div>
+            </div>`;
+        messagesList.appendChild(responseMessageItem);
+
         // Auto-scroll to the latest message
         scrollToBottom();
+      })
+      .catch(error => {
+        // If there is an error, remove the loading message and possibly show an error message
+        messagesList.removeChild(loadingMessageItem);
+        console.error('Error:', error);
       });
   });
 
@@ -209,5 +239,5 @@
   }
   scrollToBottom();
 </script>
-  
+
 {% endblock %}
