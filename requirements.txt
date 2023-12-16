@@ -1,3 +1,7 @@
 requests
 openai
 django==4.2.1
+markdown2
+bleach
+Pygments
+sseclient-py
