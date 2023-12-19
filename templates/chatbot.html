@@ -1,93 +1,24 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
+{% load static %}
 
 {% block styles %}
-<style>
-  body,
-  html {
-    height: 100%;
-    margin: 0;
-    /* Reset margin to prevent spacing */
-    padding: 0;
-    /* Reset padding to prevent spacing */
-  }
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
 
-  .messages-box {
-    max-height: 800px;
-    overflow-y: auto;
-    /* Use 'auto' to show scrollbar only when necessary */
-    padding-bottom: 70px;
-    /* Adjust to accommodate the chat form's height */
-  }
-
-
-  .messages-list {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-  }
-
-  .message {
-    margin-bottom: 15px;
-    list-style: none;
-  }
-
-  .message-text {
-    padding: 10px;
-    border-radius: 5px;
-  }
-
-  .sent {
-    background-color: #dcf8c6;
-    align-self: flex-end;
-  }
-
-  .received {
-    background-color: #f1f0f0;
-    align-self: flex-start;
-  }
-
-  .message-form {
-    display: flex;
-    width: 90%;
-    max-width: 800px;
-    margin: 0 auto;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 10px;
-    background-color: #f8f9fa;
-    z-index: 1;
-    /* Ensure the chat form appears above the chat box */
-  }
-
-  .message-input {
-    flex: 1;
-    border-radius: 0;
-    border-right: none;
-  }
-
-  .btn-send {
-    border-radius: 0;
-  }
-
-  .chat-container {
-    width: 90%;
-    height: 90%;
-    margin: 0 auto;
-    /* Center the chat container */
-    max-width: 800px;
-    /* Optional: You can set a max-width to prevent it from being too wide on large screens */
-  }
-</style>
 {% endblock %}
 
 
 {% block content %}
-<div class="chat-container">
-  <div class="card flex-grow-1">
-    <div class="card-header bg-primary text-white">Chat</div>
+<div class="chat-layout">
+  <div class="chat-sidebar">
+    <!-- Add chat list items here -->
+    <ul class="chat-list">
+        <!-- Example chat list item -->
+        <li>Chat 1</li>
+        <!-- Add more chat items as needed -->
+    </ul>
+
+
     {% if user.is_authenticated %}
     <div class="card-header bg-primary text-white"><b>Welcome, {{user.username}}</b> <a style="color: yellow;"
         href="logout">Logout</a></div>
@@ -95,65 +26,76 @@
     <div class="card-header bg-primary text-white"><a style="color: yellow" href="login">Login</a> <a
         style="color: yellow;" href="register">Register</a></div>
     {% endif %}
-    <div class="card-body messages-box">
 
-      <ul class="list-unstyled messages-list">
-
-        <li class="message received">
-          <div class="message-text">
-            <div class="message-sender">
-              <b>AI Chatbot</b>
-            </div>
-            <div class="message-content">
-              Hi {{user.username}}, I am your AI Chatbot, you can ask me anything.
-            </div>
-          </div>
-        </li>
-
-        {% for chat in chats %}
-        {% if chat.user == request.user %}
-
-        <li class="message sent">
-          <div class="message-text">
-            <div class="message-sender">
-              <b>You</b>
-            </div>
-            <div class="message-content">
-              {{chat.message}}
-            </div>
-          </div>
-        </li>
-
-        <li class="message received">
-          <div class="message-text">
-            <div class="message-sender">
-              <b>AI Chatbot</b>
-            </div>
-            <div class="message-content">
-              {{chat.response|format_output|safe}}
-            </div>
-          </div>
-        </li>
-
-        {% endif %}
-        {% endfor %}
-
-      </ul>
-
-    </div>
-    <br><br>
-    <br><br>
-    <br><br>
+    <div class="sidebar-bottom">
+      <!-- Add your additional elements here -->
+      <button id="theme-toggle">Toggle Theme</button>
   </div>
-  <form class="message-form">
-    {%csrf_token%}
-    <div class="input-group">
-      <input type="text" class="form-control message-input" placeholder="Type your message...">
-      <div class="input-group-append">
-        <button type="submit" class="btn btn-primary btn-send">Send</button>
+  <!-- Example placement at the top of your chat layout -->
+
+  </div>
+  <div class="chat-container">
+    <div class="card flex-grow-1">
+      <div class="card-header bg-primary text-white">Chat</div>
+      <div class="card-body messages-box">
+  
+        <ul class="list-unstyled messages-list">
+  
+          <li class="message received">
+            <div class="message-text">
+              <div class="message-sender">
+                <b>AI Chatbot</b>
+              </div>
+              <div class="message-content">
+                Hi {{user.username}}, I am your AI Chatbot, you can ask me anything.
+              </div>
+            </div>
+          </li>
+  
+          {% for chat in chats %}
+          {% if chat.user == request.user %}
+  
+          <li class="message sent">
+            <div class="message-text">
+              <div class="message-sender">
+                <b>You</b>
+              </div>
+              <div class="message-content">
+                {{chat.message}}
+              </div>
+            </div>
+          </li>
+  
+          <li class="message received">
+            <div class="message-text">
+              <div class="message-sender">
+                <b>AI Chatbot</b>
+              </div>
+              <div class="message-content">
+                {{chat.response|format_output|safe}}
+              </div>
+            </div>
+          </li>
+  
+          {% endif %}
+          {% endfor %}
+  
+        </ul>
+  
       </div>
+      <br><br>
+
     </div>
-  </form>
+    <form class="message-form">
+      {%csrf_token%}
+      <div class="input-group">
+        <input type="text" class="form-control message-input" placeholder="Type your message...">
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-primary btn-send">Send</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>
@@ -188,8 +130,15 @@
 
     // Create and add the loading message to the chat
     const loadingMessageItem = document.createElement('li');
-    loadingMessageItem.classList.add('message', 'loading');
-    loadingMessageItem.textContent = 'Loading...'; // You can style this as you wish, or use an animation
+    
+    // Create spinner element
+    const spinner = document.createElement('div');
+    spinner.classList.add('spinner');
+
+    // Append the spinner to the loading message item
+    loadingMessageItem.appendChild(spinner);
+
+    // Append the loading message item to the messages list
     messagesList.appendChild(loadingMessageItem);
 
     // Scroll to the bottom to show the loading message
