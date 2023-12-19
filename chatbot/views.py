@@ -19,7 +19,7 @@ openai.api_key = openai_api_key
 
 def ask_openai(message, chat_context):
     response = openai.chat.completions.create(
-        model="gpt-3-1106-turbo",
+        model="gpt-3.5-turbo-1106",
         messages=chat_context + [{"role": "user", "content": message}],
     )
     return response
