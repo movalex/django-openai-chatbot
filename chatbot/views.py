@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 import os
 import openai
 
@@ -17,20 +19,16 @@ openai.api_key = openai_api_key
 
 def ask_openai(message, chat_context):
     response = openai.chat.completions.create(
-        model="gpt-4-1106-preview",
+        model="gpt-3-1106-turbo",
         messages=chat_context + [{"role": "user", "content": message}],
     )
     return response
 
 
 # Create your views here.
+@login_required(login_url='login')
 def chatbot(request):
     chats = []
-
-    if not request.user.is_authenticated:
-        return redirect(
-            "login"
-        )  # Redirect to the login page if the user is not authenticated
 
     chats = Chat.objects.filter(user=request.user)
     if request.user.is_authenticated:
@@ -96,7 +94,7 @@ def login(request):
 
 
 def register(request):
-    return redirect("login")
+    # return redirect("login")
 
     if request.method == "POST":
         username = request.POST["username"]
