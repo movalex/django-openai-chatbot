@@ -1,0 +1,178 @@
+body,
+html {
+    height: 100%;
+    margin: 0;
+    /* Reset margin to prevent spacing */
+    padding: 0;
+    /* Reset padding to prevent spacing */
+}
+
+/* Light Theme Styles */
+.chat-layout {
+    /* Light theme styles here */
+    display: flex;
+    height: 100vh;
+    /* Full viewport height */
+    max-width: 1200px;
+    /* Adjust as needed */
+    margin: 0 auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Optional shadow for depth */
+
+}
+
+/* Dark Theme Styles */
+.dark-theme .chat-layout {
+    /* Dark theme styles here */
+}
+
+/* Other elements for light theme */
+
+/* Dark theme styles for other elements */
+.dark-theme .chat-sidebar {
+    /* Styles for dark theme sidebar */
+}
+
+
+
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, .1);
+    /* Light grey border */
+    border-top: 4px solid #333;
+    /* Darker color for the spinning part */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.message-text {
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.sent {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+}
+
+.received {
+    background-color: #f1f0f0;
+    align-self: flex-start;
+}
+
+
+
+.btn-send {
+    border-radius: 0;
+}
+
+
+.sidebar-bottom {
+    padding: 20px;
+    border-top: 1px solid #ccc;
+    /* Separator line */
+    background-color: #f2f2f2;
+    /* Different background color */
+}
+
+.sidebar-bottom button {
+    /* Style your buttons or other elements here */
+    display: block;
+    /* Makes each button take the full width */
+    margin-bottom: 10px;
+    /* Spacing between buttons */
+    /* Additional button styles */
+}
+
+.chat-container {
+    display: flex;
+    width: 75%;
+    flex-direction: column;
+    height: 100vh;
+    /* Adjust the height as needed */
+}
+
+.messages-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    /* Allows scrolling */
+    margin-bottom: 50px;
+    /* Adjust this based on the height of your form */
+    /* Additional styling for the message box */
+}
+
+.message-form {
+    position: absolute;
+    bottom: 0;
+    width: 75%;
+    /* Ensure the form spans the entire width of the container */
+    /* Additional styling for the form */
+    border-top: 1px solid #ddd;
+    padding: 10px;
+}
+
+.messages-list {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.message {
+    margin-bottom: 15px;
+    list-style: none;
+}
+
+.message.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.message-input {
+    flex: 1;
+    border-radius: 10px;
+    border-right: none;
+}
+
+.chat-list {
+    /* Removes bullets */
+    list-style-type: none;
+    /* Resets default padding */
+    padding: 0;
+    /* Resets default margin */
+    margin: 0;
+}
+
+.chat-list li {
+    /* Additional styling for list items */
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.chat-list li:hover {
+    background-color: #eaeaea;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .chat-sidebar {
+        display: none;
+    }
+
+    .chat-container {
+        width: 100%;
+    }
+}
