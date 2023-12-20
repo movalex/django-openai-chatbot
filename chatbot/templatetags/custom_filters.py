@@ -17,9 +17,9 @@ def format_output(value):
         if line.strip().startswith("```"):  # Check for code block start/end
             in_code_block = not in_code_block
             if in_code_block:
-                formatted_lines.append("<p><pre><code>")
+                formatted_lines.append("<code>")
             else:
-                formatted_lines.append("</code></pre></p>")
+                formatted_lines.append("</code>")
         elif in_code_block:
             formatted_lines.append(mark_safe(line + "\n"))  # Keep code line as is
         else:

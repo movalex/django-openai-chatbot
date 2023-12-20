@@ -10,47 +10,12 @@
 
         <div class="list-group list-group-flush">
 
-
             <div id="list-group">
                 <div class="user">
                     <i class="fa-solid fa-user-ninja"></i>
                     <p>Hi, {{request.user.username}}</p>
                     <a href="{% url 'logout' %}">Logout</a>
                 </div>
-
-                {% if t_questions %}
-
-                <div class="chat-today">
-                    <small>Today</small>
-
-                    {% for tq in t_questions %}
-
-                    <div class="chat">
-                        <i class="fa-regular fa-message"></i>
-                        <p>{{tq}}</p>
-                    </div>
-
-                    {% endfor %}
-
-                </div>
-
-                {% endif %}
-
-                {% if y_questions %}
-
-                <div class="chat-today">
-                    <small>Yesterday</small>
-
-                    {% for yq in y_questions %}
-
-                    <div class="chat">
-                        <i class="fa-regular fa-message"></i>
-                        <p>{{yq}}</p>
-                    </div>
-
-                    {% endfor %}
-                </div>
-                {% endif %}
             </div>
         </div>
     </div>
@@ -76,13 +41,13 @@
                 </div>
                 <div class="bot-chat-container">
                     <div class="bot-icon"><i class="fa-solid fa-robot"></i></div>
-                    <div class="bot-response">{{chat.response|safe}}</div>
+                    <div class="bot-response">{{chat.response|format_output}}</div>
                 </div>
                 {% endif %}
                 {% endfor %}
             </div>
         </div>
-        
+
         {%comment%}
         <!-- Sample content-->
         <div class="container-fluid container-fluid-2">

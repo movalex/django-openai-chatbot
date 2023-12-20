@@ -2,26 +2,45 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import auth
+from django.contrib.auth.models import User
 import os
 import openai
 import json
 import logging
-from markdown2 import markdown
+import bleach
 
 
-from django.contrib import auth
-from django.contrib.auth.models import User
+from .templatetags.custom_filters import format_output
+
+
 from .models import Chat, ChatSession
 
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 
 
 openai_api_key = os.getenv("OPENAI_API_KEY")
-
 openai.api_key = openai_api_key
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+
+
+def sanitize_html(html_content):
+    allowed_tags = set(bleach.sanitizer.ALLOWED_TAGS)
+    custom_tags = {"p", "pre", "code"}
+    allowed_tags.update(custom_tags)
+    print(allowed_tags)
+    # Sanitize the HTML content
+    result = bleach.clean(html_content, tags=allowed_tags)
+    logger.debug(f"Bleached: {result}")
+    return result
+
+
+def format_and_sanitize_output(value):
+    formatted_content = format_output(value)
+    sanitized_content = sanitize_html(formatted_content)
+    return mark_safe(sanitized_content)
 
 
 def ask_openai(message, chat_context):
@@ -70,12 +89,8 @@ def chatbot(request):
         # Extracting the text from the response
         assistant_response = response.choices[0].message.content.strip()
         logger.debug(f"[RAW response]: {assistant_response}")
-        try:
-            assistant_response = markdown(assistant_response)
-            logger.debug(f"[FORMATTED response]:\n{assistant_response}")
-        except Exception:
-            logger.warn("Failed to convert assistant response markdown")
-        # Update chat context
+
+        safe_formatted_reply = format_and_sanitize_output(assistant_response)
         chat_context.append({"role": "user", "content": user_message})
         chat_context.append(
             {
@@ -102,7 +117,7 @@ def chatbot(request):
         )
         chat.save()
 
-        return JsonResponse({"message": user_message, "response": assistant_response})
+        return JsonResponse({"message": user_message, "response": safe_formatted_reply})
 
     chats = Chat.objects.filter(user=request.user)
     return render(request, "chatbot.html", {"chats": chats})
