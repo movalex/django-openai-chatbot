@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,17 +25,17 @@ SECRET_KEY = "django-insecure-lvq$@m5t$iec5-)_r)1!9!05ja3zkj)e2h&@+8uy*tzfw5i*l!
 DEBUG = True
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
         },
     },
-    'loggers': {
-        'chatbot': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
+    "loggers": {
+        "chatbot": {
+            "handlers": ["console"],
+            "level": "DEBUG",
         },
     },
 }
@@ -62,7 +62,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware"
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 ROOT_URLCONF = "django_chatbot.urls"
@@ -91,7 +91,7 @@ WSGI_APPLICATION = "django_chatbot.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": os.getenv("DJANGO_DB_PATH", BASE_DIR / "db.sqlite3"),
     }
 }
 
@@ -131,7 +131,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATICFILES_DIRS = [
-    Path(BASE_DIR, 'static').resolve(),
+    Path(BASE_DIR, "static").resolve(),
 ]
 
 STATIC_URL = "/static/"
