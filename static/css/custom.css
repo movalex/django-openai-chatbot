@@ -17,7 +17,8 @@ p {
 
 .container-fluid-2 {
     /* border: 1px solid black; */
-    height: 75vh !important;
+
+    height: 76vh !important;
     overflow: auto
 }
 
@@ -172,8 +173,10 @@ p {
 
 
 .chat-container {
-    width: 100%;
+    width: auto;
+    max-width: 780px;
     height: auto;
+    margin: 0 auto; 
     /* border: 1px solid white */
 }
 
@@ -271,11 +274,7 @@ p {
     .submit-form {
         width: 300px;
         height: 60px;
-        /* border: 1px solid black; */
-
     }
-
-
     .submit-form input {
         height: 50px;
         width: 250px;
