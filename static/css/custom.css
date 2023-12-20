@@ -153,9 +153,6 @@ p {
 }
 
 
-
-
-
 #list-group {
     padding: 10px 10px 10px 10px;
     width: 250px;
@@ -169,14 +166,11 @@ p {
     font-weight: bold;
 }
 
-
-
-
 .chat-container {
     width: auto;
     max-width: 780px;
     height: auto;
-    margin: 0 auto; 
+    margin: 0 auto;
     /* border: 1px solid white */
 }
 
@@ -249,6 +243,20 @@ p {
     /* border: 1px solid white; */
 }
 
+.chat-container .bot-chat-container .bot-response code {
+    display: block;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+    /* Preserve whitespace and line breaks */
+    white-space: pre;
+    /* Add horizontal scroll for long lines */
+    overflow-x: auto;
+}
+
 .spinner-main {
     display: none;
     align-items: center;
@@ -275,6 +283,7 @@ p {
         width: 300px;
         height: 60px;
     }
+
     .submit-form input {
         height: 50px;
         width: 250px;
