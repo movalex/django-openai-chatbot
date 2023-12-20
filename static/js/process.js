@@ -2,6 +2,8 @@ let form = document.querySelector(".submit-form")
 let input = document.querySelector("#input_value")
 
 const chatContainer = document.querySelector(".chat-container");
+const scrollContainer = document.querySelector(".container-fluid-2");
+
 let spinner = document.querySelector(".spinner-main")
 
 form.addEventListener("submit", submitForm)
@@ -21,9 +23,10 @@ async function submitForm(e) {
     addBotResponse(response);
     scrollToBottom();
   } catch (error) {
-    console.error("Error:", error);
-    alert(error.message); // User-friendly error message
+    spinner.style.display = "none"
+    console.error(error);
   }
+  spinner.style.display = "none"
 
 }
 
@@ -61,9 +64,9 @@ async function fetchBotResponse(userMessage) {
     }),
   });
   const result = await response.json();
-  console.log(result)
   if (!response.ok) {
-    const errorMessage = response.error || `HTTP error! Status: ${response.status}`;
+    const errorMessage = result.error || `HTTP error! Status: ${response.status}`;
+    alert(errorMessage);
     throw new Error(`HTTP error! Status: ${response.status}\n Error Message: ${errorMessage}`);
   }
   spinner.style.display = "none"
@@ -71,5 +74,5 @@ async function fetchBotResponse(userMessage) {
 }
 
 function scrollToBottom() {
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  scrollContainer.scrollTop = scrollContainer.scrollHeight;
 }
