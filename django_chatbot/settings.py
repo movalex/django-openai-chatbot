@@ -24,6 +24,22 @@ SECRET_KEY = "django-insecure-lvq$@m5t$iec5-)_r)1!9!05ja3zkj)e2h&@+8uy*tzfw5i*l!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'chatbot': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}
+
 ALLOWED_HOSTS = ["*"]
 
 

@@ -6,6 +6,7 @@ import os
 import openai
 import json
 import logging
+from markdown2 import markdown
 
 
 from django.contrib import auth
@@ -20,6 +21,7 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = openai_api_key
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def ask_openai(message, chat_context):
@@ -38,8 +40,8 @@ def chatbot(request):
     MAX_USED_CONTEXT = 200
 
     if request.method == "POST":
-        message = request.POST.get("message")
-        print(message)
+        user_message = request.POST.get("message")
+
         # Retrieve or create a chat session
         session_id = str(request.user.id)  # Using user ID as session identifier
         chat_session, created = ChatSession.objects.get_or_create(session_id=session_id)
@@ -51,26 +53,30 @@ def chatbot(request):
             )
         except json.JSONDecodeError:
             chat_context = request.session.get("chat_context", [])
-        print(len(chat_context))
+
         # Get response from OpenAI
-        chat_used_context = chat_context[-MAX_USED_CONTEXT*2:]
+        chat_used_context = chat_context[-MAX_USED_CONTEXT * 2 :]
         print(f"current context size: {len(chat_used_context)}")
         try:
-            response = ask_openai(message, chat_used_context)
+            response = ask_openai(user_message, chat_used_context)
 
         except openai.PermissionDeniedError:
-            logger.error("Permission denied to OpenAI services")
-            return JsonResponse(
-                {"error": "Permission denied to OpenAI services."}, status=403
-            )
+            error_message = "Permission denied to OpenAI services"
+            logger.error(error_message)
+            return JsonResponse({"error": error_message}, status=403)
         except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
+            return JsonResponse({"Unknown Error": str(e)}, status=500)
 
         # Extracting the text from the response
         assistant_response = response.choices[0].message.content.strip()
-        print(f"response: {assistant_response}")
+        logger.debug(f"[RAW response]: {assistant_response}")
+        try:
+            assistant_response = markdown(assistant_response)
+            logger.debug(f"[FORMATTED response]:\n{assistant_response}")
+        except Exception:
+            logger.warn("Failed to convert assistant response markdown")
         # Update chat context
-        chat_context.append({"role": "user", "content": message})
+        chat_context.append({"role": "user", "content": user_message})
         chat_context.append(
             {
                 "role": "assistant",
@@ -90,13 +96,13 @@ def chatbot(request):
         # Save the chat message and response
         chat = Chat(
             user=request.user,
-            message=message,
+            message=user_message,
             response=assistant_response,
             created_at=timezone.now(),
         )
         chat.save()
 
-        return JsonResponse({"message": message, "response": assistant_response})
+        return JsonResponse({"message": user_message, "response": assistant_response})
 
     chats = Chat.objects.filter(user=request.user)
     return render(request, "chatbot.html", {"chats": chats})
