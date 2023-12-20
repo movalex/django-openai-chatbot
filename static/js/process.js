@@ -1,9 +1,7 @@
 let form = document.querySelector(".submit-form")
 let input = document.querySelector("#input_value")
-const fluidContainer = document.querySelector(".container-fluid-2");
-const chatContainer = document.createElement("div");
-chatContainer.className = "chat-container";
-fluidContainer.appendChild(chatContainer);
+
+const chatContainer = document.querySelector(".chat-container");
 let spinner = document.querySelector(".spinner-main")
 
 form.addEventListener("submit", submitForm)
