@@ -65,35 +65,27 @@
 
             </div>
         </nav>
-
-        <!-- Page content-->
         <div class="container-fluid container-fluid-2">
             <h1 id="main-header">ChatGPT</h1>
-            <div class="bot-feature-container">
-                <div class="feature-container">
-                    <div class="icon"><i class="fa-regular fa-lightbulb"></i></div>
-                    <h3>Examples</h3>
-                    <div class="feature">"Explain quantum computing in simple terms"</div>
-                    <div class="feature">"Got any creative ideas for a 10 year old’s birthday?" →</div>
-                    <div class="feature">"How do I make an HTTP request in Javascript?" →</div>
+            <div class="chat-container">
+                {% for chat in chats %}
+                {% if chat.user == request.user %}
+                <div class="user-chat-container">
+                    <div class="user-pic"><i class="fa-solid fa-circle-user"></i></div>
+                    <div class="user-message">{{chat.message}}</div>
                 </div>
-                <div class="feature-container">
-                    <div class="icon"><i class="fa-solid fa-bolt"></i></div>
-                    <h3>Capabilities</h3>
-                    <div class="feature">Remembers what user said earlier in the conversation</div>
-                    <div class="feature">Allows user to provide follow-up corrections</div>
-                    <div class="feature">Trained to decline inappropriate requests</div>
+                <div class="bot-chat-container">
+                    <div class="bot-icon"><i class="fa-solid fa-robot"></i></div>
+                    <div class="bot-response">{{chat.response|safe}}</div>
                 </div>
-                <div class="feature-container">
-                    <div class="icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                    <h3>Limitations</h3>
-                    <div class="feature">May occasionally generate incorrect information</div>
-                    <div class="feature">May occasionally produce harmful instructions or biased content</div>
-                    <div class="feature">mited knowledge of world and events after 2021</div>
-                </div>
+                {% endif %}
+                {% endfor %}
             </div>
-
-            {%comment%}
+        </div>
+        
+        {%comment%}
+        <!-- Sample content-->
+        <div class="container-fluid container-fluid-2">
             <div class="chat-container">
                 <div class="user-chat-container">
                     <div class="user-pic"><i class="fa-solid fa-circle-user"></i></div>
@@ -104,16 +96,15 @@
                     <div class="bot-response"></div>
                 </div>
             </div>
-            {%endcomment%}
-
         </div>
-
+        {%endcomment%}
         <div class="container-fluid spinner-main">
             <div class="spinner-border text-primary" role="status" style="margin:auto">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
         <form action="" class="submit-form">
+            {% csrf_token %}
             <input type="text" id="input_value" placeholder="Send a message" required>
             <button id="submit-btn"><i class="fa-solid fa-paper-plane"></i></button>
         </form>
@@ -121,6 +112,6 @@
 </div>
 
 <script src="{% static 'js/scripts.js' %}"></script>
-<script src="{% static 'js/test.js' %}"></script>
+<script src="{% static 'js/process.js' %}"></script>
 
 {% endblock %}
