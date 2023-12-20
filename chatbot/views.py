@@ -35,10 +35,11 @@ def chatbot(request):
     chats = []
     MAX_CONTEXT_SIZE = 200
     TRIM_CONTEXT = True
-    MAX_USED_CONTEXT = 100
+    MAX_USED_CONTEXT = 200
 
     if request.method == "POST":
         message = request.POST.get("message")
+        print(message)
         # Retrieve or create a chat session
         session_id = str(request.user.id)  # Using user ID as session identifier
         chat_session, created = ChatSession.objects.get_or_create(session_id=session_id)
