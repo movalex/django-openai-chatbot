@@ -15,11 +15,24 @@ p {
     margin-bottom: 1em; /* Adjust space between paragraphs */
     /* Other styles as needed */
 }
+ 
+code {
+    color: #77a7ff;
+}
+
+.inline-code {
+    background-color: #181818;
+    /* border: 1px solid #ddd; */
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
 
 .container-fluid-2 {
     /* border: 1px solid black; */
 
-    height: 80vh !important;
+    height: 70vh !important;
     overflow: auto
 }
 
@@ -81,7 +94,7 @@ p {
     height: 60px;
     border: 2px solid gray;
     border-radius: 10px;
-    margin: 30px auto;
+    margin: 10px auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -244,29 +257,12 @@ p {
     text-align: justify;
 }
 
-.chat-container .bot-chat-container .bot-response code {
-    display: block;
-    background-color: #1a1a1a;
-    border: 1px solid #bdbdbd;
-    color:#bdbdbd;
-    padding: 5px;
-    margin: 1px 0;
-    border-radius: 4px;
-    font-family: 'Courier New Bold', Courier, monospace;
-    /* Preserve whitespace and line breaks */
-    white-space: pre!important;
-    /* Add horizontal scroll for long lines */
-    overflow-x: auto;
-}
-
 
 .spinner-main {
     display: none;
     align-items: center;
     justify-content: center;
 }
-
-
 
 
 @media only screen and (max-width: 1200px) {
@@ -284,12 +280,14 @@ p {
 
     .submit-form {
         width: 300px;
-        height: 60px;
+        max-height: 40px;
+        margin: 10px auto;
     }
 
     .submit-form input {
         height: 50px;
         width: 250px;
+        padding-bottom: 20px;
 
     }
 
