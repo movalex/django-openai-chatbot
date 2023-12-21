@@ -4,3 +4,4 @@ django==4.2.2
 bleach
 Pygments
 sseclient-py
+bs4
