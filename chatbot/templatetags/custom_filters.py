@@ -1,28 +1,45 @@
+import re
 from django import template
-from django.utils.html import format_html, mark_safe
+from django.utils.html import mark_safe
+from bs4 import BeautifulSoup
+from markdown import markdown
 
 register = template.Library()
 
 
-@register.filter(name="format_output")
-def format_output(value):
-    # Splitting the text into lines
-    lines = value.split("\n")
+@register.filter(name="inline_code_formatting")
+def inline_code_formatting(value):
+    soup = BeautifulSoup(markdown(value), "html.parser")
 
-    # Variables to keep track of whether we are inside a code block
-    in_code_block = False
-    formatted_lines = []
+    # Process `code` elements for inline code
+    for code in soup.find_all("code"):
+        if not code.find_parent("pre"):
+            # This is inline code, not part of a preformatted block
+            code.wrap(soup.new_tag("span", **{"class": "inline-code"}))
 
-    for line in lines:
-        if line.strip().startswith("```"):  # Check for code block start/end
-            in_code_block = not in_code_block
-            if in_code_block:
-                formatted_lines.append("<code>")
-            else:
-                formatted_lines.append("</code>")
-        elif in_code_block:
-            formatted_lines.append(mark_safe(line + "\n"))  # Keep code line as is
-        else:
-            formatted_lines.append(f"<p>{line}</p>")
-    concatenated = "".join(formatted_lines)
-    return mark_safe(concatenated)
+    # Convert soup back to string and mark as safe
+    return mark_safe(str(soup))
+
+
+@register.filter(name="markdown_to_html")
+def markdown_to_html(markdown_text: str):
+    # print(markdown_text)
+    # Regex to find code blocks and extract language
+    if not isinstance(markdown_text, str):
+        return ""
+    to_test = """```html
+    <pre>
+    <code>
+    // Your code goes here
+    function example() {
+        // Your code logic here
+    }
+    </code>
+    </pre>
+    ```"""
+
+    markdown_text = re.sub(r"^```(\w+)", r"``` \1", markdown_text)
+    result = markdown(markdown_text, extensions=["fenced_code"])
+
+    # Additional formatting can be added here
+    return mark_safe(result)
