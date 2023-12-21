@@ -17,11 +17,11 @@ p {
 }
  
 code {
-    color: #77a7ff;
+    color: #90a6cf;
 }
 
 .inline-code {
-    background-color: #181818;
+    background-color: #1b1e27;
     /* border: 1px solid #ddd; */
     padding: 0.2em 0.4em;
     border-radius: 4px;
@@ -257,6 +257,14 @@ code {
     text-align: justify;
 }
 
+
+.chat-container .bot-chat-container .bot-response pre code {
+    display: block;
+    background-color: #1b1e27;
+    border: 1px solid #999da5;
+    margin: 1px 0;
+    border-radius: 4px;
+}
 
 .spinner-main {
     display: none;
