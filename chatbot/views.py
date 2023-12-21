@@ -11,7 +11,7 @@ import logging
 import bleach
 
 
-from .templatetags.custom_filters import format_output
+from .templatetags.custom_filters import markdown_to_html, inline_code_formatting
 
 
 from .models import Chat, ChatSession
@@ -30,22 +30,22 @@ def sanitize_html(html_content):
     allowed_tags = set(bleach.sanitizer.ALLOWED_TAGS)
     custom_tags = {"p", "pre", "code"}
     allowed_tags.update(custom_tags)
-    print(allowed_tags)
     # Sanitize the HTML content
     result = bleach.clean(html_content, tags=allowed_tags)
-    logger.debug(f"Bleached: {result}")
+    # logger.debug(f"Bleached: {result}")
     return result
 
 
-def format_and_sanitize_output(value):
-    formatted_content = format_output(value)
-    sanitized_content = sanitize_html(formatted_content)
-    return mark_safe(sanitized_content)
+def format_output(value):
+    html_content = markdown_to_html(value)
+    result = inline_code_formatting(html_content)
+    return mark_safe(result)
 
 
 def ask_openai(message, chat_context):
     response = openai.chat.completions.create(
         model="gpt-3.5-turbo-1106",
+        # model="gpt-4",
         messages=chat_context + [{"role": "user", "content": message}],
     )
     return response
@@ -54,7 +54,7 @@ def ask_openai(message, chat_context):
 @login_required(login_url="login")
 def chatbot(request):
     chats = []
-    MAX_CONTEXT_SIZE = 200
+    MAX_CONTEXT_SIZE = 2000
     TRIM_CONTEXT = True
     MAX_USED_CONTEXT = 200
 
@@ -75,7 +75,7 @@ def chatbot(request):
 
         # Get response from OpenAI
         chat_used_context = chat_context[-MAX_USED_CONTEXT * 2 :]
-        print(f"current context size: {len(chat_used_context)}")
+        logger.debug(f"current context size: {len(chat_used_context)}")
         try:
             response = ask_openai(user_message, chat_used_context)
 
@@ -88,9 +88,8 @@ def chatbot(request):
 
         # Extracting the text from the response
         assistant_response = response.choices[0].message.content.strip()
-        logger.debug(f"[RAW response]: {assistant_response}")
 
-        safe_formatted_reply = format_and_sanitize_output(assistant_response)
+        safe_formatted_reply = format_output(assistant_response)
         chat_context.append({"role": "user", "content": user_message})
         chat_context.append(
             {
