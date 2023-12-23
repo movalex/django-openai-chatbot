@@ -5,3 +5,4 @@ bleach
 Pygments
 sseclient-py
 bs4
+markdown
