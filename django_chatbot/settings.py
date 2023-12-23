@@ -88,10 +88,14 @@ WSGI_APPLICATION = "django_chatbot.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+DB_PATH = Path(os.getenv("DJANGO_DB_PATH"))
+if not DB_PATH.exists:
+    DB_PATH = BASE_DIR / "db.sqlite3"
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.getenv("DJANGO_DB_PATH", BASE_DIR / "db.sqlite3"),
+        "NAME": DB_PATH,
     }
 }
 
@@ -131,11 +135,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATICFILES_DIRS = [
-    Path(BASE_DIR, "static").resolve(),
+    Path(BASE_DIR, "static"),
 ]
 
 STATIC_URL = "/static/"
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
