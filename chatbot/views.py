@@ -42,11 +42,12 @@ def format_output(value):
     return mark_safe(result)
 
 
-def ask_openai(message, chat_context):
+def ask_openai(message, chat_context, model):
     response = openai.chat.completions.create(
-        model="gpt-3.5-turbo-1106",
-        # model="gpt-4",
+        # model="gpt-3.5-turbo-1106",
+        model=model,
         messages=chat_context + [{"role": "user", "content": message}],
+        max_tokens=4000,
     )
     return response
 
@@ -56,7 +57,8 @@ def chatbot(request):
     chats = []
     MAX_CONTEXT_SIZE = 2000
     TRIM_CONTEXT = True
-    MAX_USED_CONTEXT = 200
+    MAX_USED_CONTEXT = 20
+    models = {"GPT4": "gpt-4-1106-preview", "GPT3.5": "gpt-3.5-turbo-1106"}
 
     if request.method == "POST":
         user_message = request.POST.get("message")
@@ -75,7 +77,7 @@ def chatbot(request):
 
         # Get response from OpenAI
         chat_used_context = chat_context[-MAX_USED_CONTEXT * 2 :]
-        logger.debug(f"current context size: {len(chat_used_context)}")
+        logger.debug(f"Payload size: {len(chat_used_context)}")
         try:
             response = ask_openai(user_message, chat_used_context)
 
@@ -101,8 +103,11 @@ def chatbot(request):
         if (
             TRIM_CONTEXT and len(chat_context) > MAX_CONTEXT_SIZE * 2
         ):  # *2 because each interaction has 2 parts
+            # all old entries will be erased
             chat_context = chat_context[-MAX_CONTEXT_SIZE * 2 :]
 
+        logger.debug(f"Current stored context length:\n{len(chat_context)}")
+        # logger.debug(f"Current context:\n{json.dumps(chat_context)}")
         # Save the updated context
         chat_session.context = json.dumps(chat_context)
         chat_session.save()
