@@ -84,7 +84,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "django_chatbot.wsgi.application"
-CSRF_TRUSTED_ORIGINS = ['http://192.168.100.30:8080']
 
 
 # Database
@@ -145,7 +144,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATICFILES_DIRS = [
-    Path(BASE_DIR, "static"),
+    BASE_DIR / "static",
 ]
 
 STATIC_URL = "/static/"

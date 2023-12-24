@@ -1,8 +1,6 @@
-requests
-openai
-django==4.2.2
-bleach
-Pygments
-sseclient-py
 bs4
+django==4.2.2
+gunicorn
 markdown
+openai
+requests
