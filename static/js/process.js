@@ -72,7 +72,8 @@ async function fetchBotResponse(userMessage) {
     alert(errorMessage);
     throw new Error(`HTTP error! Status: ${response.status}\n Error Message: ${errorMessage}`);
   }
-  spinner.style.display = "none"
+  spinner.style.display = "none";
+  loadHighlightJs();
   return result.response;
 }
 
