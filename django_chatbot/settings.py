@@ -84,21 +84,31 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "django_chatbot.wsgi.application"
+CSRF_TRUSTED_ORIGINS = ['http://192.168.100.30:8080']
+
 
 # Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DB_PATH = Path(os.getenv("DJANGO_DB_PATH"))
-if not DB_PATH.exists:
+# Get the DJANGO_DB_PATH environment variable
+django_db_path = os.getenv("DJANGO_DB_PATH")
+
+# If DJANGO_DB_PATH is not None and is not an empty string
+if django_db_path:
+    DB_PATH = Path(django_db_path, "db.sqlite3")
+    # Check if the path from the environment variable exists
+    if not DB_PATH.exists():
+        DB_PATH = BASE_DIR / "db.sqlite3"
+else:
+    # Fallback to the default path
     DB_PATH = BASE_DIR / "db.sqlite3"
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": DB_PATH,
+        "NAME": str(DB_PATH),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
