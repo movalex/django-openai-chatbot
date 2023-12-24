@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotAllowed
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
@@ -8,7 +8,6 @@ import os
 import openai
 import json
 import logging
-import bleach
 
 
 from .templatetags.custom_filters import markdown_to_html, inline_code_formatting
@@ -23,17 +22,13 @@ from django.utils.safestring import mark_safe
 openai_api_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = openai_api_key
 
+MAX_CONTEXT_SIZE = 2000
+MAX_USED_CONTEXT = 5
+TRIM_CONTEXT = True
+GPT_MODELS = {"GPT4": "gpt-4-1106-preview", "GPT3.5": "gpt-3.5-turbo-1106"}
+
+
 logger = logging.getLogger(__name__)
-
-
-def sanitize_html(html_content):
-    allowed_tags = set(bleach.sanitizer.ALLOWED_TAGS)
-    custom_tags = {"p", "pre", "code"}
-    allowed_tags.update(custom_tags)
-    # Sanitize the HTML content
-    result = bleach.clean(html_content, tags=allowed_tags)
-    # logger.debug(f"Bleached: {result}")
-    return result
 
 
 def format_output(value):
@@ -51,80 +46,108 @@ def ask_openai(message, chat_context, model):
     )
     return response
 
-
 @login_required(login_url="login")
 def chatbot(request):
-    chats = []
-    MAX_CONTEXT_SIZE = 2000
-    TRIM_CONTEXT = True
-    MAX_USED_CONTEXT = 20
-    models = {"GPT4": "gpt-4-1106-preview", "GPT3.5": "gpt-3.5-turbo-1106"}
-
     if request.method == "POST":
-        user_message = request.POST.get("message")
+        return handle_post_request(request)
+    elif request.method == "GET":
+        return handle_get_request(request)
+    else:
+        error_message = "Only GET and POST are allowed"
+        logger.error(error_message)
+        return HttpResponseNotAllowed(["GET", "POST"], error_message)
 
-        # Retrieve or create a chat session
-        session_id = str(request.user.id)  # Using user ID as session identifier
-        chat_session, created = ChatSession.objects.get_or_create(session_id=session_id)
 
-        # Get current chat context
-        try:
-            chat_context = (
-                json.loads(chat_session.context) if chat_session.context else []
-            )
-        except json.JSONDecodeError:
-            chat_context = request.session.get("chat_context", [])
+def handle_post_request(request):
+    user_message = request.POST.get("message")
+    print(user_message)
+    print(request.POST)
+    selected_model = request.POST.get("model_id")
+    if selected_model is None:
+        return JsonResponse({"error": "Model ID not provided"}, status=400)
+    session_id = str(request.user.id)
+    chat_session, created = ChatSession.objects.get_or_create(session_id=session_id)
+    chat_context = get_chat_context(chat_session, request)
 
-        # Get response from OpenAI
-        chat_used_context = chat_context[-MAX_USED_CONTEXT * 2 :]
-        logger.debug(f"Payload size: {len(chat_used_context)}")
-        try:
-            response = ask_openai(user_message, chat_used_context)
+    response, error_msg = get_openai_response(
+        user_message, chat_context, selected_model
+    )
+    if response is None and error_msg:
+        return JsonResponse({"error": error_msg}, status=403)
 
-        except openai.PermissionDeniedError:
-            error_message = "Permission denied to OpenAI services"
-            logger.error(error_message)
-            return JsonResponse({"error": error_message}, status=403)
-        except Exception as e:
-            return JsonResponse({"Unknown Error": str(e)}, status=500)
+    chat_context, safe_formatted_reply = update_chat_context(
+        chat_context, user_message, response
+    )
 
-        # Extracting the text from the response
-        assistant_response = response.choices[0].message.content.strip()
+    trim_chat_context_if_needed(chat_context)
 
-        safe_formatted_reply = format_output(assistant_response)
-        chat_context.append({"role": "user", "content": user_message})
-        chat_context.append(
-            {
-                "role": "assistant",
-                "content": assistant_response,
-            }
-        )
-        # Trim the context if it exceeds the maximum size
-        if (
-            TRIM_CONTEXT and len(chat_context) > MAX_CONTEXT_SIZE * 2
-        ):  # *2 because each interaction has 2 parts
-            # all old entries will be erased
-            chat_context = chat_context[-MAX_CONTEXT_SIZE * 2 :]
+    save_chat_session(chat_session, chat_context)
+    save_chat_message(request.user, user_message, response)
 
-        logger.debug(f"Current stored context length:\n{len(chat_context)}")
-        # logger.debug(f"Current context:\n{json.dumps(chat_context)}")
-        # Save the updated context
-        chat_session.context = json.dumps(chat_context)
-        chat_session.save()
+    return JsonResponse({"message": user_message, "response": safe_formatted_reply})
 
-        # Save the chat message and response
-        chat = Chat(
-            user=request.user,
-            message=user_message,
-            response=assistant_response,
-            created_at=timezone.now(),
-        )
-        chat.save()
 
-        return JsonResponse({"message": user_message, "response": safe_formatted_reply})
-
+def handle_get_request(request):
     chats = Chat.objects.filter(user=request.user)
-    return render(request, "chatbot.html", {"chats": chats})
+    default_model = GPT_MODELS["GPT3.5"]  # This could be dynamic
+    print(default_model)
+
+    return render(
+        request,
+        "chatbot.html",
+        {"chats": chats, "gpt_models": GPT_MODELS, "default_model": default_model},
+    )
+
+
+def get_chat_context(chat_session, request):
+    try:
+        return json.loads(chat_session.context) if chat_session.context else []
+    except json.JSONDecodeError:
+        return request.session.get("chat_context", [])
+
+
+def get_openai_response(user_message, chat_context, selected_model):
+    chat_used_context = chat_context[-MAX_USED_CONTEXT * 2 :]
+    try:
+        response = ask_openai(user_message, chat_used_context, selected_model)
+        return response, None
+    except openai.PermissionDeniedError:
+        error_message = "Permission denied to OpenAI services"
+        logger.error(error_message)
+        return None, error_message
+    except Exception as e:
+        logger.error(f"Unknown Error: {str(e)}")
+        return None, f"Unknown Error: {str(e)}"
+
+
+def update_chat_context(chat_context, user_message, response):
+    assistant_response = response.choices[0].message.content.strip()
+    safe_formatted_reply = format_output(assistant_response)
+
+    chat_context.append({"role": "user", "content": user_message})
+    chat_context.append({"role": "assistant", "content": assistant_response})
+    return chat_context, safe_formatted_reply
+
+
+def trim_chat_context_if_needed(chat_context):
+    if TRIM_CONTEXT and len(chat_context) > MAX_CONTEXT_SIZE * 2:
+        chat_context = chat_context[-MAX_CONTEXT_SIZE * 2 :]
+
+
+def save_chat_session(chat_session, chat_context):
+    chat_session.context = json.dumps(chat_context)
+    chat_session.save()
+
+
+def save_chat_message(user, user_message, response):
+    assistant_response = response.choices[0].message.content.strip()
+    chat = Chat(
+        user=user,
+        message=user_message,
+        response=assistant_response,
+        created_at=timezone.now(),
+    )
+    chat.save()
 
 
 def login(request):

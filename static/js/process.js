@@ -12,10 +12,10 @@ async function submitForm(e) {
   e.preventDefault();
   const userMessage = input.value.trim();
   if (userMessage === '') return; // Prevent empty messages
-  scrollToBottom();
   // Add user message to chat
   addUserMessage(userMessage);
   input.value = ''; // Clear input field
+  scrollToBottom();
 
   try {
     const response = await fetchBotResponse(userMessage);
@@ -55,12 +55,15 @@ async function fetchBotResponse(userMessage) {
   spinner.style.display = "flex"
   const url = ""
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  const selectedModel = document.getElementById('modelIdField').value; // Get the value of the hidden field
 
+  console.log("selected ", selectedModel)
   const response = await fetch(url, {
     method: "POST",
     body: new URLSearchParams({
       'csrfmiddlewaretoken': csrfToken,
-      'message': userMessage
+      'message': userMessage,
+      'model_id': selectedModel, // Include the selectedModel value in the POST request
     }),
   });
   const result = await response.json();
@@ -72,6 +75,8 @@ async function fetchBotResponse(userMessage) {
   spinner.style.display = "none"
   return result.response;
 }
+
+
 
 function scrollToBottom() {
   scrollContainer.scrollTop = scrollContainer.scrollHeight;
