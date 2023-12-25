@@ -9,8 +9,7 @@ let spinner = document.querySelector(".spinner-main")
 form.addEventListener("submit", submitForm)
 
 async function submitForm(e) {
-  e.preventDefault();
-  const userMessage = input.value.trim();
+  const userMessage = getUserValue();
   if (userMessage === '') return; // Prevent empty messages
   // Add user message to chat
   addUserMessage(userMessage);
@@ -77,8 +76,31 @@ async function fetchBotResponse(userMessage) {
   return result.response;
 }
 
-
-
 function scrollToBottom() {
   scrollContainer.scrollTop = scrollContainer.scrollHeight;
+}
+
+function getUserValue() {
+  document.getElementById('input_value').addEventListener('keydown', function (event) {
+    if (event.key === 'Enter' && event.shiftKey) {
+      console.log("SHIFT enter pressed!");
+
+      // Prevent default Enter behavior only when Shift is also pressed
+      event.preventDefault();
+
+      let start = this.selectionStart;
+      let end = this.selectionEnd;
+
+      // Insert a newline
+      this.value = this.value.substring(0, start) + '\n' + this.value.substring(end);
+
+      // Move the cursor
+      this.selectionStart = this.selectionEnd = start + 1;
+    }
+    else {
+      console.log("Just enter pressed!");
+      return this.value.trim();
+    }
+  });
+
 }
