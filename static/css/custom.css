@@ -12,10 +12,11 @@ body {
 
 /* Paragraphs */
 p {
-    margin-bottom: 1em; /* Adjust space between paragraphs */
+    margin-bottom: 1em;
+    /* Adjust space between paragraphs */
     /* Other styles as needed */
 }
- 
+
 code {
     color: #90a6cf;
 }
@@ -91,32 +92,37 @@ code {
 
 .submit-form {
     width: 500px;
-    height: 60px;
-    border: 2px solid gray;
+    height: auto;
+    border: 2px solid #808080;
     border-radius: 10px;
     margin: 10px auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    align-items: center;
-    padding: 0px 10px 0px 10px;
-    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    padding: 0 10px;
+    box-shadow: 0 2px 4px rgba(14, 30, 37, 0.12), 0 2px 16px rgba(14, 30, 37, 0.32);
 }
 
-
-.submit-form input {
-    height: 50px;
-    width: 400px;
+.submit-form textarea {
+    height: auto;
+    /* Allows the textarea to grow */
+    min-height: 40px;
+    /* Minimum height */
+    width: calc(100% - 60px);
+    /* Adjusted width considering button width */
     padding: 10px;
     border: none;
-    background: none;
+    background: transparent;
     outline: none;
+    resize: vertical;
+    overflow: auto;
 }
 
 .submit-form button {
     border: none;
-    background: none;
+    background: transparent;
     font-size: 28px;
+    cursor: pointer;
 }
 
 .user {
@@ -251,7 +257,8 @@ code {
     height: auto;
     width: 85%;
     padding: 0px 20px 0px 0px;
-    display: block; /* Use standard block layout */
+    display: block;
+    /* Use standard block layout */
     align-items: start;
     justify-content: flex-start;
     text-align: justify;
@@ -292,7 +299,7 @@ code {
         margin: 10px auto;
     }
 
-    .submit-form input {
+    .submit-form textarea {
         height: 50px;
         width: 250px;
         padding-bottom: 20px;
