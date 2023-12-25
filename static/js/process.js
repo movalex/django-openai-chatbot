@@ -8,26 +8,28 @@ let spinner = document.querySelector(".spinner-main")
 
 // Handle keydown event on the input field
 input.addEventListener('keydown', function (event) {
-  if (event.key === 'Enter' && !event.shiftKey) {
-    // Enter without Shift
-    event.preventDefault(); // Prevent the default behavior (newline)
-    triggerFormSubmit(); // Manually trigger form submission
-  } else if (event.key === 'Enter' && event.shiftKey) {
-    console.log("SHIFT enter pressed!");
-
-    // Prevent default Enter behavior only when Shift is also pressed
-    event.preventDefault();
-
-    let start = this.selectionStart;
-    let end = this.selectionEnd;
-
-    // Insert a newline
-    this.value = this.value.substring(0, start) + '\n' + this.value.substring(end);
-
-    // Move the cursor
-    this.selectionStart = this.selectionEnd = start + 1;
+  if (event.key === 'Enter') {
+    event.preventDefault(); // Prevent default form submission
+    if (isMobileDevice() || event.shiftKey) {
+      // On mobile devices or when Shift+Enter is pressed, insert a new line
+      // insertAtCursor(input, '\n');
+      input.value = input.value + "\n"
+    } else {
+      // On non-mobile devices, when only Enter is pressed, submit the form
+      triggerFormSubmit(); // Manually trigger form submission
+    }
   }
 });
+
+// Function to detect mobile device
+function isMobileDevice() {
+  return /Mobi|Android/i.test(navigator.userAgent);
+}
+
+// Function to detect mobile device
+function isMobileDevice() {
+  return /Mobi|Android/i.test(navigator.userAgent);
+}
 
 form.addEventListener("submit", submitForm)
 

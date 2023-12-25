@@ -222,8 +222,9 @@ code {
     align-items: start;
     text-align: justify;
     justify-content: flex;
-    /* flex-grow: .5; */
-    /* border: 1px solid white; */
+    white-space: pre-wrap
+        /* flex-grow: .5; */
+        /* border: 1px solid white; */
 }
 
 /* .chat-container .user-chat-container i {
