@@ -6,10 +6,43 @@ const scrollContainer = document.querySelector(".container-fluid-2");
 
 let spinner = document.querySelector(".spinner-main")
 
+// Handle keydown event on the input field
+input.addEventListener('keydown', function (event) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    // Enter without Shift
+    event.preventDefault(); // Prevent the default behavior (newline)
+    triggerFormSubmit(); // Manually trigger form submission
+  } else if (event.key === 'Enter' && event.shiftKey) {
+    console.log("SHIFT enter pressed!");
+
+    // Prevent default Enter behavior only when Shift is also pressed
+    event.preventDefault();
+
+    let start = this.selectionStart;
+    let end = this.selectionEnd;
+
+    // Insert a newline
+    this.value = this.value.substring(0, start) + '\n' + this.value.substring(end);
+
+    // Move the cursor
+    this.selectionStart = this.selectionEnd = start + 1;
+  }
+});
+
 form.addEventListener("submit", submitForm)
 
+// Function to manually trigger form submission
+function triggerFormSubmit() {
+  let event = new Event('submit', {
+    'bubbles': true,
+    'cancelable': true
+  });
+  form.dispatchEvent(event);
+}
+
 async function submitForm(e) {
-  const userMessage = getUserValue();
+  e.preventDefault(); // Prevent default form submission
+  const userMessage = input.value.trim();
   if (userMessage === '') return; // Prevent empty messages
   // Add user message to chat
   addUserMessage(userMessage);
@@ -26,7 +59,6 @@ async function submitForm(e) {
     console.error(error);
   }
   spinner.style.display = "none"
-
 }
 
 function addUserMessage(message) {
@@ -78,29 +110,4 @@ async function fetchBotResponse(userMessage) {
 
 function scrollToBottom() {
   scrollContainer.scrollTop = scrollContainer.scrollHeight;
-}
-
-function getUserValue() {
-  document.getElementById('input_value').addEventListener('keydown', function (event) {
-    if (event.key === 'Enter' && event.shiftKey) {
-      console.log("SHIFT enter pressed!");
-
-      // Prevent default Enter behavior only when Shift is also pressed
-      event.preventDefault();
-
-      let start = this.selectionStart;
-      let end = this.selectionEnd;
-
-      // Insert a newline
-      this.value = this.value.substring(0, start) + '\n' + this.value.substring(end);
-
-      // Move the cursor
-      this.selectionStart = this.selectionEnd = start + 1;
-    }
-    else {
-      console.log("Just enter pressed!");
-      return this.value.trim();
-    }
-  });
-
 }
