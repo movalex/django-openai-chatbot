@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
+{% load static %}
 
+<link rel="stylesheet" href="{% static 'css/custom.css' %}" />
 {% block content %}
 <div class="d-flex" id="wrapper">
     <!-- Sidebar-->
@@ -67,4 +69,21 @@
     </div>
 </div>
 
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/highlight.js' %}"></script>
+<script src="{% static 'js/process.js' %}"></script>
+<script src="{% static 'js/scripts.js' %}"></script>
+
+<script>
+  var selectedModel = "{{default_model}}"; // Default model ID
+  document.getElementById('modelIdField').value = selectedModel; // Set the initial value
+  document.getElementById('modelSelect').addEventListener('change', function () {
+    selectedModel = this.value;
+      console.log("SELECTED: ", selectedModel)
+    document.getElementById('modelIdField').value = selectedModel;
+  });
+</script>
 {% endblock %}
