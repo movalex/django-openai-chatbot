@@ -335,9 +335,13 @@ code {
 @media only screen and (max-height: 500px) {
 
     .container-fluid-2 {
-        /* border: 1px solid black; */
+        height: 70vh !important;
+    }
+}
 
-        height: 65vh !important;
-        /* overflow: auto */
+@media only screen and (max-height: 300px) {
+
+    .container-fluid-2 {
+        height: 55vh !important;
     }
 }
