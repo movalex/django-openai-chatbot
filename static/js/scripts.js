@@ -25,10 +25,4 @@ window.addEventListener('DOMContentLoaded', event => {
             localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
         });
     }
-    const scrollContainer = document.querySelector(".container-fluid-2");
-    scrollToBottom(scrollContainer);
-
-    function scrollToBottom(scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-    }
 });
