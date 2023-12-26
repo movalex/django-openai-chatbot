@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register disabled{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/styles.css'%}"/>    
+<link rel="stylesheet" href="{% static 'css/custom_register.css' %}"/>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+  <div class="card">
+    <div card-body>
+      <H1>Sorry, registration is temporarily disabled</H1>
+      <p>If you have an account, you can <span><a href="{% url 'login' %}">login</a></span> now</p>
+    </div>
+    </div>
+  </div>
+{% endblock %}
