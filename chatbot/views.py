@@ -46,6 +46,7 @@ def ask_openai(message, chat_context, model):
     )
     return response
 
+
 @login_required(login_url="login")
 def chatbot(request):
     if request.method == "POST":
@@ -166,7 +167,8 @@ def login(request):
 
 
 def register(request):
-    # return redirect("login")
+    alert("registration is temporary disabled")
+    return redirect("login")
 
     if request.method == "POST":
         username = request.POST["username"]
