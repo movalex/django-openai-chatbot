@@ -7,7 +7,6 @@
 
 body {
     overflow: none !important;
-
 }
 
 /* Paragraphs */
@@ -126,12 +125,6 @@ code {
     cursor: pointer;
 }
 
-.spinner-main {
-    display: none;
-    align-items: center;
-    justify-content: center;
-}
-
 
 @keyframes spinner {
     to {
@@ -196,7 +189,6 @@ code {
 
 }
 
-
 #list-group {
     padding: 10px 10px 10px 10px;
     width: 250px;
@@ -254,9 +246,6 @@ code {
     /* border: 1px solid white; */
 }
 
-/* .chat-container .user-chat-container i {
-    font-size: 30px !important;
-} */
 
 .chat-container .bot-chat-container {
     width: 100%;

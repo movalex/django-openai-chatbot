@@ -23,6 +23,8 @@ body {
 
 .card-body {
     padding: 30px;
+    /* background-color: var(--main-color); */
+    background-color: bisque;
 }
 
 .form-group {
