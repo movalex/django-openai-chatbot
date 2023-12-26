@@ -9,16 +9,13 @@ let input = document.querySelector("#input_value")
 const chatContainer = document.querySelector(".chat-container");
 const scrollContainer = document.querySelector(".container-fluid-2");
 
-let spinner = document.querySelector(".spinner-main")
-
 // Handle keydown event on the input field
 input.addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
     event.preventDefault(); // Prevent default form submission
     if (isMobileDevice() || event.shiftKey) {
       // On mobile devices or when Shift+Enter is pressed, insert a new line
-      // insertAtCursor(input, '\n');
-      input.value = input.value + "\n"
+      input.value += "\n";
     } else {
       // On non-mobile devices, when only Enter is pressed, submit the form
       triggerFormSubmit(); // Manually trigger form submission
@@ -31,15 +28,16 @@ function isMobileDevice() {
   return /Mobi|Android/i.test(navigator.userAgent);
 }
 
-// Function to detect mobile device
-function isMobileDevice() {
-  return /Mobi|Android/i.test(navigator.userAgent);
-}
-
 form.addEventListener("submit", submitForm)
+
+const button = document.getElementById('submit-btn');
+const spinner = button.querySelector('.spinner-border');
+const icon = button.querySelector('.fa-paper-plane');
 
 // Function to manually trigger form submission
 function triggerFormSubmit() {
+  // Show the spinner and hide the icon
+  toggleSpinner(true)
   let event = new Event('submit', {
     'bubbles': true,
     'cancelable': true
@@ -48,9 +46,11 @@ function triggerFormSubmit() {
 }
 
 async function submitForm(e) {
+
   e.preventDefault(); // Prevent default form submission
   const userMessage = input.value.trim();
   if (userMessage === '') return; // Prevent empty messages
+
   // Add user message to chat
   addUserMessage(userMessage);
   input.value = ''; // Clear input field
@@ -62,10 +62,18 @@ async function submitForm(e) {
     addBotResponse(response);
     scrollToBottom();
   } catch (error) {
-    spinner.style.display = "none"
     console.error(error);
   }
-  spinner.style.display = "none"
+  finally {
+    toggleSpinner(false);
+  }
+}
+
+function toggleSpinner(isLoading) {
+  spinner.style.display = isLoading ? "inline-block" : "none";
+  icon.style.display = isLoading ? 'none' : 'flex';
+  // Optionally, disable the button to prevent multiple submissions
+  button.disabled = isLoading;
 }
 
 function addUserMessage(message) {

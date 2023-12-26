@@ -30,7 +30,6 @@
     <!-- Page content wrapper-->
     <div id="page-content-wrapper" data-bs-theme="dark">
         <!-- Top navigation-->
-
         <nav class="navbar navbar-expand-lg border-bottom">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" id="sidebarToggle"><span
@@ -38,7 +37,6 @@
             </div>
         </nav>
         <div class="container-fluid container-fluid-2">
-            {% comment %} <h1 id="main-header">ChatGPT</h1> {% endcomment %}
             <div class="chat-container">
                 {% for chat in chats %}
                 {% if chat.user == request.user %}
@@ -55,31 +53,16 @@
             </div>
         </div>
 
-        {%comment%}
-        <!-- Sample content-->
-        <div class="container-fluid container-fluid-2">
-            <div class="chat-container">
-                <div class="user-chat-container">
-                    <div class="user-pic"><i class="fa-solid fa-circle-user"></i></div>
-                    <div class="user-message"></div>
-                </div>
-                <div class="bot-chat-container">
-                    <div class="bot-icon"><i class="fa-solid fa-robot"></i></div>
-                    <div class="bot-response"></div>
-                </div>
-            </div>
-        </div>
-        {%endcomment%}
-        <div class="container-fluid spinner-main">
-            <div class="spinner-border text-primary" role="status" style="margin:auto">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
         <form action="" class="submit-form">
             {% csrf_token %}
             <textarea id="input_value" placeholder="Send a message" required></textarea>
             <input type="hidden" id="modelIdField" name="model_id">
-            <button id="submit-btn"><i class="fa-solid fa-paper-plane"></i></button>
+            <button id="submit-btn">
+                <i class="fa-solid fa-paper-plane"></i>
+                <div class="spinner-border text-primary" role="status" style="margin:auto">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </button>
         </form>
     </div>
 </div>
