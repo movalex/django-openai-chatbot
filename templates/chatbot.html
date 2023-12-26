@@ -38,7 +38,7 @@
             </div>
         </nav>
         <div class="container-fluid container-fluid-2">
-            <h1 id="main-header">ChatGPT</h1>
+            {% comment %} <h1 id="main-header">ChatGPT</h1> {% endcomment %}
             <div class="chat-container">
                 {% for chat in chats %}
                 {% if chat.user == request.user %}

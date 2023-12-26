@@ -33,7 +33,7 @@ code {
 .container-fluid-2 {
     /* border: 1px solid black; */
 
-    height: 70vh !important;
+    height: 80vh !important;
     overflow: auto
 }
 
@@ -106,11 +106,11 @@ code {
 .submit-form textarea {
     height: auto;
     /* Allows the textarea to grow */
-    min-height: 40px;
+    min-height: 20px;
     /* Minimum height */
     width: calc(100% - 60px);
     /* Adjusted width considering button width */
-    padding: 10px;
+    padding: 5px;
     border: none;
     background: transparent;
     outline: none;
@@ -191,7 +191,8 @@ code {
     max-width: 780px;
     height: auto;
     margin: 0 auto;
-    /* border: 1px solid white */
+    overflow-x: hidden;
+    border: 0.5px solid rgb(79, 79, 79)
 }
 
 .chat-container .user-chat-container {
@@ -208,7 +209,7 @@ code {
     width: 25px;
     height: 25px;
     /* border: 1px solid rgb(137, 137, 137); */
-    border-radius: 10px;
+    /* border-radius: 10px; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -217,7 +218,7 @@ code {
 .chat-container .user-chat-container .user-message {
     height: auto;
     width: 85%;
-    padding: 0px 20px 0px 0px;
+    padding: 0px 5px 0px 0px;
     display: block;
     align-items: start;
     text-align: justify;
@@ -257,7 +258,7 @@ code {
 .chat-container .bot-chat-container .bot-response {
     height: auto;
     width: 85%;
-    padding: 0px 20px 0px 0px;
+    padding: 0px 5px 0px 0px;
     display: block;
     /* Use standard block layout */
     align-items: start;
@@ -283,7 +284,7 @@ code {
 
 @media only screen and (max-width: 1200px) {
     .container-fluid-2 {
-        overflow: auto;
+        overflow: hidden;
     }
 
     .bot-feature-container {
@@ -292,12 +293,29 @@ code {
 }
 
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 400px) {
 
     .submit-form {
-        width: 300px;
-        max-height: 40px;
-        margin: 10px auto;
+        width: auto;
+        /* min-height: 40px; */
+        margin: 0 auto;
     }
+
+    .submit-form textarea {
+        width: auto;
+        /* min-height: 40px; */
+        margin: 0 auto;
+    }
+
+    @media only screen and (max-height: 500px) {
+
+        .container-fluid-2 {
+            /* border: 1px solid black; */
+
+            height: 45vh !important;
+            overflow: auto
+        }
+    }
+
 
 }

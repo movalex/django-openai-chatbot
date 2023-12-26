@@ -1,5 +1,10 @@
 let form = document.querySelector(".submit-form")
 let input = document.querySelector("#input_value")
+// WIP add grow upwards on form input
+// input.addEventListener('input', function () {
+//   this.style.height = 'auto'; // Reset height
+//   this.style.height = (this.scrollHeight) + 'px'; // Set new height
+// });
 
 const chatContainer = document.querySelector(".chat-container");
 const scrollContainer = document.querySelector(".container-fluid-2");
