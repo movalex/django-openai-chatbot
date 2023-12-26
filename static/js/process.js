@@ -7,20 +7,21 @@ let input = document.querySelector("#input_value")
 // });
 
 const chatContainer = document.querySelector(".chat-container");
-const scrollContainer = document.querySelector(".container-fluid-2");
 
 // Handle keydown event on the input field
-input.addEventListener('keydown', function (event) {
-  if (event.key === 'Enter') {
-    event.preventDefault(); // Prevent default form submission
-    if (isMobileDevice() || event.shiftKey) {
-      // On mobile devices or when Shift+Enter is pressed, insert a new line
-      input.value += "\n";
-    } else {
-      // On non-mobile devices, when only Enter is pressed, submit the form
-      triggerFormSubmit(); // Manually trigger form submission
+document.addEventListener('DOMContentLoaded', function () {
+  input.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent default form submission
+      if (isMobileDevice() || event.shiftKey) {
+        // On mobile devices or when Shift+Enter is pressed, insert a new line
+        input.value += "\n";
+      } else {
+        // On non-mobile devices, when only Enter is pressed, submit the form
+        triggerFormSubmit(); // Manually trigger form submission
+      }
     }
-  }
+  });
 });
 
 // Function to detect mobile device
@@ -37,7 +38,6 @@ const icon = button.querySelector('.fa-paper-plane');
 // Function to manually trigger form submission
 function triggerFormSubmit() {
   // Show the spinner and hide the icon
-  toggleSpinner(true)
   let event = new Event('submit', {
     'bubbles': true,
     'cancelable': true
@@ -50,7 +50,7 @@ async function submitForm(e) {
   e.preventDefault(); // Prevent default form submission
   const userMessage = input.value.trim();
   if (userMessage === '') return; // Prevent empty messages
-
+  toggleSpinner(true)
   // Add user message to chat
   addUserMessage(userMessage);
   input.value = ''; // Clear input field
@@ -119,10 +119,12 @@ async function fetchBotResponse(userMessage) {
     throw new Error(`HTTP error! Status: ${response.status}\n Error Message: ${errorMessage}`);
   }
   spinner.style.display = "none";
+  scrollToBottom();
   loadHighlightJs();
   return result.response;
 }
 
 function scrollToBottom() {
+  const scrollContainer = document.querySelector(".container-fluid-2");
   scrollContainer.scrollTop = scrollContainer.scrollHeight;
 }
