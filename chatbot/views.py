@@ -167,8 +167,8 @@ def login(request):
 
 
 def register(request):
-    alert("registration is temporary disabled")
-    return redirect("login")
+    logger.warn("Registration is temporary disabled")
+    return render(request, "registration_disabled.html")
 
     if request.method == "POST":
         username = request.POST["username"]
