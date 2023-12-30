@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponseNotAllowed
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from django.contrib.auth.models import User
+from django.conf import settings
+
 import os
 import openai
 import json
@@ -167,8 +168,9 @@ def login(request):
 
 
 def register(request):
-    logger.warn("Registration is temporary disabled")
-    return render(request, "registration_disabled.html")
+    if not settings.DEBUG:
+        logger.warn("Registration is temporary disabled")
+        return render(request, "registration_disabled.html")
 
     if request.method == "POST":
         username = request.POST["username"]
