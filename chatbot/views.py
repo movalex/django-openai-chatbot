@@ -154,8 +154,8 @@ def save_chat_message(user, user_message, response):
 
 def login(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
+        username = request.POST.get("username")
+        password = request.POST.get("password")
         user = auth.authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
@@ -164,7 +164,7 @@ def login(request):
             error_message = "Invalid username or password"
             return render(request, "login.html", {"error_message": error_message})
     else:
-        return render(request, "login.html")
+        return render(request, "login.html", {"body_class": "d-flex align-items-center py-4 bg-body-tertiary"})
 
 
 def register(request):
@@ -192,7 +192,7 @@ def register(request):
         else:
             error_message = "Password dont match"
             return render(request, "register.html", {"error_message": error_message})
-    return render(request, "register.html")
+    return render(request, "register.html", {"body_class": "d-flex align-items-center py-4 bg-body-tertiary"})
 
 
 def logout(request):
