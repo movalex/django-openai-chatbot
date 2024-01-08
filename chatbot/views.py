@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponseNotAllowed
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from django.contrib.auth.models import User
+from django.conf import settings
+
 import os
 import openai
 import json
@@ -152,9 +153,10 @@ def save_chat_message(user, user_message, response):
 
 
 def login(request):
+    context = {"body_class": "d-flex align-items-center py-4 bg-body-tertiary"}
     if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
+        username = request.POST.get("username")
+        password = request.POST.get("password")
         user = auth.authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
@@ -163,12 +165,14 @@ def login(request):
             error_message = "Invalid username or password"
             return render(request, "login.html", {"error_message": error_message})
     else:
-        return render(request, "login.html")
+        return render(request, "login.html", context)
 
 
 def register(request):
-    logger.warn("Registration is temporary disabled")
-    return render(request, "registration_disabled.html")
+    context = {"body_class": "d-flex align-items-center py-4 bg-body-tertiary"}
+    if not settings.DEBUG:
+        logger.warn("Registration is temporary disabled")
+        return render(request, "registration_disabled.html", context)
 
     if request.method == "POST":
         username = request.POST["username"]
@@ -189,8 +193,9 @@ def register(request):
                 )
         else:
             error_message = "Password dont match"
+            print(error_message)
             return render(request, "register.html", {"error_message": error_message})
-    return render(request, "register.html")
+    return render(request, "register.html", context)
 
 
 def logout(request):

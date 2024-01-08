@@ -125,6 +125,6 @@ async function fetchBotResponse(userMessage) {
 }
 
 function scrollToBottom() {
-  const scrollContainer = document.querySelector(".container-fluid-2");
+  const scrollContainer = document.querySelector(".container-fluid-custom");
   scrollContainer.scrollTop = scrollContainer.scrollHeight;
 }
