@@ -16,6 +16,66 @@ p {
     /* Other styles as needed */
 }
 
+
+
+/* CSS */
+.header-container {
+    display: flex; /* Enables flexbox */
+    align-items: baseline; /* Centers items vertically */
+    justify-content: start; /* Aligns items to the start of the container */
+    margin: 50px;
+  }
+  
+  .h2.mb-3.fw-normal {
+    margin-left: 10px; /* Adds some space between the SVG and the H1 */
+  }
+
+
+.page-content-wrapper {
+    display: flex;
+    align-items: center; /* Vertically center the items */
+    justify-content: center; /* Horizontally center the items */
+}
+
+.centered-block {
+    display: flex;
+    align-items: center; /* Vertically center the items */
+    justify-content: center; /* Horizontally center the items */
+    padding: 10px;
+}
+
+a {
+    color: var(--link-color-light); /* Default to light theme */
+  }
+  
+body.dark-mode a {
+    color: var(--link-color-dark); /* Dark theme */
+}
+
+#wrapper {
+    height: 100vh;
+    overflow: hidden;
+}
+#sidebar-wrapper {
+    height: 100vh; /* Full viewport height */
+}
+
+.scrollarea {
+    overflow-y: auto; /* Enable scrolling */
+}
+
+
+.fixed-bottom-div {
+    position: fixed;
+    height: calc(100% - 50px);
+    bottom: 0;
+    left: 0;
+    width: 280px;
+    /* Additional styling */
+    padding: 5px; /* Example padding */
+}
+
+
 code {
     color: #90a6cf;
 }
@@ -29,18 +89,23 @@ code {
     font-size: 0.9em;
 }
 
-.container-fluid-2 {
+
+.form-floating {
+    width: 200px;
+}
+
+.container-fluid-custom {
     /* border: 1px solid black; */
 
     height: 80vh !important;
     overflow: auto
 }
 
-.container-fluid-2 h1 {
+.container-fluid-custom h1 {
     text-align: center;
 }
 
-.container-fluid-2 .bot-feature-container {
+.container-fluid-custom .bot-feature-container {
     width: 80%;
     height: 400px;
     /* border: 1px solid black; */
@@ -51,7 +116,8 @@ code {
     flex-wrap: wrap;
 }
 
-.container-fluid-2 .bot-feature-container .feature-container {
+
+.container-fluid-custom .bot-feature-container .feature-container {
     width: 250px;
     height: 350px;
     /* border: 1px solid black; */
@@ -62,7 +128,7 @@ code {
     flex-direction: column;
 }
 
-.container-fluid-2 .bot-feature-container .feature-container .feature {
+.container-fluid-custom .bot-feature-container .feature-container .feature {
     width: 100%;
     height: auto;
     display: flex;
@@ -76,7 +142,7 @@ code {
 
 }
 
-.container-fluid-2 .bot-feature-container .feature-container .icon {
+.container-fluid-custom .bot-feature-container .feature-container .icon {
     width: 30px;
     height: 30px;
     /* border: 1px solid black; */
@@ -85,7 +151,7 @@ code {
     justify-content: center;
 }
 
-.container-fluid-2 .bot-feature-container .feature-container .icon i {
+.container-fluid-custom .bot-feature-container .feature-container .icon i {
     font-size: 24px;
 }
 
@@ -109,12 +175,12 @@ code {
     /* Minimum height */
     width: calc(100% - 60px);
     /* Adjusted width considering button width */
-    padding: 9px;
+    padding: 2px;
     border: none;
     background: transparent;
     outline: none;
     resize: vertical;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .submit-form button {
@@ -190,11 +256,7 @@ code {
 }
 
 #list-group {
-    padding: 10px 10px 10px 10px;
-    width: 250px;
-    overflow: auto;
-    /* border: 1px solid red; */
-    height: 100vh !important;
+    height: 80vh !important;
     overflow: auto !important;
 }
 
@@ -291,10 +353,8 @@ code {
 }
 
 
-
-
 @media only screen and (max-width: 1200px) {
-    .container-fluid-2 {
+    .container-fluid-custom {
         overflow-y: auto;
         overflow-x: none;
     }
@@ -323,14 +383,14 @@ code {
 
 @media only screen and (max-height: 500px) {
 
-    .container-fluid-2 {
+    .container-fluid-custom {
         height: 70vh !important;
     }
 }
 
 @media only screen and (max-height: 300px) {
 
-    .container-fluid-2 {
+    .container-fluid-custom {
         height: 55vh !important;
     }
 }

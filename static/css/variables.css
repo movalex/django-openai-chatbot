@@ -1,6 +1,6 @@
 /* css/variables.css */
 
 :root {
-    --main-color: #a6a6a6;
-    /* testing variables */
-}
+    --link-color-light: #bbbbbb; /* Example light theme link color */
+    --link-color-dark: #2f2f2f;  /* Example dark theme link color */
+  }
