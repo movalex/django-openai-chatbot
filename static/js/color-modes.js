@@ -35,6 +35,12 @@
     if (!themeSwitcher) {
       return
     }
+      // Update the CSS variable for link color based on the theme
+    if (document.body.classList.contains('dark-mode')) {
+      document.body.style.setProperty('--link-color', 'var(--link-color-dark)');
+    } else {
+      document.body.style.setProperty('--link-color', 'var(--link-color-light)');
+    }
 
     const themeSwitcherText = document.querySelector('#bd-theme-text')
     const activeThemeIcon = document.querySelector('.theme-icon-active use')

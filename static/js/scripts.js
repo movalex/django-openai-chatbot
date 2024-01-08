@@ -26,3 +26,16 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 });
+// function adjustChatListHeight() {
+//     var sidebarWrapper = document.getElementById('sidebar-wrapper');
+//     var headerHeight = sidebarWrapper.querySelector('.mb-3').offsetHeight; // Assuming this is the header
+//     var footerHeight = sidebarWrapper.querySelector('.footer').offsetHeight;
+//     var viewportHeight = window.innerHeight;
+
+//     var chatListHeight = viewportHeight - headerHeight - footerHeight;
+//     sidebarWrapper.querySelector('.scrollarea').style.maxHeight = chatListHeight + 'px';
+// }
+
+// // Run on load and resize
+// window.onload = adjustChatListHeight;
+// window.onresize = adjustChatListHeight;
