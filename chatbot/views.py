@@ -92,8 +92,6 @@ def handle_post_request(request):
 def handle_get_request(request):
     chats = Chat.objects.filter(user=request.user)
     default_model = GPT_MODELS["GPT3.5"]  # This could be dynamic
-    print(default_model)
-
     return render(
         request,
         "chatbot.html",
