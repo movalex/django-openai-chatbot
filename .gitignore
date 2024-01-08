@@ -5,4 +5,5 @@ staticfiles/
 
 *.py[cod]
 *.sqlite3
+*.code-workspace
 .DS_Store
