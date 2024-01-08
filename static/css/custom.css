@@ -1,78 +1,48 @@
 * {
     box-sizing: border-box;
-    /* font-family: "sans-serif" 
-    font-weight: 400; */
     font-weight: 400;
 }
 
-body {
+/* body {
     overflow: none !important;
-}
+} */
 
 /* Paragraphs */
 p {
     margin-bottom: 1em;
-    /* Adjust space between paragraphs */
-    /* Other styles as needed */
+}
+
+.container .container-fluid-custom {
+    justify-content: center;
+    align-items: center;
 }
 
 
-
-/* CSS */
-.header-container {
-    display: flex; /* Enables flexbox */
-    align-items: baseline; /* Centers items vertically */
-    justify-content: start; /* Aligns items to the start of the container */
+ .header-container {
+    display: flex; 
+    align-items: baseline; 
+    justify-content: start; 
     margin: 50px;
   }
   
   .h2.mb-3.fw-normal {
-    margin-left: 10px; /* Adds some space between the SVG and the H1 */
+    margin-left: 10px; 
   }
-
-
-.page-content-wrapper {
-    display: flex;
-    align-items: center; /* Vertically center the items */
-    justify-content: center; /* Horizontally center the items */
-}
 
 .centered-block {
     display: flex;
-    align-items: center; /* Vertically center the items */
-    justify-content: center; /* Horizontally center the items */
+    align-items: left; 
+    justify-content: baseline; 
     padding: 10px;
-}
+} 
 
-a {
-    color: var(--link-color-light); /* Default to light theme */
-  }
-  
-body.dark-mode a {
-    color: var(--link-color-dark); /* Dark theme */
-}
 
 #wrapper {
-    height: 100vh;
     overflow: hidden;
 }
+
 #sidebar-wrapper {
-    height: 100vh; /* Full viewport height */
-}
-
-.scrollarea {
-    overflow-y: auto; /* Enable scrolling */
-}
-
-
-.fixed-bottom-div {
-    position: fixed;
-    height: calc(100% - 50px);
-    bottom: 0;
-    left: 0;
-    width: 280px;
-    /* Additional styling */
-    padding: 5px; /* Example padding */
+    width: 280px!important; 
 }
 
 
@@ -95,65 +65,10 @@ code {
 }
 
 .container-fluid-custom {
-    /* border: 1px solid black; */
-
     height: 80vh !important;
-    overflow: auto
+    overflow-y: auto;
 }
 
-.container-fluid-custom h1 {
-    text-align: center;
-}
-
-.container-fluid-custom .bot-feature-container {
-    width: 80%;
-    height: 400px;
-    /* border: 1px solid black; */
-    margin: auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
-
-
-.container-fluid-custom .bot-feature-container .feature-container {
-    width: 250px;
-    height: 350px;
-    /* border: 1px solid black; */
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    flex-direction: column;
-}
-
-.container-fluid-custom .bot-feature-container .feature-container .feature {
-    width: 100%;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 10px 10px 10px 10px;
-    /* box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; */
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-    border-radius: 10px;
-
-}
-
-.container-fluid-custom .bot-feature-container .feature-container .icon {
-    width: 30px;
-    height: 30px;
-    /* border: 1px solid black; */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.container-fluid-custom .bot-feature-container .feature-container .icon i {
-    font-size: 24px;
-}
 
 .submit-form {
     width: 500px;
@@ -170,11 +85,8 @@ code {
 
 .submit-form textarea {
     height: auto;
-    /* Allows the textarea to grow */
     min-height: 20px;
-    /* Minimum height */
     width: calc(100% - 60px);
-    /* Adjusted width considering button width */
     padding: 2px;
     border: none;
     background: transparent;
@@ -208,78 +120,28 @@ code {
     animation: spinner .75s linear infinite;
 }
 
-.user {
-    /* border: 1px solid purple; */
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    margin: 10px 0px 30px 0px;
-}
-
-.user i {
-    font-size: 20px;
-}
-
-
-.user p {
-    font-weight: bold;
-}
-
-.chat-today {
-    height: auto;
-    margin-bottom: 20px;
-    /* border: 1px solid blue; */
-}
-
-.chat-today .chat {
-    display: flex;
-    align-items: center;
-    margin: 5px 0px 0px 0px;
-    /* border: 1px solid black; */
-    justify-content: space-evenly;
-    overflow-y: auto;
-    font-size: 15px;
-    cursor: pointer;
-}
-
-.chat-today .chat p {
-
-    height: auto;
-    margin: 0px 10px;
-}
-
-
-.chat-today .chat p:hover {
-    color: gray;
-    transition: ease-in-out;
-
-}
 
 #list-group {
     height: 80vh !important;
     overflow: auto !important;
 }
 
-.chat-today small {
-    font-weight: bold;
-}
 
-.chat-container {
+ .chat-container {
     width: auto;
-    max-width: 780px;
+    max-width: 758px;
+    margin: auto;
     height: auto;
-    margin: 0 auto;
+    /* margin: 0 auto; */
     overflow-x: hidden;
     overflow-y: auto;
-
     border: 0.5px solid rgb(79, 79, 79)
-}
+} 
 
 .chat-container .user-chat-container {
     width: 100%;
     height: auto;
     padding: 10px 0px 10px 0px;
-    /* border: 1px solid red; */
     display: flex;
     justify-content: space-evenly;
     align-items: start;
@@ -288,8 +150,6 @@ code {
 .chat-container .user-chat-container .user-pic {
     width: 25px;
     height: 25px;
-    /* border: 1px solid rgb(137, 137, 137); */
-    /* border-radius: 10px; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -304,17 +164,12 @@ code {
     text-align: justify;
     justify-content: flex;
     white-space: pre-wrap;
-    /* flex-grow: .5; */
-    /* border: 1px solid white; */
 }
 
-
 .chat-container .bot-chat-container {
-    width: 100%;
+    width: auto;
     height: auto;
     padding: 10px 0px 10px 0px;
-    /* margin-top: 20px; */
-    /* border: 1px solid red; */
     background-color: #282C35;
     display: flex;
     justify-content: space-evenly;
@@ -324,8 +179,6 @@ code {
 .chat-container .bot-chat-container .bot-icon {
     width: 25px;
     height: 25px;
-    /* border: 1px solid rgb(137, 137, 137); */
-    /* padding: 10px; */
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -337,7 +190,6 @@ code {
     width: 85%;
     padding: 0px 5px 0px 0px;
     display: block;
-    /* Use standard block layout */
     align-items: start;
     justify-content: flex-start;
     text-align: justify;
@@ -353,42 +205,33 @@ code {
 }
 
 
-@media only screen and (max-width: 1200px) {
-    .container-fluid-custom {
-        overflow-y: auto;
-        overflow-x: none;
+@media only screen and (max-width: 768px) {
+    #sidebar-wrapper {
+        display: none;
     }
-
-    .bot-feature-container {
-        height: auto;
-    }
-}
-
-
-@media only screen and (max-width: 400px) {
-
-    .submit-form {
-        width: 90vw;
-        min-height: 40px;
-        max-height: 50px;
-        /* padding: 10 10 auto; */
-    }
-
-    .submit-form textarea {
-        max-height: 45px;
-        width: calc(100% - 40px);
-        /* padding: 10 10 auto; */
-    }
-}
-
-@media only screen and (max-height: 500px) {
-
     .container-fluid-custom {
         height: 70vh !important;
     }
 }
 
+
+@media only screen and (max-width: 500px) {
+
+    .submit-form {
+        width: 90vw;
+        min-height: 40px;
+        max-height: 50px;
+    }
+
+} 
 @media only screen and (max-height: 300px) {
+
+    .container-fluid-custom {
+        height: 55vh !important;
+    }
+}
+
+@media only screen and (max-height: 500px) {
 
     .container-fluid-custom {
         height: 55vh !important;
