@@ -123,8 +123,12 @@ async function fetchBotResponse(userMessage) {
   loadHighlightJs();
   return result.response;
 }
+window.addEventListener('load', scrollToBottom);
 
 function scrollToBottom() {
-  const scrollContainer = document.querySelector(".container-fluid-custom");
-  scrollContainer.scrollTop = scrollContainer.scrollHeight;
+    const scrollContainer = document.querySelector(".container-fluid-custom");
+    // Ensuring all images and resources are loaded
+    window.setTimeout(() => {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+    }, 0);
 }
