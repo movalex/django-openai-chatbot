@@ -1,31 +1,19 @@
-/*!
-* Start Bootstrap - Simple Sidebar v6.0.6 (https://startbootstrap.com/template/simple-sidebar)
-* Copyright 2013-2023 Start Bootstrap
-* Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-simple-sidebar/blob/master/LICENSE)
-*/
-// 
-// Scripts
-// 
 
+window.addEventListener('DOMContentLoaded', event => {
+    // Get the button 
+    const sidebarToggle = document.body.querySelector('#sidebarToggle');
+    
+    if (sidebarToggle) {
+        const sidebarWrapper = document.getElementById('sidebar-wrapper');
 
-// console.log("you have to work")
+        // Add event listener for clicks on the toggle button
+        sidebarToggle.addEventListener('click', event => {
+            event.preventDefault();
+            sidebarWrapper.classList.toggle('toggled'); // Ensure this matches the class used in CSS
+        });
+    }
+});
 
-// window.addEventListener('DOMContentLoaded', event => {
-
-//     // Toggle the side navigation
-//     const sidebarToggle = document.body.querySelector('#sidebarToggle');
-//     if (sidebarToggle) {
-//         // Uncomment Below to persist sidebar toggle between refreshes
-//         // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
-//         //     document.body.classList.toggle('sb-sidenav-toggled');
-//         // }
-//         sidebarToggle.addEventListener('click', event => {
-//             event.preventDefault();
-//             document.body.classList.toggle('sb-sidenav-toggled');
-//             localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
-//         });
-//     }
-// });
 // function adjustChatListHeight() {
 //     var sidebarWrapper = document.getElementById('sidebar-wrapper');
 //     var headerHeight = sidebarWrapper.querySelector('.mb-3').offsetHeight; // Assuming this is the header
@@ -45,7 +33,9 @@ function checkScroll() {
     const scrollToBottomBtn = document.getElementById("scrollToBottomBtn");
     
     // Check if the container is scrolled to the bottom
-    if (scrollContainer.scrollHeight - scrollContainer.scrollTop === scrollContainer.clientHeight) {
+
+    const offset = 5; // Adjust this offset as needed
+    if (scrollContainer.scrollHeight - scrollContainer.scrollTop <= scrollContainer.clientHeight + offset) {
         // Hide the button if scrolled to the bottom
         scrollToBottomBtn.style.display = 'none';
     } else {
@@ -53,6 +43,19 @@ function checkScroll() {
         scrollToBottomBtn.style.display = 'block';
     }
 }
-
 // Event listener for scrolling in the container
 document.querySelector(".container-fluid-custom").addEventListener('scroll', checkScroll);
+
+function adjustChatContainerHeight() {
+    const footerHeight = document.querySelector('.chat-footer').offsetHeight;
+    const chatContainer = document.querySelector('.container-fluid-custom');
+    const viewportHeight = window.innerHeight;
+
+    chatContainer.style.height = `${viewportHeight - footerHeight}px`;
+}
+
+// Adjust the height on load and when the window is resized
+window.addEventListener('load', adjustChatContainerHeight);
+window.addEventListener('resize', adjustChatContainerHeight);
+
+
