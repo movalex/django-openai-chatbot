@@ -11,9 +11,8 @@
 <div class="d-flex" id="wrapper">
 
   <!-- Sidebar -->
-  <div class="border-end mb-4 mt-2" id="sidebar-wrapper" style="width: 280px;">
-    <div class="centered-block">
-
+  <div class="border-end mb-4 mt-2" id="sidebar-wrapper">
+    <div class="sidebar-header">
       <div class="dropdown p-3">
           <a href="#" class="d-flex align-items-center text-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
@@ -40,63 +39,64 @@
   <!-- Page content wrapper -->
   <div class="container" id="main-content">
       <!-- Top navigation-->
-    <nav class="navbar navbar-expand-md mb-1">
-        <div class="container-fluid">
-            <!-- <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button> -->
-            <div class="form-floating">
-              <select class="form-select" id="floatingSelect" aria-label="Choose a GPT Model">
-              {% for model_name, model_id in gpt_models.items %}
-                <option value="{{ model_id }}" {% if model_id == default_model %}selected{% endif %}>
-                  {{ model_name }}
-                </option>                           
-                  {% endfor %}
-              </select>
-              <label for="floatingSelect">Choose a Model</label>
-            </div>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <nav class="navbar navbar-expand-md mb-1">
+          <div class="container-fluid">
+              <button class="btn btn-default" id="sidebarToggle">Toggle Menu</button>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                     <li class="nav-item dropdown">
+                        <div class="form-floating">
+                          <select class="form-select" id="floatingSelect" aria-label="Choose a GPT Model">
+                          {% for model_name, model_id in gpt_models.items %}
+                            <option value="{{ model_id }}" {% if model_id == default_model %}selected{% endif %}>
+                              {{ model_name }}
+                            </option>                           
+                              {% endfor %}
+                          </select>
+                          <label for="floatingSelect">Choose a Model</label>
+                        </div>
                     </li>
                 </ul>
-            </div>
+              </div>
+          </div>
+      </nav>
+      <div class="container-fluid-custom">
+        <div class="chat-container">
+          {% for chat in chats %}
+            {% if chat.user == request.user %}
+              <div class="user-chat-container">
+                <div class="user-pic">
+                  <i class="fa-solid fa-circle-user"></i>
+                </div>
+                <div class="user-message">{{ chat.message }}</div>
+              </div>
+              <div class="bot-chat-container">
+                <div class="bot-icon">
+                  <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="bot-response">{{ chat.response|markdown_to_html|inline_code_formatting }}</div>
+              </div>
+            {% endif %}
+          {% endfor %}
         </div>
-    </nav>
-    <div class="container-fluid-custom">
-      <div class="chat-container">
-        {% for chat in chats %}
-          {% if chat.user == request.user %}
-            <div class="user-chat-container">
-              <div class="user-pic">
-                <i class="fa-solid fa-circle-user"></i>
-              </div>
-              <div class="user-message">{{ chat.message }}</div>
+      </div>
+      <button id="scrollToBottomBtn"><i class="fas fa-arrow-down"></i></button>
+      <div class="chat-footer">
+        <form action="" class="submit-form">
+          {% csrf_token %}
+          <textarea id="input_value" placeholder="Send a message" required></textarea>
+          <input type="hidden" id="modelIdField" name="model_id" />
+          <button id="submit-btn">
+            <i class="fa-solid fa-paper-plane"></i>
+            <div class="spinner-border text-primary" role="status" style="margin:auto">
+              <span class="visually-hidden">Loading...</span>
             </div>
-            <div class="bot-chat-container">
-              <div class="bot-icon">
-                <i class="fa-solid fa-robot"></i>
-              </div>
-              <div class="bot-response">{{ chat.response|markdown_to_html|inline_code_formatting }}</div>
-            </div>
-          {% endif %}
-        {% endfor %}
+          </button>
+        </form>
       </div>
     </div>
-    <button id="scrollToBottomBtn"><i class="fas fa-arrow-down"></i></button>
-    <div class="chat-footer">
-      <form action="" class="submit-form">
-        {% csrf_token %}
-        <textarea id="input_value" placeholder="Send a message" required></textarea>
-        <input type="hidden" id="modelIdField" name="model_id" />
-        <button id="submit-btn">
-          <i class="fa-solid fa-paper-plane"></i>
-          <div class="spinner-border text-primary" role="status" style="margin:auto">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </button>
-      </form>
-    </div>
-  </div>
 </div>
 {% endblock %}
 
