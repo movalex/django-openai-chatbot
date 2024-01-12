@@ -40,7 +40,6 @@ def format_output(value):
 
 def ask_openai(message, chat_context, model):
     response = openai.chat.completions.create(
-        # model="gpt-3.5-turbo-1106",
         model=model,
         messages=chat_context + [{"role": "user", "content": message}],
         max_tokens=4000,
@@ -62,8 +61,7 @@ def chatbot(request):
 
 def handle_post_request(request):
     user_message = request.POST.get("message")
-    print(user_message)
-    print(request.POST)
+    logger.debug(request.POST)
     selected_model = request.POST.get("model_id")
     if selected_model is None:
         return JsonResponse({"error": "Model ID not provided"}, status=400)
