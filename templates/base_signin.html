@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block styles %}
+  <link rel="stylesheet" href="{% static 'css/sign-up.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/theme-button.css' %}" />
+{% endblock %}
 {% block themeButton %}
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
   <symbol id="check2" viewBox="0 0 16 16">
@@ -45,8 +49,7 @@
       </button>
     </li>
   </ul>
-</div>
-{% endblock %}
+</div>{% endblock %}
 
 {% block content %}
 
