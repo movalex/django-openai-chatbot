@@ -149,7 +149,6 @@ def save_chat_message(user, user_message, response):
 
 
 def login(request):
-    context = {"body_class": "d-flex align-items-center py-4 bg-body-tertiary"}
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -161,14 +160,13 @@ def login(request):
             error_message = "Invalid username or password"
             return render(request, "login.html", {"error_message": error_message})
     else:
-        return render(request, "login.html", context)
+        return render(request, "login.html")
 
 
 def register(request):
-    context = {"body_class": "d-flex align-items-center py-4 bg-body-tertiary"}
     if not settings.DEBUG:
         logger.warn("Registration is temporary disabled")
-        return render(request, "registration_disabled.html", context)
+        return render(request, "registration_disabled.html")
 
     if request.method == "POST":
         username = request.POST["username"]
@@ -191,7 +189,7 @@ def register(request):
             error_message = "Password dont match"
             print(error_message)
             return render(request, "register.html", {"error_message": error_message})
-    return render(request, "register.html", context)
+    return render(request, "register.html")
 
 
 def logout(request):
