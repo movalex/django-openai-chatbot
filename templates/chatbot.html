@@ -62,7 +62,7 @@
               </div>
           </div>
       </nav>
-      <div class="container-fluid-custom">
+      <div class="main-chat-body">
         <div class="chat-container">
           {% for chat in chats %}
             {% if chat.user == request.user %}
@@ -82,8 +82,8 @@
           {% endfor %}
         </div>
       </div>
-      <button id="scrollToBottomBtn"><i class="fas fa-arrow-down"></i></button>
       <div class="chat-footer">
+      <button id="scrollToBottomBtn"><i class="fas fa-arrow-down"></i></button>
         <form action="" class="submit-form">
           {% csrf_token %}
           <textarea id="input_value" placeholder="Send a message" required></textarea>
@@ -116,7 +116,7 @@
   </script>
   <script>
     function scrollToBottom() {
-        const scrollContainer = document.querySelector(".container-fluid-custom");
+        const scrollContainer = document.querySelector(".main-chat-body");
         scrollContainer.scrollTop = scrollContainer.scrollHeight;
     }
 

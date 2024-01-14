@@ -126,7 +126,7 @@ async function fetchBotResponse(userMessage) {
 window.addEventListener('load', scrollToBottom);
 
 function scrollToBottom() {
-    const scrollContainer = document.querySelector(".container-fluid-custom");
+    const scrollContainer = document.querySelector(".main-chat-body");
     // Ensuring all images and resources are loaded
     window.setTimeout(() => {
         scrollContainer.scrollTop = scrollContainer.scrollHeight;

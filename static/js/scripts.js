@@ -29,7 +29,7 @@ window.addEventListener('DOMContentLoaded', event => {
 // window.onresize = adjustChatListHeight;
 
 function checkScroll() {
-    const scrollContainer = document.querySelector(".container-fluid-custom");
+    const scrollContainer = document.querySelector(".main-chat-body");
     const scrollToBottomBtn = document.getElementById("scrollToBottomBtn");
     
     // Check if the container is scrolled to the bottom
@@ -44,11 +44,11 @@ function checkScroll() {
     }
 }
 // Event listener for scrolling in the container
-document.querySelector(".container-fluid-custom").addEventListener('scroll', checkScroll);
+document.querySelector(".main-chat-body").addEventListener('scroll', checkScroll);
 
 function adjustChatContainerHeight() {
     const footerHeight = document.querySelector('.chat-footer').offsetHeight;
-    const chatContainer = document.querySelector('.container-fluid-custom');
+    const chatContainer = document.querySelector('.main-chat-body');
     const viewportHeight = window.innerHeight;
 
     chatContainer.style.height = `${viewportHeight - footerHeight}px`;
