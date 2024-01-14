@@ -7,41 +7,20 @@ p {
     margin-bottom: 1em;
 }
 
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full viewport height */
+}
 
-
-.container-fluid-custom {
-    height: 80vh !important;
+.main-chat-body{
+    flex-grow: 1; /* Chat body takes available space */
     overflow-y: auto;
-    justify-content: center;
-    align-items: center;
 }
 
 
-#scrollToBottomBtn {
-    position: absolute;
-    align-items: baseline;
-    right: 50%;
-    /* Positioned in the middle horizontally */
-    transform: translateX(50%);
-    /* Adjust to center the button */
-    bottom: 85px;
-    /* Positioned at the bottom with a 10px offset */
-    background-color: rgba(255, 255, 255, 0.15);
-    /* Semi-transparent background */
-    color: rgba(0, 0, 0, 0.5);
-    /* Color of the icon */
-    border: none;
-    /* No border */
-    border-radius: 50%;
-    /* Circular button */
-    padding: 10px;
-    font-size: 20px;
-}
-
-#scrollToBottomBtn:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    /* Slightly darker on hover */
-    color: white;
+.chat-footer {
+    margin-bottom: 10px;
 }
 
 #wrapper {
@@ -103,6 +82,35 @@ body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
     animation: spinner .75s linear infinite;
 }
 
+/* SCROLL BUTTON */
+
+#scrollToBottomBtn {
+    position: absolute;
+    align-items: baseline;
+    right: 50%;
+    /* Positioned in the middle horizontally */
+    transform: translateX(50%);
+    /* Adjust to center the button */
+    bottom: 6em;
+    /* Positioned at the bottom with a 10px offset */
+    background-color: rgba(255, 255, 255, 0.15);
+    /* Semi-transparent background */
+    color: rgba(0, 0, 0, 0.5);
+    /* Color of the icon */
+    border: none;
+    /* No border */
+    border-radius: 50%;
+    /* Circular button */
+    padding: 10px;
+    font-size: 20px;
+}
+
+#scrollToBottomBtn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    /* Slightly darker on hover */
+    color: white;
+}
+
 
 /* SYNTAX */
 
@@ -118,8 +126,6 @@ code {
     font-family: monospace;
     font-size: 0.9em;
 }
-
-
 
 
 /* CHAT CONTAINER */
@@ -201,10 +207,11 @@ code {
     border-radius: 4px;
 }
 
+
 /* SUBMIT */
 
 .submit-form {
-    width: 500px;
+    max-width: 500px;
     height: auto;
     border: 2px solid #808080;
     border-radius: 10px;
@@ -218,7 +225,6 @@ code {
 
 .submit-form textarea {
     height: auto;
-    min-height: 20px;
     width: calc(100% - 60px);
     padding: 2px;
     border: none;
@@ -236,40 +242,34 @@ code {
     cursor: pointer;
 }
 
+
+/* SIDEBAR HIDE */
 @media only screen and (max-width: 1070px) {
     #sidebar-wrapper {
-        margin-left: -280px; /* Keep off-screen for small screens */
+        margin-left: -280px; /* Keep sidebar off-screen for small screens */
     }
 
     #sidebar-wrapper.toggled {
         margin-left: 0; /* Still allow it to open when toggled */
     }
-    .container-fluid-custom {
-        height: 70vh !important;
-    }
+
 }
 
 
 @media only screen and (max-width: 500px) {
+    
 
     .submit-form {
         width: 90vw;
+        margin-bottom: 50px;
         min-height: 40px;
         max-height: 50px;
     }
 
-}
-
-@media only screen and (max-height: 300px) {
-
-    .container-fluid-custom {
-        height: 55vh !important;
+    #scrollToBottomBtn {
+        bottom: 7em;
     }
+
 }
 
-@media only screen and (max-height: 500px) {
 
-    .container-fluid-custom {
-        height: 55vh !important;
-    }
-}
