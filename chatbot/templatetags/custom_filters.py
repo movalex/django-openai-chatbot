@@ -3,6 +3,7 @@ from django import template
 from django.utils.html import mark_safe
 from bs4 import BeautifulSoup
 from markdown import markdown
+from pprint import pp
 
 register = template.Library()
 
@@ -21,25 +22,18 @@ def inline_code_formatting(value):
     return mark_safe(str(soup))
 
 
+def adjust_indentation_for_markdown(text: str):
+    # unindent code blocks
+    text = re.sub(r" *```(\w*)", r"\n```\1", text, flags=re.MULTILINE)
+
+    return text
+
+
 @register.filter(name="markdown_to_html")
 def markdown_to_html(markdown_text: str):
-    # print(markdown_text)
     # Regex to find code blocks and extract language
     if not isinstance(markdown_text, str):
         return ""
-    to_test = """```html
-    <pre>
-    <code>
-    // Your code goes here
-    function example() {
-        // Your code logic here
-    }
-    </code>
-    </pre>
-    ```"""
-
-    markdown_text = re.sub(r"^```(\w+)", r"``` \1", markdown_text)
-    result = markdown(markdown_text, extensions=["fenced_code"])
-
-    # Additional formatting can be added here
+    adjusted_text = adjust_indentation_for_markdown(markdown_text)
+    result = markdown(adjusted_text, extensions=["fenced_code"])
     return mark_safe(result)
