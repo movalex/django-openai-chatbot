@@ -31,6 +31,7 @@ window.addEventListener('DOMContentLoaded', event => {
 function checkScroll() {
     const scrollContainer = document.querySelector(".main-chat-body");
     const scrollToBottomBtn = document.getElementById("scrollToBottomBtn");
+    const chatList = document.querySelector(".chat-container");
     
     // Check if the container is scrolled to the bottom
 
@@ -41,6 +42,10 @@ function checkScroll() {
     } else {
         // Show the button if not scrolled to the bottom
         scrollToBottomBtn.style.display = 'block';
+    }
+    // Show or hide the button based on the chat list content
+    if (chatList.children.length < 5) {
+        scrollToBottomBtn.style.display = 'none'; // Hide the scroll button if the chat list is empty
     }
 }
 // Event listener for scrolling in the container
