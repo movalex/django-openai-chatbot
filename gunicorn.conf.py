@@ -11,3 +11,5 @@ log_format = '[%(asctime)s] [%(process)d] [%(levelname)s] %(message)s'
 # Date format
 log_date_format = '%Y-%m-%d %H:%M:%S'
 
+timeout=120
+
