@@ -44,8 +44,8 @@ function checkScroll() {
         scrollToBottomBtn.style.display = 'block';
     }
     // Show or hide the button based on the chat list content
-    if (chatList.children.length < 5) {
-        scrollToBottomBtn.style.display = 'none'; // Hide the scroll button if the chat list is empty
+    if (chatList.clientHeight === 0 || scrollContainer.scrollHeight <= scrollContainer.clientHeight) {
+        scrollToBottomBtn.style.display = 'none'; // Hide the scroll button if the chat list is empty or if there's no scrollbar
     }
 }
 // Event listener for scrolling in the container

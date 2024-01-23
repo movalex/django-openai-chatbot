@@ -80,6 +80,7 @@ p {
 /* SCROLL BUTTON */
 
 #scrollToBottomBtn {
+    display: none;
     position: absolute;
     align-items: baseline;
     right: 50%;
@@ -100,6 +101,17 @@ p {
     font-size: 15px;
 }
 
+.fa-square-arrow-up-right {
+    opacity: 0.15;
+}
+
+.fa-square-arrow-up-right:hover {
+    opacity: 0.25;
+}
+.fa-square-arrow-up-right:active {
+    opacity: 0.25;
+}
+
 /* Apply hover styles only for non-touch devices */
 @media (hover: hover) {
     #scrollToBottomBtn:hover {
@@ -115,6 +127,9 @@ p {
       /* Override or remove hover effect styles for touch devices */
       background-color: initial; /* Reset to default background color */
       color: initial; /* Reset to default text color */
+    }
+    .fa-square-arrow-up-right:hover {
+        opacity: 0.15;
     }
   }
 
@@ -231,7 +246,7 @@ code {
 }
 
 .submit-form textarea {
-    min-height: 38px;
+    min-height: 44px;
     height: 50px;
     width: calc(100% - 40px);
     padding: 10px;
