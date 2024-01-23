@@ -14,8 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (event.key === 'Enter') {
       event.preventDefault(); // Prevent default form submission
       if (isMobileDevice() || event.shiftKey) {
-        // On mobile devices or when Shift+Enter is pressed, insert a new line
-        input.value += "\n";
+        insertAtCursor(input, '\n'); // Insert a newline at the cursor position
       } else {
         // On non-mobile devices, when only Enter is pressed, submit the form
         triggerFormSubmit(); // Manually trigger form submission
@@ -23,6 +22,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+// Function to insert text at the current cursor position in a textarea
+function insertAtCursor(myField, myValue) {
+  // IE support
+  if (document.selection) {
+      myField.focus();
+      const sel = document.selection.createRange();
+      sel.text = myValue;
+  }
+  // Mozilla and Webkit support
+  else if (myField.selectionStart || myField.selectionStart == '0') {
+      const startPos = myField.selectionStart;
+      const endPos = myField.selectionEnd;
+      myField.value = myField.value.substring(0, startPos)
+          + myValue
+          + myField.value.substring(endPos, myField.value.length);
+      myField.selectionStart = startPos + myValue.length;
+      myField.selectionEnd = startPos + myValue.length;
+  } else {
+      myField.value += myValue;
+  }
+}
 
 // Function to detect mobile device
 function isMobileDevice() {
@@ -33,7 +54,7 @@ form.addEventListener("submit", submitForm)
 
 const button = document.getElementById('submit-btn');
 const spinner = button.querySelector('.spinner-border');
-const icon = button.querySelector('.fa-paper-plane');
+const icon = button.querySelector('.fa-square-arrow-up-right');
 
 // Function to manually trigger form submission
 function triggerFormSubmit() {

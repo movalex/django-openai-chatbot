@@ -26,10 +26,8 @@
           </ul>      
       </div>
     </div>
+
     <div class="list-group list-group-flush scrollarea" id="list-group">
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">chat1</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">chat2</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">chat3</a>
     </div>
     <div class="fixed-bottom-div">
     </div>
@@ -89,7 +87,7 @@
           <textarea id="input_value" placeholder="Send a message" required></textarea>
           <input type="hidden" id="modelIdField" name="model_id" />
           <button id="submit-btn">
-            <i class="fa-solid fa-paper-plane"></i>
+            <i class="fa-solid fa-square-arrow-up-right" id='fa-send-button'></i>
             <div class="spinner-border text-primary" role="status" style="margin:auto">
               <span class="visually-hidden">Loading...</span>
             </div>
@@ -101,6 +99,35 @@
 {% endblock %}
 
 {% block scripts %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/get_chat_rooms/')
+            .then(response => response.json())
+            .then(data => {
+                if(data.chat_rooms) {
+                    // Clear existing chat rooms
+                    const listGroup = document.getElementById('list-group');
+                    listGroup.innerHTML = '';
+
+                    // Append each chat room to the list
+                    data.chat_rooms.forEach(room => {
+                        const anchor = document.createElement('a');
+                        anchor.href = `/chatroom/${room.id}/`;  // Update with the correct URL pattern
+                        anchor.className = 'list-group-item list-group-item-action list-group-item-light p-3';
+                        anchor.textContent = room.name;
+
+                        listGroup.appendChild(anchor);
+                    });
+                } else {
+                    console.error('Chat rooms data is missing');
+                }
+            })
+            .catch(e => {
+                console.error('Fetch error:', e);
+            });
+    });
+  </script> 
+
   <script src="{% static 'js/highlight.js' %}"></script>
   <script src="{% static 'js/process.js' %}"></script>
   <script src="{% static 'js/scripts.js' %}"></script>
@@ -121,6 +148,7 @@
     }
 
     document.getElementById('scrollToBottomBtn').addEventListener('click', scrollToBottom);
-</script>
+  </script>
+  <!-- AJAX Script for Fetching Chat Rooms -->
 
 {% endblock %}

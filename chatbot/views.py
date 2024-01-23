@@ -14,7 +14,7 @@ import logging
 from .templatetags.custom_filters import markdown_to_html, inline_code_formatting
 
 
-from .models import Chat, ChatSession
+from .models import Chat, ChatSession, ChatRoom
 
 from django.utils import timezone
 from django.utils.safestring import mark_safe
@@ -46,11 +46,28 @@ def ask_openai(message, chat_context, model):
     )
     return response
 
+def get_chat_rooms(request):
+    # Ensure the user is authenticated
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+    # Get chat rooms associated with the user
+    chat_rooms = ChatRoom.objects.filter(user=request.user).values('id', 'name')    
+    # Return the chat rooms as JSON
+    return JsonResponse({'chat_rooms': list(chat_rooms)})
+
 
 @login_required(login_url="login")
-def chatbot(request):
+def chatbot(request, chat_room_id):
+    if chat_room_id:
+        try:
+            chat_room = ChatRoom.objects.get(id=chat_room_id, user=request.user.id)
+        except ChatRoom.DoesNotExist:
+            return HttpResponse('Chat room not found or access denied', status=404)
+    else:
+        chat_room = None  # Or handle default chat room logic
     if request.method == "POST":
-        return handle_post_request(request)
+        return handle_post_request(request, chat_room=chat_room)
     elif request.method == "GET":
         return handle_get_request(request)
     else:
@@ -59,14 +76,14 @@ def chatbot(request):
         return HttpResponseNotAllowed(["GET", "POST"], error_message)
 
 
-def handle_post_request(request):
+def handle_post_request(request, chat_room):
     user_message = request.POST.get("message")
     logger.debug(request.POST)
     selected_model = request.POST.get("model_id")
     if selected_model is None:
         return JsonResponse({"error": "Model ID not provided"}, status=400)
-    session_id = str(request.user.id)
-    chat_session, created = ChatSession.objects.get_or_create(session_id=session_id)
+    session_id = f"{request.user.id}-{chat_room.id}"  # Unique for each user-room pair
+    chat_session, created = ChatSession.objects.get_or_create(session_id=session_id, chat_room=chat_room)
     chat_context = get_chat_context(chat_session, request)
 
     response, error_msg = get_openai_response(
@@ -142,6 +159,7 @@ def save_chat_message(user, user_message, response):
     chat = Chat(
         user=user,
         message=user_message,
+        chat_room=chat_room,  # Associate the message with the chat_room
         response=assistant_response,
         created_at=timezone.now(),
     )
@@ -155,7 +173,15 @@ def login(request):
         user = auth.authenticate(request, username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            return redirect("chatbot")
+
+            # After successful login or registration
+            default_room = user.chatroom_set.first()  # Assuming a user has at least one chat room
+            if default_room:
+                return redirect("chat_room", chat_room_id=default_room.id)
+            else:
+                # Handle the case where the user has no chat rooms
+                # Redirect to a default page or create a default room
+                return redirect("login")
         else:
             error_message = "Invalid username or password"
             return render(request, "login.html", {"error_message": error_message})
@@ -178,8 +204,13 @@ def register(request):
             try:
                 user = User.objects.create_user(username, email, password1)
                 user.save()
+
+                # Create a default chat room for the new user
+                default_room = ChatRoom.objects.create(name=f"{username}'s Default Room", user=user)
+                default_room.save()
+                
                 auth.login(request, user)
-                return redirect("chatbot")
+                return redirect("chat_room", chat_room_id=default_room.id)
             except:
                 error_message = "Error creating account"
                 return render(

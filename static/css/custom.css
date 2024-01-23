@@ -29,7 +29,6 @@ p {
 
 #main-content {
     position: relative;
-    max-width: 800px;
 }
 
 
@@ -53,10 +52,6 @@ p {
 #list-group {
     height: 80vh !important;
     overflow: auto !important;
-}
-
-body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
-    margin-left: 0;
 }
 
 
@@ -85,6 +80,7 @@ body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
 /* SCROLL BUTTON */
 
 #scrollToBottomBtn {
+    display: none;
     position: absolute;
     align-items: baseline;
     right: 50%;
@@ -99,17 +95,43 @@ body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
     /* Color of the icon */
     border: none;
     /* No border */
-    border-radius: 50%;
+    border-radius: 20%;
     /* Circular button */
-    padding: 10px;
-    font-size: 20px;
+    padding: 5px;
+    font-size: 15px;
 }
 
-#scrollToBottomBtn:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    /* Slightly darker on hover */
-    color: white;
+.fa-square-arrow-up-right {
+    opacity: 0.15;
 }
+
+.fa-square-arrow-up-right:hover {
+    opacity: 0.25;
+}
+.fa-square-arrow-up-right:active {
+    opacity: 0.25;
+}
+
+/* Apply hover styles only for non-touch devices */
+@media (hover: hover) {
+    #scrollToBottomBtn:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      /* Slightly darker on hover */
+      color: white;
+    }
+  }
+  
+  /* Disable hover styles for touch devices (e.g., mobile devices) */
+  @media (hover: none) {
+    #scrollToBottomBtn:hover {
+      /* Override or remove hover effect styles for touch devices */
+      background-color: initial; /* Reset to default background color */
+      color: initial; /* Reset to default text color */
+    }
+    .fa-square-arrow-up-right:hover {
+        opacity: 0.15;
+    }
+  }
 
 
 /* SYNTAX */
@@ -213,7 +235,7 @@ code {
 .submit-form {
     max-width: 500px;
     height: auto;
-    border: 2px solid #808080;
+    border: 1px solid #808080;
     border-radius: 10px;
     margin: 10px auto;
     display: flex;
@@ -224,14 +246,15 @@ code {
 }
 
 .submit-form textarea {
-    height: auto;
-    width: calc(100% - 60px);
-    padding: 2px;
+    min-height: 44px;
+    height: 50px;
+    width: calc(100% - 40px);
+    padding: 10px;
     border: none;
     background: transparent;
     outline: none;
-    resize: vertical;
-    overflow: hidden;
+    /* resize: vertical; */
+    overflow-y: auto;
 }
 
 .submit-form button {
@@ -244,7 +267,7 @@ code {
 
 
 /* SIDEBAR HIDE */
-@media only screen and (max-width: 1070px) {
+@media only screen and (max-width: 768px) {
     #sidebar-wrapper {
         margin-left: -280px; /* Keep sidebar off-screen for small screens */
     }
@@ -267,9 +290,7 @@ code {
     }
 
     #scrollToBottomBtn {
-        bottom: 7em;
+        bottom: 7.5em;
     }
 
 }
-
-
