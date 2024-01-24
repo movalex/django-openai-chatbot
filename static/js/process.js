@@ -1,12 +1,16 @@
 let form = document.querySelector(".submit-form")
-let input = document.querySelector("#input_value")
-// WIP add grow upwards on form input
-// input.addEventListener('input', function () {
-//   this.style.height = 'auto'; // Reset height
-//   this.style.height = (this.scrollHeight) + 'px'; // Set new height
-// });
-
+let input = document.querySelector("#chat-input")
 const chatContainer = document.querySelector(".chat-container");
+
+// Function to auto-expand the textarea
+function autoAdjustTextarea() {
+  input.style.height = 'auto'; // Reset height
+  input.style.height = (input.scrollHeight) + 'px'; // Set new height
+}
+
+// Event listener to trigger auto-expand on input
+input.addEventListener('input', autoAdjustTextarea);
+
 
 // Handle keydown event on the input field
 document.addEventListener('DOMContentLoaded', function () {
@@ -15,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
       event.preventDefault(); // Prevent default form submission
       if (isMobileDevice() || event.shiftKey) {
         insertAtCursor(input, '\n'); // Insert a newline at the cursor position
+        autoAdjustTextarea(); // Update the height when "Enter" is pressed
       } else {
         // On non-mobile devices, when only Enter is pressed, submit the form
         triggerFormSubmit(); // Manually trigger form submission
@@ -49,6 +54,13 @@ function insertAtCursor(myField, myValue) {
 function isMobileDevice() {
   return /Mobi|Android/i.test(navigator.userAgent);
 }
+
+
+
+
+
+// FORM SUBMIT SCRIPTS
+
 
 form.addEventListener("submit", submitForm)
 
