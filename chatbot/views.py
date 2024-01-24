@@ -58,14 +58,19 @@ def get_chat_rooms(request):
 
 
 @login_required(login_url="login")
-def chatbot(request, chat_room_id):
+def chatbot(request, chat_room_id=None):
     if chat_room_id:
         try:
             chat_room = ChatRoom.objects.get(id=chat_room_id, user=request.user.id)
         except ChatRoom.DoesNotExist:
             return HttpResponse('Chat room not found or access denied', status=404)
     else:
-        chat_room = None  # Or handle default chat room logic
+        # Default chat room logic
+        # Try to get a default chat room for this user
+        chat_room = ChatRoom.objects.filter(user=request.user.id).first()
+        if chat_room:
+            # Redirect user to their default chat room
+            return redirect('chat_room', chat_room_id=chat_room.id)
     if request.method == "POST":
         return handle_post_request(request, chat_room=chat_room)
     elif request.method == "GET":
@@ -78,10 +83,13 @@ def chatbot(request, chat_room_id):
 
 def handle_post_request(request, chat_room):
     user_message = request.POST.get("message")
+
     logger.debug(request.POST)
+    
     selected_model = request.POST.get("model_id")
     if selected_model is None:
         return JsonResponse({"error": "Model ID not provided"}, status=400)
+
     session_id = f"{request.user.id}-{chat_room.id}"  # Unique for each user-room pair
     chat_session, created = ChatSession.objects.get_or_create(session_id=session_id, chat_room=chat_room)
     chat_context = get_chat_context(chat_session, request)
@@ -99,7 +107,7 @@ def handle_post_request(request, chat_room):
     trim_chat_context_if_needed(chat_context)
 
     save_chat_session(chat_session, chat_context)
-    save_chat_message(request.user, user_message, response)
+    save_chat_message(request.user, user_message, response, chat_room)
 
     return JsonResponse({"message": user_message, "response": safe_formatted_reply})
 
@@ -154,7 +162,7 @@ def save_chat_session(chat_session, chat_context):
     chat_session.save()
 
 
-def save_chat_message(user, user_message, response):
+def save_chat_message(user, user_message, response, chat_room):
     assistant_response = response.choices[0].message.content.strip()
     chat = Chat(
         user=user,
@@ -218,7 +226,7 @@ def register(request):
                 )
         else:
             error_message = "Password dont match"
-            print(error_message)
+            logger.error(error_message)
             return render(request, "register.html", {"error_message": error_message})
     return render(request, "register.html")
 
