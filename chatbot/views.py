@@ -91,7 +91,7 @@ def handle_post_request(request, chat_room):
         return JsonResponse({"error": "Model ID not provided"}, status=400)
 
     session_id = f"{request.user.id}-{chat_room.id}"  # Unique for each user-room pair
-    chat_session, created = ChatSession.objects.get_or_create(session_id=session_id, chat_room=chat_room)
+    chat_session, created = ChatSession.objects.get_or_create(session_id=session_id, chat_room=chat_room, user=request.user)
     chat_context = get_chat_context(chat_session, request)
 
     response, error_msg = get_openai_response(
