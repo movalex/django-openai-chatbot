@@ -84,10 +84,10 @@
       <button id="scrollToBottomBtn"><i class="fas fa-arrow-down"></i></button>
         <form action="" class="submit-form">
           {% csrf_token %}
-          <textarea id="input_value" placeholder="Send a message" required></textarea>
+          <textarea id="chat-input" rows="2" placeholder="Send a message" required></textarea>
           <input type="hidden" id="modelIdField" name="model_id" />
           <button id="submit-btn">
-            <i class="fa-solid fa-square-arrow-up-right" id='fa-send-button'></i>
+            <i class="fa-solid fa-square-arrow-up-right"></i>
             <div class="spinner-border text-primary" role="status" style="margin:auto">
               <span class="visually-hidden">Loading...</span>
             </div>
