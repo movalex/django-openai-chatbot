@@ -77,6 +77,49 @@ p {
     animation: spinner .75s linear infinite;
 }
 
+
+.submit-form {
+    max-width: 500px;
+    height: auto;
+    border: 1px solid #808080;
+    border-radius: 10px;
+    margin: 10px auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    box-shadow: 0 2px 4px rgba(14, 30, 37, 0.12), 0 2px 16px rgba(14, 30, 37, 0.32);
+}
+
+
+.submit-form textarea {
+    max-height: 250px;
+    height: auto;
+    width: calc(100% - 40px);
+    padding: 2px;
+    border: none;
+    background: transparent;
+    outline: none;
+    box-sizing: border-box; /* Ensure that padding and border are included in the width */
+    resize: none; /* Prevent manual resizing */
+    overflow: hidden;
+}
+
+/* Show the vertical scrollbar when the content exceeds the maximum height */
+.submit-form textarea:valid {
+  overflow-y: auto; /* Show the vertical scrollbar when the content exceeds the maximum height */
+}
+
+.submit-form button {
+    position: relative;
+    border: none;
+    background: transparent;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+
+
 /* SCROLL BUTTON */
 
 #scrollToBottomBtn {
@@ -230,40 +273,6 @@ code {
 }
 
 
-/* SUBMIT */
-
-.submit-form {
-    max-width: 500px;
-    height: auto;
-    border: 1px solid #808080;
-    border-radius: 10px;
-    margin: 10px auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    box-shadow: 0 2px 4px rgba(14, 30, 37, 0.12), 0 2px 16px rgba(14, 30, 37, 0.32);
-}
-
-.submit-form textarea {
-    min-height: 44px;
-    height: 50px;
-    width: calc(100% - 40px);
-    padding: 10px;
-    border: none;
-    background: transparent;
-    outline: none;
-    /* resize: vertical; */
-    overflow-y: auto;
-}
-
-.submit-form button {
-    position: relative;
-    border: none;
-    background: transparent;
-    font-size: 28px;
-    cursor: pointer;
-}
 
 
 /* SIDEBAR HIDE */
