@@ -292,10 +292,7 @@ code {
     
 
     .submit-form {
-        width: 90vw;
         margin-bottom: 50px;
-        min-height: 40px;
-        max-height: 50px;
     }
 
     #scrollToBottomBtn {
