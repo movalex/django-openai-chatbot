@@ -1,24 +1,32 @@
 let form = document.querySelector(".submit-form")
-let input = document.querySelector("#chat-input")
+let input_textarea = document.querySelector("#chat-input")
+let scrollButton = document.querySelector("#scrollToBottomBtn")
+
 const chatContainer = document.querySelector(".chat-container");
 
 // Function to auto-expand the textarea
 function autoAdjustTextarea() {
-  input.style.height = 'auto'; // Reset height
-  input.style.height = (input.scrollHeight) + 'px'; // Set new height
+  input_textarea.style.height = 'auto'; // Reset height
+  input_textarea.style.height = (input_textarea.scrollHeight) + 'px'; // Set new height
+
+  // Calculate the additional height beyond the default height of the textarea
+  const additionalHeight = input_textarea.clientHeight;
+  // Adjust the bottom offset of the scroll button
+  // You may need to adjust the calculation depending on your specific layout
+  scrollButton.style.bottom = (3 + additionalHeight / 16) + 'em'; // Convert pixels to ems (assuming 16px = 1em)
 }
 
 // Event listener to trigger auto-expand on input
-input.addEventListener('input', autoAdjustTextarea);
+input_textarea.addEventListener('input', autoAdjustTextarea);
 
 
 // Handle keydown event on the input field
 document.addEventListener('DOMContentLoaded', function () {
-  input.addEventListener('keydown', function (event) {
+  input_textarea.addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
       event.preventDefault(); // Prevent default form submission
       if (isMobileDevice() || event.shiftKey) {
-        insertAtCursor(input, '\n'); // Insert a newline at the cursor position
+        insertAtCursor(input_textarea, '\n'); // Insert a newline at the cursor position
         autoAdjustTextarea(); // Update the height when "Enter" is pressed
       } else {
         // On non-mobile devices, when only Enter is pressed, submit the form
@@ -56,9 +64,6 @@ function isMobileDevice() {
 }
 
 
-
-
-
 // FORM SUBMIT SCRIPTS
 
 
@@ -81,12 +86,13 @@ function triggerFormSubmit() {
 async function submitForm(e) {
 
   e.preventDefault(); // Prevent default form submission
-  const userMessage = input.value.trim();
+  const userMessage = input_textarea.value.trim();
   if (userMessage === '') return; // Prevent empty messages
   toggleSpinner(true)
   // Add user message to chat
   addUserMessage(userMessage);
-  input.value = ''; // Clear input field
+  input_textarea.value = ''; // Clear input field
+  input_textarea.style.height = 'auto'; // Reset height
   scrollToBottom();
 
   try {
