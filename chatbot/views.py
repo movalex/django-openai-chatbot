@@ -26,7 +26,11 @@ openai.api_key = openai_api_key
 MAX_CONTEXT_SIZE = 2000
 MAX_USED_CONTEXT = 5
 TRIM_CONTEXT = True
-GPT_MODELS = {"GPT4": "gpt-4-1106-preview", "GPT3.5": "gpt-3.5-turbo-1106"}
+GPT_MODELS = {
+    "GPT4 (lazy)": "gpt-4-1106-preview",
+    "GPT4 (new)": "gpt-4-0125-preview",
+    "GPT3.5": "gpt-3.5-turbo-1106",
+}
 
 
 logger = logging.getLogger(__name__)
@@ -46,15 +50,16 @@ def ask_openai(message, chat_context, model):
     )
     return response
 
+
 def get_chat_rooms(request):
     # Ensure the user is authenticated
     if not request.user.is_authenticated:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        return JsonResponse({"error": "Unauthorized"}, status=401)
 
     # Get chat rooms associated with the user
-    chat_rooms = ChatRoom.objects.filter(user=request.user).values('id', 'name')    
+    chat_rooms = ChatRoom.objects.filter(user=request.user).values("id", "name")
     # Return the chat rooms as JSON
-    return JsonResponse({'chat_rooms': list(chat_rooms)})
+    return JsonResponse({"chat_rooms": list(chat_rooms)})
 
 
 @login_required(login_url="login")
@@ -63,14 +68,14 @@ def chatbot(request, chat_room_id=None):
         try:
             chat_room = ChatRoom.objects.get(id=chat_room_id, user=request.user.id)
         except ChatRoom.DoesNotExist:
-            return HttpResponse('Chat room not found or access denied', status=404)
+            return HttpResponse("Chat room not found or access denied", status=404)
     else:
         # Default chat room logic
         # Try to get a default chat room for this user
         chat_room = ChatRoom.objects.filter(user=request.user.id).first()
         if chat_room:
             # Redirect user to their default chat room
-            return redirect('chat_room', chat_room_id=chat_room.id)
+            return redirect("chat_room", chat_room_id=chat_room.id)
     if request.method == "POST":
         return handle_post_request(request, chat_room=chat_room)
     elif request.method == "GET":
@@ -85,13 +90,15 @@ def handle_post_request(request, chat_room):
     user_message = request.POST.get("message")
 
     logger.debug(request.POST)
-    
+
     selected_model = request.POST.get("model_id")
     if selected_model is None:
         return JsonResponse({"error": "Model ID not provided"}, status=400)
 
     session_id = f"{request.user.id}-{chat_room.id}"  # Unique for each user-room pair
-    chat_session, created = ChatSession.objects.get_or_create(session_id=session_id, chat_room=chat_room, user=request.user)
+    chat_session, created = ChatSession.objects.get_or_create(
+        session_id=session_id, chat_room=chat_room, user=request.user
+    )
     chat_context = get_chat_context(chat_session, request)
 
     response, error_msg = get_openai_response(
@@ -114,7 +121,7 @@ def handle_post_request(request, chat_room):
 
 def handle_get_request(request):
     chats = Chat.objects.filter(user=request.user)
-    default_model = GPT_MODELS["GPT3.5"]  # This could be dynamic
+    default_model = GPT_MODELS["GPT3.5"]  # This should be driven by user preferences
     return render(
         request,
         "chatbot.html",
@@ -183,7 +190,9 @@ def login(request):
             auth.login(request, user)
 
             # After successful login or registration
-            default_room = user.chatroom_set.first()  # Assuming a user has at least one chat room
+            default_room = (
+                user.chatroom_set.first()
+            )  # Assuming a user has at least one chat room
             if default_room:
                 return redirect("chat_room", chat_room_id=default_room.id)
             else:
@@ -214,9 +223,11 @@ def register(request):
                 user.save()
 
                 # Create a default chat room for the new user
-                default_room = ChatRoom.objects.create(name=f"{username}'s Default Room", user=user)
+                default_room = ChatRoom.objects.create(
+                    name=f"{username}'s Default Room", user=user
+                )
                 default_room.save()
-                
+
                 auth.login(request, user)
                 return redirect("chat_room", chat_room_id=default_room.id)
             except:
