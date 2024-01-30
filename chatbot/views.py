@@ -27,9 +27,8 @@ MAX_CONTEXT_SIZE = 2000
 MAX_USED_CONTEXT = 5
 TRIM_CONTEXT = True
 GPT_MODELS = {
-    "GPT4 (lazy)": "gpt-4-1106-preview",
-    "GPT4 (new)": "gpt-4-0125-preview",
-    "GPT3.5": "gpt-3.5-turbo-1106",
+    "GPT4-turbo": "gpt-4-0125-preview",
+    "GPT3.5-turbo": "gpt-3.5-turbo-1106",
 }
 
 
