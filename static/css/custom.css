@@ -275,6 +275,17 @@ code {
         margin-left: 0; /* Still allow it to open when toggled */
     }
 
+}
+
+/* SIDEBAR HIDE on horizontal*/
+@media only screen and (max-height: 400px) {
+    #sidebar-wrapper {
+        margin-left: -280px; /* Keep sidebar off-screen for small screens */
+    }
+
+    #sidebar-wrapper.toggled {
+        margin-left: 0; /* Still allow it to open when toggled */
+    }
 
 }
 
@@ -282,5 +293,7 @@ code {
     .chat-footer {
         padding-bottom: 50px;
     }
-
+    #scrollToBottomBtn {
+        margin-bottom: 45px;
+    }
 }
