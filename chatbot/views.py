@@ -120,7 +120,7 @@ def handle_post_request(request, chat_room):
 
 def handle_get_request(request):
     chats = Chat.objects.filter(user=request.user)
-    default_model = GPT_MODELS["GPT3.5"]  # This should be driven by user preferences
+    default_model = GPT_MODELS["GPT3.5-turbo"]  # This should be driven by user preferences
     return render(
         request,
         "chatbot.html",
