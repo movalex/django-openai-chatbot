@@ -20,7 +20,7 @@ p {
 
 
 .chat-footer {
-    margin-bottom: 10px;
+    padding-bottom: 10px;
 }
 
 #wrapper {
@@ -273,6 +273,14 @@ code {
 
     #sidebar-wrapper.toggled {
         margin-left: 0; /* Still allow it to open when toggled */
+    }
+
+
+}
+
+@media only screen and (max-height: 800px) {
+    .chat-footer {
+        padding-bottom: 50px;
     }
 
 }
