@@ -1,9 +1,12 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 
 
 class ChatRoom(models.Model):
     name = models.CharField(max_length=255)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     # participants = models.ManyToManyField(User)  # if multiple human participants expected per chat room
 
