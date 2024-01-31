@@ -1,14 +1,15 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.conf import settings
 
-import os
-import openai
 import json
 import logging
+import openai
+import os
+import uuid
 
 
 from .templatetags.custom_filters import markdown_to_html, inline_code_formatting
@@ -27,8 +28,9 @@ MAX_CONTEXT_SIZE = 2000
 MAX_USED_CONTEXT = 5
 TRIM_CONTEXT = True
 GPT_MODELS = {
-    "GPT4-turbo": "gpt-4-0125-preview",
+    "GPT4-turbo": "gpt-4-turbo-preview",
     "GPT3.5-turbo": "gpt-3.5-turbo-1106",
+    "GPT3.5-turbo-16K": "gpt-3.5-turbo-16k",
 }
 
 
@@ -120,7 +122,9 @@ def handle_post_request(request, chat_room):
 
 def handle_get_request(request):
     chats = Chat.objects.filter(user=request.user)
-    default_model = GPT_MODELS["GPT3.5-turbo"]  # This should be driven by user preferences
+    default_model = GPT_MODELS[
+        "GPT3.5-turbo"
+    ]  # This should be driven by user preferences
     return render(
         request,
         "chatbot.html",
@@ -180,6 +184,18 @@ def save_chat_message(user, user_message, response, chat_room):
     chat.save()
 
 
+def create_chat_room(user, room_name):
+    return ChatRoom.objects.create(name=room_name, user=user)
+
+
+def create_chat_room_view(request, room_name):
+    if request.method == "POST" and request.user.is_authenticated:
+        room_name = request.POST.get("room_name", "New Chat Room")
+        chat_room = create_chat_room(request.user, room_name)
+        return JsonResponse({"success": True, "room_id": chat_room.id})
+    return JsonResponse({"success": False})
+
+
 def login(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -222,9 +238,8 @@ def register(request):
                 user.save()
 
                 # Create a default chat room for the new user
-                default_room = ChatRoom.objects.create(
-                    name=f"{username}'s Default Room", user=user
-                )
+                default_room_name = f"{username}'s Default Chat"
+                default_room = create_chat_room(user, default_room_name)
                 default_room.save()
 
                 auth.login(request, user)
