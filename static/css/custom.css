@@ -6,12 +6,18 @@
 p {
     margin-bottom: 1em;
 }
+html, body {
+    height: 100%;
+}
 
+#wrapper {
+    overflow: hidden;
+    height: 100%;
+}
 
 .custom-container {
     display: flex;
     flex-direction: column;
-    height: 100vh; 
     width: 100%;
     padding-right: var(--bs-gutter-x, .75rem);
     padding-left: var(--bs-gutter-x, .75rem);
@@ -28,13 +34,10 @@ p {
     font-size: small;
     opacity: 0.42;
     line-height: 1;
-    padding-bottom: 2em;
+    padding-bottom: 5px;
 }
 
-#wrapper {
-    overflow: hidden;
-    height: 100%;
-}
+
 
 #main-content {
     position: relative;
