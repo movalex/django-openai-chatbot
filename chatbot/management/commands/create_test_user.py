@@ -6,12 +6,13 @@ from chatbot.models import ChatRoom
 
 class Command(BaseCommand):
     help = "Creating a default test user for debugging purposes"
+    print(help)
     DJANGO_TEST_PASSWORD = os.getenv("DJANGO_TEST_PASSWORD")
 
     def handle(self, *args, **options):
         if not User.objects.filter(username="testuser").exists():
             user = User.objects.create_user(
-                "alex", "testuser@example.com", DJANGO_TEST_PASSWORD
+                "alex", "testuser@example.com", self.DJANGO_TEST_PASSWORD
             )
             ChatRoom.objects.create(name="Alex's Default Chat", user=user)
         else:
