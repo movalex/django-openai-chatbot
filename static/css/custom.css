@@ -68,6 +68,10 @@ html, body {
         position: relative;
         z-index: 1;
     }
+    
+    #sidebar-wrapper.toggled {
+        margin-left: 0px;
+    }
 }
 
 .sidebar-header {
