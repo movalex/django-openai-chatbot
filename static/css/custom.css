@@ -55,6 +55,21 @@ html, body {
     margin-left: -280px;
 }
 
+
+/* SIDEBAR HIDE */
+@media only screen and (max-width: 768px) {
+    #sidebar-wrapper {
+        position: absolute;
+        margin-left: -280px; /* Keep sidebar off-screen for small screens */
+        z-index: 2; /* Ensure it's above the main content */
+    }
+
+    #main-content {
+        position: relative;
+        z-index: 1;
+    }
+}
+
 .sidebar-header {
     position: relative;
     display: flex;
@@ -312,36 +327,3 @@ code {
   }
 }
 
-/* SIDEBAR HIDE */
-@media only screen and (max-width: 768px) {
-    #sidebar-wrapper {
-        position: absolute;
-        margin-left: -280px; /* Keep sidebar off-screen for small screens */
-        z-index: 2; /* Ensure it's above the main content */
-    }
-
-    #sidebar-wrapper.toggled {
-        position: absolute;
-        margin-left: 0; /* Still allow it to open when toggled */
-        z-index: 2; /* Ensure it's above the main content */
-
-    }
-
-    #main-content {
-        position: relative;
-        z-index: 1;
-    }
-
-}
-
-/* SIDEBAR HIDE on horizontal*/
-@media only screen and (max-height: 400px) {
-    #sidebar-wrapper {
-        margin-left: -280px; /* Keep sidebar off-screen for small screens */
-    }
-
-    #sidebar-wrapper.toggled {
-        margin-left: 0; /* Still allow it to open when toggled */
-    }
-
-}
