@@ -142,7 +142,6 @@ async function fetchBotResponse(userMessage) {
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   const selectedModel = document.getElementById('modelIdField').value; // Get the value of the hidden field
 
-  console.log("selected ", selectedModel)
   const response = await fetch(url, {
     method: "POST",
     body: new URLSearchParams({
