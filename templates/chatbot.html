@@ -25,42 +25,50 @@
             <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
           </ul>      
       </div>
+      <button type="button" class="btn-close" id="topRightButton"></button>
+
     </div>
 
     <div class="list-group list-group-flush scrollarea" id="list-group">
     </div>
     <div class="fixed-bottom-div">
-      <button id="create-chat-btn">Create New Chat</button>
+    <button type="button" class="btn btn-dark width-100"><i class="fas fa-plus"></i> New Chat</button>
     </div>
   </div>
 
 
   <!-- Page content wrapper -->
   <div class="custom-container" id="main-content">
-      <!-- Top navigation-->
-      <nav class="sticky top-0 z-10 flex">
-          <div class="container-fluid">
-              <button class="btn btn-default" id="sidebarToggle">Toggle Menu</button>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-                    <li class="nav-item dropdown">
-                        <div class="form-floating">
-                          <select class="form-select" id="floatingSelect" aria-label="Choose a GPT Model">
-                          {% for model_name, model_id in gpt_models.items %}
-                            <option value="{{ model_id }}" {% if model_id == default_model %}selected{% endif %}>
-                              {{ model_name }}
-                            </option>                           
-                              {% endfor %}
-                          </select>
-                          <label for="floatingSelect">Choose a Model</label>
-                        </div>
-                    </li>
-                </ul>
-              </div>
+    <nav class="navbar bg-body-tertiary pb-3" aria-label="Light offcanvas navbar">
+      <div class="container-fluid">
+        <button class="btn btn-dark" id="sidebarToggle">Toggle Chats</button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarDark" aria-controls="offcanvasNavbarDark" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbarDark" aria-labelledby="offcanvasNavbarDarkLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasNavbarDarkLabel">Settings</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
           </div>
-      </nav>
+          <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Choose GPT Model
+                </a>
+                <select class="form-select" id="floatingSelect" aria-label="Choose a GPT Model">
+                {% for model_name, model_id in gpt_models.items %}
+                  <option value="{{ model_id }}" {% if model_id == default_model %}selected{% endif %}>
+                    {{ model_name }}
+                  </option>                           
+                    {% endfor %}
+                </select>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
       <div class="main-chat-body">
         <div class="chat-container">
           {% for chat in chats %}
@@ -95,7 +103,9 @@
           </button>
         </form>
       </div>
-      <div class="disclaimer-text relative px-10 text-center text-muted"><span>ChatGPT can make mistakes.</br>Please check important information</span></div>
+      <div class="disclaimer-text relative px-10 text-center text-muted">
+      <p>ChatGPT can make mistakes. <span class="wrapped-text">Please check important information</span></p>
+      </div>
     </div>
 </div>
 {% endblock %}
@@ -139,7 +149,6 @@
     document.getElementById('modelIdField').value = selectedModel // Set the initial value
     document.getElementById('floatingSelect').addEventListener('change', function () {
       selectedModel = this.value
-      console.log('SELECTED: ', selectedModel)
       document.getElementById('modelIdField').value = selectedModel
     })
   </script>
