@@ -25,12 +25,11 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = openai_api_key
 
 MAX_CONTEXT_SIZE = 2000
-MAX_USED_CONTEXT = 5
+MAX_USED_CONTEXT = 8
 TRIM_CONTEXT = True
 GPT_MODELS = {
-    "GPT4-turbo": "gpt-4-turbo-preview",
-    "GPT3.5-turbo": "gpt-3.5-turbo-1106",
-    "GPT3.5-turbo-16K": "gpt-3.5-turbo-16k",
+    "GPT4 Turbo": "gpt-4-turbo-preview",
+    "GPT3.5 Turbo": "gpt-3.5-turbo-0125",
 }
 
 
@@ -123,7 +122,7 @@ def handle_post_request(request, chat_room):
 def handle_get_request(request):
     chats = Chat.objects.filter(user=request.user)
     default_model = GPT_MODELS[
-        "GPT3.5-turbo"
+        "GPT3.5 Turbo"
     ]  # This should be driven by user preferences
     return render(
         request,
