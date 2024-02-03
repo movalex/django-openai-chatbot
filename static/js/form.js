@@ -1,8 +1,18 @@
 let form = document.querySelector(".submit-form")
 let input_textarea = document.querySelector("#chat-input")
 let scrollButton = document.querySelector("#scrollToBottomBtn")
+let chatContainer = document.querySelector(".chat-container");
+const mainContainer = document.querySelector('.main-chat-body');
 
-const chatContainer = document.querySelector(".chat-container");
+function adjustButtonPadding() {
+
+  if (mainContainer && scrollButton) {
+      const containerRect = mainContainer.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const bottomPadding = windowHeight - (containerRect.bottom);
+      scrollButton.style.bottom = (20 + bottomPadding) + `px`;
+  }
+}
 
 // Function to auto-expand the textarea
 function autoAdjustTextarea() {
@@ -12,13 +22,39 @@ function autoAdjustTextarea() {
   // Calculate the additional height beyond the default height of the textarea
   const additionalHeight = input_textarea.clientHeight;
   // Adjust the bottom offset of the scroll button
-  // You may need to adjust the calculation depending on your specific layout
-  scrollButton.style.bottom = (3 + additionalHeight / 16) + 'em'; // Convert pixels to ems (assuming 16px = 1em)
+  adjustButtonPadding() 
 }
+
+function checkScroll() {
+  const scrollContainer = document.querySelector(".main-chat-body");
+  const chatList = document.querySelector(".chat-container");
+  
+  // Check if the container is scrolled to the bottom
+
+  const offset = 5;
+  if (scrollContainer.scrollHeight - scrollContainer.scrollTop <= scrollContainer.clientHeight + offset) {
+      // Hide the button if scrolled to the bottom
+      scrollButton.style.display = 'none';
+  } else {
+      // Show the button if not scrolled to the bottom
+      scrollButton.style.display = 'block';
+  }
+  // Show or hide the button based on the chat list content
+  if (chatList.clientHeight === 0 || scrollContainer.scrollHeight <= scrollContainer.clientHeight) {
+    scrollButton.style.display = 'none'; // Hide the scroll button if the chat list is empty or if there's no scrollbar
+  }
+
+}
+
+// Event listener for scrolling in the container
+mainContainer.addEventListener('scroll', checkScroll);
+
+// Adjust the height on load and when the window is resized
+window.addEventListener('load', adjustButtonPadding);
+window.addEventListener('resize', adjustButtonPadding);
 
 // Event listener to trigger auto-expand on input
 input_textarea.addEventListener('input', autoAdjustTextarea);
-
 
 // Handle keydown event on the input field
 document.addEventListener('DOMContentLoaded', function () {
@@ -65,7 +101,6 @@ function isMobileDevice() {
 
 
 // FORM SUBMIT SCRIPTS
-
 
 form.addEventListener("submit", submitForm)
 
@@ -164,9 +199,8 @@ async function fetchBotResponse(userMessage) {
 window.addEventListener('load', scrollToBottom);
 
 function scrollToBottom() {
-    const scrollContainer = document.querySelector(".main-chat-body");
     // Ensuring all images and resources are loaded
     window.setTimeout(() => {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      mainContainer.scrollTop = mainContainer.scrollHeight;
     }, 0);
 }

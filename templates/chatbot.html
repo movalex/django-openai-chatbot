@@ -25,7 +25,7 @@
             <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
           </ul>      
       </div>
-      <button type="button" class="btn-close" id="topRightButton"></button>
+      <button type="button" class="btn-close" id="closeButton" aria-label="Close"></button>
 
     </div>
 
@@ -48,7 +48,7 @@
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbarDark" aria-labelledby="offcanvasNavbarDarkLabel">
           <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasNavbarDarkLabel">Settings</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" id="closeButton" aria-label="Close"></button>
           </div>
           <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
@@ -141,7 +141,7 @@
   </script> 
 
   <script src="{% static 'js/highlight.js' %}"></script>
-  <script src="{% static 'js/process.js' %}"></script>
+  <script src="{% static 'js/form.js' %}"></script>
   <script src="{% static 'js/scripts.js' %}"></script>
 
   <script>
