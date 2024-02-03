@@ -2,8 +2,9 @@
 window.addEventListener('DOMContentLoaded', event => {
     // Get the button 
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
+    const closeSidebar = document.body.querySelector('#topRightButton');
     
-    if (sidebarToggle) {
+    if (sidebarToggle || closeSidebar) {
         const sidebarWrapper = document.getElementById('sidebar-wrapper');
 
         // Add event listener for clicks on the toggle button
@@ -11,22 +12,13 @@ window.addEventListener('DOMContentLoaded', event => {
             event.preventDefault();
             sidebarWrapper.classList.toggle('toggled'); // Ensure this matches the class used in CSS
         });
+        closeSidebar.addEventListener('click', event => {
+            event.preventDefault();
+            sidebarWrapper.classList.toggle('toggled'); // Ensure this matches the class used in CSS
+        });
     }
 });
 
-// function adjustChatListHeight() {
-//     var sidebarWrapper = document.getElementById('sidebar-wrapper');
-//     var headerHeight = sidebarWrapper.querySelector('.mb-3').offsetHeight; // Assuming this is the header
-//     var footerHeight = sidebarWrapper.querySelector('.footer').offsetHeight;
-//     var viewportHeight = window.innerHeight;
-
-//     var chatListHeight = viewportHeight - headerHeight - footerHeight;
-//     sidebarWrapper.querySelector('.scrollarea').style.maxHeight = chatListHeight + 'px';
-// }
-
-// // Run on load and resize
-// window.onload = adjustChatListHeight;
-// window.onresize = adjustChatListHeight;
 
 function checkScroll() {
     const scrollContainer = document.querySelector(".main-chat-body");
@@ -47,20 +39,25 @@ function checkScroll() {
     if (chatList.clientHeight === 0 || scrollContainer.scrollHeight <= scrollContainer.clientHeight) {
         scrollToBottomBtn.style.display = 'none'; // Hide the scroll button if the chat list is empty or if there's no scrollbar
     }
+
 }
 // Event listener for scrolling in the container
 document.querySelector(".main-chat-body").addEventListener('scroll', checkScroll);
 
-function adjustChatContainerHeight() {
-    const footerHeight = document.querySelector('.chat-footer').offsetHeight;
-    const chatContainer = document.querySelector('.main-chat-body');
-    const viewportHeight = window.innerHeight;
+function adjustButtonPadding() {
+    const mainContainer = document.querySelector('.main-chat-body'); // Replace with your main container's selector
+    const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
 
-    chatContainer.style.height = `${viewportHeight - footerHeight}px`;
+    if (mainContainer && scrollToBottomBtn) {
+        const containerRect = mainContainer.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        const bottomPadding = windowHeight - containerRect.bottom;
+        scrollToBottomBtn.style.bottom = `${bottomPadding+5}px`;
+    }
 }
 
 // Adjust the height on load and when the window is resized
-window.addEventListener('load', adjustChatContainerHeight);
-window.addEventListener('resize', adjustChatContainerHeight);
+window.addEventListener('load', adjustButtonPadding);
+window.addEventListener('resize', adjustButtonPadding);
 
 
