@@ -77,13 +77,22 @@ html, body {
     justify-content: left;
 }
 
-#topRightButton {
+#closeButton {
     position: absolute; /* Absolute positioning within the container */
     top: 0; /* At the top */
     right: 0; /* At the right */
+    opacity: .2;
+    height: .1em;
+    width: .1em;
+    /* padding-top: 10px; */
+    padding:20px;
 }
-
-
+#closeButton:hover {
+    opacity: .5;
+}
+#closeButton:active {
+    opacity: .5;
+}
 #list-group {
     height: 80vh !important;
     overflow: auto !important;
@@ -101,7 +110,7 @@ html, body {
   }
 
 
-.navbar-toggler:focus,  #topRightButton {
+.navbar-toggler:focus,  #closeButton {
     box-shadow: none;
 }
 
@@ -181,6 +190,7 @@ html, body {
     position: absolute;
     align-items: baseline;
     right: 50%;
+    bottom: 10px;
     /* Positioned in the middle horizontally */
     transform: translateX(50%);
     background-color: rgba(255, 255, 255, 0.15);
