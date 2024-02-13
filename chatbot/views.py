@@ -79,7 +79,7 @@ def chatbot(request, chat_room_id=None):
     if request.method == "POST":
         return handle_post_request(request, chat_room=chat_room)
     elif request.method == "GET":
-        return handle_get_request(request)
+        return handle_get_request(request, chat_room=chat_room)
     else:
         error_message = "Only GET and POST are allowed"
         logger.error(error_message)
@@ -119,8 +119,8 @@ def handle_post_request(request, chat_room):
     return JsonResponse({"message": user_message, "response": safe_formatted_reply})
 
 
-def handle_get_request(request):
-    chats = Chat.objects.filter(user=request.user)
+def handle_get_request(request, chat_room):
+    chats = Chat.objects.filter(user=request.user, chat_room=chat_room)
     default_model = GPT_MODELS[
         "GPT3.5 Turbo"
     ]  # This should be driven by user preferences
@@ -183,14 +183,17 @@ def save_chat_message(user, user_message, response, chat_room):
     chat.save()
 
 
-def create_chat_room(user, room_name):
+def create_chat_room(user, room_name=None):
+    # If no room name is specified, use a default name based on the user's username
+    room_name = room_name or "New Conversation"
     return ChatRoom.objects.create(name=room_name, user=user)
 
 
-def create_chat_room_view(request, room_name):
+def create_chat_room_view(request):
+    print(request.user.is_authenticated)
+    print(request.method)
     if request.method == "POST" and request.user.is_authenticated:
-        room_name = request.POST.get("room_name", "New Chat Room")
-        chat_room = create_chat_room(request.user, room_name)
+        chat_room = create_chat_room(request.user)
         return JsonResponse({"success": True, "room_id": chat_room.id})
     return JsonResponse({"success": False})
 
@@ -203,16 +206,18 @@ def login(request):
         if user is not None:
             auth.login(request, user)
 
-            # After successful login or registration
-            default_room = (
-                user.chatroom_set.first()
-            )  # Assuming a user has at least one chat room
-            if default_room:
-                return redirect("chat_room", chat_room_id=default_room.id)
-            else:
-                # Handle the case where the user has no chat rooms
-                # Redirect to a default page or create a default room
+            # Create a default chat room for the new user
+            # Get chat rooms associated with the user
+            chat_rooms = ChatRoom.objects.filter(user=request.user)
+            if chat_rooms.exists():
+                first_room = chat_rooms.first()
+                return redirect("chat_room", chat_room_id=first_room.id)
+
+            default_room = create_chat_room(user)
+            if not default_room:
+                logger.error("Unable to create deafult chat room")
                 return redirect("login")
+            return redirect("chat_room", chat_room_id=default_room.id)
         else:
             error_message = "Invalid username or password"
             return render(request, "login.html", {"error_message": error_message})
@@ -238,7 +243,7 @@ def register(request):
 
                 # Create a default chat room for the new user
                 default_room_name = f"{username}'s Default Chat"
-                default_room = create_chat_room(user, default_room_name)
+                default_room = create_chat_room(user)
                 default_room.save()
 
                 auth.login(request, user)

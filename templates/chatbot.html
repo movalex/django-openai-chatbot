@@ -25,14 +25,16 @@
             <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
           </ul>      
       </div>
-      <button type="button" class="btn-close" id="closeButton" aria-label="Close"></button>
+      <button type="button" class="btn btn-dark" id="closeButton" aria-label="Close">
+      <i class="fa-solid fa-angles-left"></i>
+      </button>
 
     </div>
 
     <div class="list-group list-group-flush scrollarea" id="list-group">
     </div>
     <div class="fixed-bottom-div">
-    <button type="button" class="btn btn-dark width-100"><i class="fas fa-plus"></i> New Chat</button>
+    <button type="button" class="btn btn-dark width-100" id="createChatButton"><i class="fas fa-plus"></i> New Chat</button>
     </div>
   </div>
 
@@ -139,6 +141,41 @@
             });
     });
   </script> 
+  <script>
+    function createNewChatRoom() {
+        // Retrieve the CSRF token from the document
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // Set up the request headers
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('X-CSRFToken', csrftoken);
+
+        // Make the POST request using fetch
+        fetch('/create_chat_room/', {
+            method: 'POST',
+            headers: headers,
+            credentials: 'include' // Necessary for including cookies, such as the CSRF token cookie
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Redirect to the new chat room or update the UI accordingly
+                window.location.href = `/chatroom/${data.room_id}/`;
+            } else {
+                // Handle error
+                alert("Failed to create a new chat room.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred while creating the chat room.");
+        });
+    }
+
+  // Assuming your 'Create Chat' button has the ID 'createChatButton'
+  document.getElementById('createChatButton').addEventListener('click', createNewChatRoom);
+</script>
 
   <script src="{% static 'js/highlight.js' %}"></script>
   <script src="{% static 'js/form.js' %}"></script>
@@ -157,9 +194,9 @@
         const scrollContainer = document.querySelector(".main-chat-body");
         scrollContainer.scrollTop = scrollContainer.scrollHeight;
     }
-
     document.getElementById('scrollToBottomBtn').addEventListener('click', scrollToBottom);
   </script>
-  <!-- AJAX Script for Fetching Chat Rooms -->
+
+
 
 {% endblock %}
