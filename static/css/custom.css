@@ -98,8 +98,10 @@ html, body {
     opacity: .5;
 }
 #list-group {
-    height: 80vh !important;
-    overflow: auto !important;
+    flex-grow: 1; /* Chat body takes available space */
+    overflow-y: auto;
+    /* height: 80vh !important; */
+    /* overflow: auto !important; */
 }
 
 .width-100 {
