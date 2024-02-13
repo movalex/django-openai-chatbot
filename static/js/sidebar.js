@@ -21,7 +21,14 @@ window.addEventListener('DOMContentLoaded', event => {
 
 // Add click event listener to the document
 document.addEventListener('click', (event) => {
-    event.preventDefault();
+
+    // Check if the click is on the toggle button or its children
+    if (sidebarToggle.contains(event.target)) {
+        event.preventDefault(); // Only call this if the click is on the toggle button
+        // Add your logic to handle sidebar toggle here
+        // For example, toggling a class to show/hide the sidebar
+        return; // Exit the function to avoid further logic execution
+    }
     // Check if the click is on the toggle button or its children
     if (!sidebarWrapper || sidebarToggle.contains(event.target)) {
         return; // Do nothing if the click is on the toggle button
@@ -32,3 +39,4 @@ document.addEventListener('click', (event) => {
         sidebarWrapper.classList.remove('toggled');
     }
 });
+    
