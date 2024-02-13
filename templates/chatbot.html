@@ -114,6 +114,11 @@
 
 {% block scripts %}
   <script>
+
+      // Assuming the URL pattern is "/chatroom/<chat_room_id_or_uuid>/"
+    const currentPath = window.location.pathname;
+    const chatRoomIdOrUuid = currentPath.split('/')[2]; // Adjust the index as needed based on your URL structure
+
     document.addEventListener('DOMContentLoaded', function() {
         fetch('/get_chat_rooms/')
             .then(response => response.json())
@@ -129,6 +134,10 @@
                         anchor.href = `/chatroom/${room.id}/`;  // Update with the correct URL pattern
                         anchor.className = 'list-group-item list-group-item-action list-group-item-light p-3';
                         anchor.textContent = room.name;
+                        // If the room's ID/UUID matches the current URL, add the 'active-chatroom' class
+                        if(room.id === chatRoomIdOrUuid) {
+                            anchor.classList.add('active-chatroom');
+                        }
 
                         listGroup.appendChild(anchor);
                     });
