@@ -115,9 +115,8 @@
 {% block scripts %}
   <script>
 
-      // Assuming the URL pattern is "/chatroom/<chat_room_id_or_uuid>/"
     const currentPath = window.location.pathname;
-    const chatRoomIdOrUuid = currentPath.split('/')[2]; // Adjust the index as needed based on your URL structure
+    const chatRoomIdOrUuid = currentPath.split('/')[2];
 
     document.addEventListener('DOMContentLoaded', function() {
         fetch('/get_chat_rooms/')
@@ -182,7 +181,6 @@
         });
     }
 
-  // Assuming your 'Create Chat' button has the ID 'createChatButton'
   document.getElementById('createChatButton').addEventListener('click', createNewChatRoom);
 </script>
 

@@ -55,10 +55,12 @@ html, body {
 #sidebar-wrapper.toggled {
     margin-left: -280px;
 }
-
+.list-group-item:hover {
+    background-color: #24313e;
+}
 
 .active-chatroom {
-    background-color: #861b00; /* Dark background for the active chat room */
+    background-color: #24313e;
 }
 
 /* SIDEBAR HIDE */
