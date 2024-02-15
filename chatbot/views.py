@@ -15,7 +15,7 @@ import uuid
 from .templatetags.custom_filters import markdown_to_html, inline_code_formatting
 
 
-from .models import Chat, ChatSession, ChatRoom
+from .models import Chat, ChatSession, ChatRoom, UserProfile
 
 from django.utils import timezone
 from django.utils.safestring import mark_safe
@@ -64,18 +64,33 @@ def get_chat_rooms(request):
 
 @login_required(login_url="login")
 def chatbot(request, chat_room_id=None):
+    # Retrieve user profile to update last opened chatroom
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    print(created)
+
     if chat_room_id:
         try:
             chat_room = ChatRoom.objects.get(id=chat_room_id, user=request.user.id)
+            # Update last opened chatroom in user profile
+            user_profile.last_opened_chat = chat_room
+            user_profile.save()
         except ChatRoom.DoesNotExist:
             return HttpResponse("Chat room not found or access denied", status=404)
     else:
         # Default chat room logic
-        # Try to get a default chat room for this user
-        chat_room = ChatRoom.objects.filter(user=request.user.id).first()
-        if chat_room:
-            # Redirect user to their default chat room
-            return redirect("chat_room", chat_room_id=chat_room.id)
+        # Redirect to last opened chatroom if it exists
+        if user_profile.last_opened_chat:
+            return redirect("chat_room", chat_room_id=user_profile.last_opened_chat.id)
+        else:
+            # If no last opened chatroom, find or create a default chat room
+            chat_room = ChatRoom.objects.filter(user=request.user).first()
+            if chat_room:
+                # Update last opened chatroom in user profile
+                user_profile.last_opened_chat = chat_room
+                user_profile.save()
+                return redirect("chat_room", chat_room_id=chat_room.id)
+            # Handle the case where no chatrooms exist for the user
+
     if request.method == "POST":
         return handle_post_request(request, chat_room=chat_room)
     elif request.method == "GET":
@@ -190,8 +205,6 @@ def create_chat_room(user, room_name=None):
 
 
 def create_chat_room_view(request):
-    print(request.user.is_authenticated)
-    print(request.method)
     if request.method == "POST" and request.user.is_authenticated:
         chat_room = create_chat_room(request.user)
         return JsonResponse({"success": True, "room_id": chat_room.id})
@@ -203,11 +216,14 @@ def login(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
         user = auth.authenticate(request, username=username, password=password)
+
         if user is not None:
             auth.login(request, user)
+            user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+            last_opened_chat = user_profile.last_opened_chat
+            if last_opened_chat:
+                return redirect("chat_room", chat_room_id=last_opened_chat.id)
 
-            # Create a default chat room for the new user
-            # Get chat rooms associated with the user
             chat_rooms = ChatRoom.objects.filter(user=request.user)
             if chat_rooms.exists():
                 first_room = chat_rooms.first()

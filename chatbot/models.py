@@ -34,3 +34,8 @@ class ChatSession(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.chat_room.name} - {self.session_id}"
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    last_opened_chat = models.ForeignKey('ChatRoom', on_delete=models.SET_NULL, null=True, blank=True)
