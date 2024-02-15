@@ -114,7 +114,6 @@
 
 {% block scripts %}
   <script>
-
     const currentPath = window.location.pathname;
     const chatRoomIdOrUuid = currentPath.split('/')[2];
 
@@ -132,7 +131,9 @@
                         const anchor = document.createElement('a');
                         anchor.href = `/chatroom/${room.id}/`;  // Update with the correct URL pattern
                         anchor.className = 'list-group-item list-group-item-action list-group-item-light p-3';
-                        anchor.textContent = room.name;
+                        const span = document.createElement('span');
+                        anchor.appendChild(span);
+                        span.textContent = room.name;
                         // If the room's ID/UUID matches the current URL, add the 'active-chatroom' class
                         if(room.id === chatRoomIdOrUuid) {
                             anchor.classList.add('active-chatroom');
@@ -151,9 +152,9 @@
   </script> 
 
 
-  <script src="{% static 'js/highlight.js' %}"></script>
-  <script src="{% static 'js/form.js' %}"></script>
   <script src="{% static 'js/sidebar.js' %}"></script>
+  <script src="{% static 'js/form.js' %}"></script>
+  <script src="{% static 'js/highlight.js' %}"></script>
 
   <script>
     var selectedModel = '{{default_model}}' // Default model ID
