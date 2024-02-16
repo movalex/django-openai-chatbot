@@ -25,9 +25,11 @@
             <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
           </ul>      
       </div>
-      <button type="button" class="btn btn-dark" id="closeButton" aria-label="Close">
-      <i class="fa-solid fa-angles-left"></i>
-      </button>
+      <div class="button-container p-3">
+        <button type="button" class="btn btn-dark" id="closeSidebarButton" aria-label="Close">
+        <i class="fa-solid fa-angles-left"></i>
+        </button>
+      </div>
 
     </div>
 
@@ -43,14 +45,20 @@
   <div class="custom-container" id="main-content">
     <nav class="navbar bg-body-tertiary pb-3" aria-label="Light offcanvas navbar">
       <div class="container-fluid">
-        <button class="btn btn-dark" id="sidebarToggle">Toggle Chats</button>
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarDark" aria-controls="offcanvasNavbarDark" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="button-container">
+          <button class="btn btn-dark" id="sidebarToggle">
+            <i class="fa-solid fa-angles-right"></i>
+          </button>
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarDark" aria-controls="offcanvasNavbarDark" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbarDark" aria-labelledby="offcanvasNavbarDarkLabel">
           <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasNavbarDarkLabel">Settings</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" id="closeButton" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+            </button>
           </div>
           <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
@@ -113,45 +121,6 @@
 {% endblock %}
 
 {% block scripts %}
-  <script>
-    const currentPath = window.location.pathname;
-    const chatRoomIdOrUuid = currentPath.split('/')[2];
-
-    document.addEventListener('DOMContentLoaded', function() {
-        fetch('/get_chat_rooms/')
-            .then(response => response.json())
-            .then(data => {
-                if(data.chat_rooms) {
-                    // Clear existing chat rooms
-                    const listGroup = document.getElementById('list-group');
-                    listGroup.innerHTML = '';
-
-                    // Append each chat room to the list
-                    data.chat_rooms.forEach(room => {
-                        const anchor = document.createElement('a');
-                        anchor.href = `/chatroom/${room.id}/`;  // Update with the correct URL pattern
-                        anchor.className = 'list-group-item list-group-item-action list-group-item-light p-3';
-                        const span = document.createElement('span');
-                        anchor.appendChild(span);
-                        span.textContent = room.name;
-                        // If the room's ID/UUID matches the current URL, add the 'active-chatroom' class
-                        if(room.id === chatRoomIdOrUuid) {
-                            anchor.classList.add('active-chatroom');
-                        }
-
-                        listGroup.appendChild(anchor);
-                    });
-                } else {
-                    console.error('Chat rooms data is missing');
-                }
-            })
-            .catch(e => {
-                console.error('Fetch error:', e);
-            });
-    });
-  </script> 
-
-
   <script src="{% static 'js/sidebar.js' %}"></script>
   <script src="{% static 'js/form.js' %}"></script>
   <script src="{% static 'js/highlight.js' %}"></script>
