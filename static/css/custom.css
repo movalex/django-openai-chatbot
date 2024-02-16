@@ -85,8 +85,14 @@ html, body {
 }
 
 #sidebarToggle {
-    display: none;
-    position: absolute; /* Absolute position it */
+    display: flex;
+    opacity: .2;
+    height: .1em;
+    width: .1em;
+    padding:20px;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
 }
 /* SIDEBAR HIDE */
 @media only screen and (max-width: 768px) {
@@ -95,16 +101,6 @@ html, body {
         height: 100%; /* Ensure the sidebar has a defined height */
         margin-left: -280px; /* Keep sidebar off-screen for small screens */
         z-index: 2; /* Ensure it's above the main content */
-    }
-    #sidebarToggle {
-        display: flex;
-        opacity: .2;
-        height: .1em;
-        width: .1em;
-        padding:20px;
-        justify-content: center;
-        align-items: center;
-
     }
 
     #main-content {

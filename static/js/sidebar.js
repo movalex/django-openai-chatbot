@@ -35,28 +35,56 @@ function createNewChatRoom() {
 
 document.getElementById('createChatButton').addEventListener('click', createNewChatRoom);
 
+// Function to check if the sidebar is visible
+function isSidebarVisible() {
+    // Assuming you use a class to hide the sidebar, e.g., 'toggled'
+    return !document.getElementById('sidebar-wrapper').classList.contains('toggled');
+}
+
+
+// Function to toggle the sidebarToggle button visibility
+function toggleSidebarButtonVisibility() {
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const breakpoint = 768;
+
+    // Check if sidebar is visible or if the window width is less than the breakpoint
+    if (!isSidebarVisible() || window.innerWidth < breakpoint) {
+        // If the sidebar is hidden or screen width is small, show the toggle button
+        sidebarToggle.style.display = 'flex';
+    } else {
+        // If the sidebar is visible and screen width is large, hide the toggle button
+        sidebarToggle.style.display = 'none';
+    }
+}
+
 function toggleSidebarOnLoad() {
 
-        if (sidebarToggle || closeSidebar) {
+    if (sidebarToggle || closeSidebar) {
 
         // Add event listener for clicks on the toggle button
         sidebarToggle.addEventListener('click', event => {
             event.preventDefault();
             sidebarWrapper.classList.toggle('toggled');
+            sidebarToggle.style.display = 'none';
         });
         closeSidebar.addEventListener('click', event => {
             event.preventDefault();
             sidebarWrapper.classList.toggle('toggled');
+            sidebarToggle.style.display = 'flex';
         });
     }
 }
+
+
+// Event listener for window resize
+window.addEventListener('resize', toggleSidebarButtonVisibility);
 
 
 document.addEventListener('DOMContentLoaded', function() {
     // Fetch and display the chat rooms list
     fetchChatRooms();
     toggleSidebarOnLoad();
-
+    // toggleSidebarButtonVisibility();
     // Other initial setup tasks can go here
 });
 
