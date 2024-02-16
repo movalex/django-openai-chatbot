@@ -85,7 +85,7 @@ html, body {
 }
 
 #sidebarToggle {
-    display: flex;
+    display: none;
     opacity: .2;
     height: .1em;
     width: .1em;

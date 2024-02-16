@@ -81,11 +81,9 @@ window.addEventListener('resize', toggleSidebarButtonVisibility);
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Fetch and display the chat rooms list
     fetchChatRooms();
     toggleSidebarOnLoad();
-    // toggleSidebarButtonVisibility();
-    // Other initial setup tasks can go here
+    toggleSidebarButtonVisibility();
 });
 
 
