@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.utils import timezone
+from django.utils.safestring import mark_safe
 
 import json
 import logging
@@ -11,15 +13,9 @@ import openai
 import os
 import uuid
 
-
 from .templatetags.custom_filters import markdown_to_html, inline_code_formatting
 
-
 from .models import Chat, ChatSession, ChatRoom, UserProfile
-
-from django.utils import timezone
-from django.utils.safestring import mark_safe
-
 
 openai_api_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = openai_api_key
@@ -66,7 +62,6 @@ def get_chat_rooms(request):
 def chatbot(request, chat_room_id=None):
     # Retrieve user profile to update last opened chatroom
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-    print(created)
 
     if chat_room_id:
         try:
@@ -89,7 +84,7 @@ def chatbot(request, chat_room_id=None):
                 user_profile.last_opened_chat = chat_room
                 user_profile.save()
                 return redirect("chat_room", chat_room_id=chat_room.id)
-            # Handle the case where no chatrooms exist for the user
+            # TODO: Handle the case where no chatrooms exist for the user
 
     if request.method == "POST":
         return handle_post_request(request, chat_room=chat_room)
@@ -138,7 +133,7 @@ def handle_get_request(request, chat_room):
     chats = Chat.objects.filter(user=request.user, chat_room=chat_room)
     default_model = GPT_MODELS[
         "GPT3.5 Turbo"
-    ]  # This should be driven by user preferences
+    ]  # This should be driven by user profile
     return render(
         request,
         "chatbot.html",
@@ -163,8 +158,9 @@ def get_openai_response(user_message, chat_context, selected_model):
         logger.error(error_message)
         return None, error_message
     except Exception as e:
-        logger.error(f"Unknown Error: {str(e)}")
-        return None, f"Unknown Error: {str(e)}"
+        err = f"Unknown Error: {str(e)}"
+        logger.error(err)
+        return None, err
 
 
 def update_chat_context(chat_context, user_message, response):
@@ -211,12 +207,30 @@ def create_chat_room_view(request):
     return JsonResponse({"success": False})
 
 
+def save_chat_name(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        print(data)
+        chat_id = data.get('chatId')
+        new_name = data.get('newName')
+        print(new_name)
+        try:
+            chat_room = ChatRoom.objects.get(id=chat_id)
+            chat_room.name = new_name
+            chat_room.save()
+            return JsonResponse({"success": True})
+        except ChatRoom.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Chat room not found"}, status=404)
+    else:
+        return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
+
+
 def login(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
         user = auth.authenticate(request, username=username, password=password)
-
+        error_message = None
         if user is not None:
             auth.login(request, user)
             user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
