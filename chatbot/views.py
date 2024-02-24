@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
 from django.utils.safestring import mark_safe
+from django.views.decorators.http import require_POST
 
 import json
 import logging
@@ -53,7 +54,7 @@ def get_chat_rooms(request):
         return JsonResponse({"error": "Unauthorized"}, status=401)
 
     # Get chat rooms associated with the user
-    chat_rooms = ChatRoom.objects.filter(user=request.user).values("id", "name")
+    chat_rooms = ChatRoom.objects.filter(user=request.user, is_hidden=False).values("id", "name")
     # Return the chat rooms as JSON
     return JsonResponse({"chat_rooms": list(chat_rooms)})
 
@@ -131,9 +132,7 @@ def handle_post_request(request, chat_room):
 
 def handle_get_request(request, chat_room):
     chats = Chat.objects.filter(user=request.user, chat_room=chat_room)
-    default_model = GPT_MODELS[
-        "GPT3.5 Turbo"
-    ]  # This should be driven by user profile
+    default_model = GPT_MODELS["GPT3.5 Turbo"]  # This should be driven by user profile
     return render(
         request,
         "chatbot.html",
@@ -207,22 +206,35 @@ def create_chat_room_view(request):
     return JsonResponse({"success": False})
 
 
+@require_POST
 def save_chat_name(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        print(data)
-        chat_id = data.get('chatId')
-        new_name = data.get('newName')
-        print(new_name)
-        try:
-            chat_room = ChatRoom.objects.get(id=chat_id)
-            chat_room.name = new_name
-            chat_room.save()
-            return JsonResponse({"success": True})
-        except ChatRoom.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Chat room not found"}, status=404)
-    else:
-        return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
+    data = json.loads(request.body)
+    print(data)
+    chat_id = data.get("chatId")
+    new_name = data.get("newName")
+    print(new_name)
+    try:
+        chat_room = ChatRoom.objects.get(id=chat_id)
+        chat_room.name = new_name
+        chat_room.save()
+        return JsonResponse({"success": True})
+    except ChatRoom.DoesNotExist:
+        return JsonResponse(
+            {"success": False, "error": "Chat room not found"}, status=404
+        )
+
+
+@require_POST
+def archive_chat(request, chat_room_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Authentication required"}, status=401)
+    try:
+        chat_room = ChatRoom.objects.get(id=chat_room_id, user=request.user)
+        chat_room.is_hidden = True
+        chat_room.save()
+        return JsonResponse({"success": True})
+    except ChatRoom.DoesNotExist:
+        return JsonResponse({"error": "Chat room not found"}, status=404)
 
 
 def login(request):
