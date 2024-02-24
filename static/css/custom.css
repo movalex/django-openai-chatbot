@@ -72,6 +72,17 @@ html, body {
     background-color: #24313e;
 }
 
+.list-group-item .archive-chat-btn {
+    visibility: hidden;
+}
+
+.list-group-item:hover .archive-chat-btn {
+    visibility: visible;
+    justify-content: center;
+    align-items: center;
+    box-shadow: none;
+}
+
 .button-container {
     display: flex;
     justify-content: space-between; /* Aligns children (buttons) on opposite ends */
