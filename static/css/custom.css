@@ -97,10 +97,10 @@ html, body {
 
 #sidebarToggle {
     display: none;
-    opacity: .2;
+    opacity: .5;
     height: .1em;
     width: .1em;
-    padding:20px;
+    padding: 20px;
     position: absolute;
     justify-content: center;
     align-items: center;
@@ -227,7 +227,6 @@ html, body {
 .container-fluid {
     display: flex;
     justify-content: space-between;
-    max-width: 800px;
   }
   
 /* SCROLL BUTTON */
