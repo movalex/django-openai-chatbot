@@ -8,6 +8,7 @@ class ChatRoom(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    is_hidden = models.BooleanField(default=False)
     # participants = models.ManyToManyField(User)  # if multiple human participants expected per chat room
 
     def __str__(self):
