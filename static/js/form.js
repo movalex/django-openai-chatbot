@@ -198,9 +198,9 @@ async function fetchBotResponse(userMessage) {
 }
 window.addEventListener('load', scrollToBottom);
 
+
 function scrollToBottom() {
-    // Ensuring all images and resources are loaded
-    window.setTimeout(() => {
-      mainContainer.scrollTop = mainContainer.scrollHeight;
-    }, 0);
+    mainContainer.scrollTop = mainContainer.scrollHeight;
 }
+scrollButton.addEventListener('click', scrollToBottom);
+
