@@ -45,11 +45,15 @@ function isSidebarVisible() {
 function toggleSidebarButtonVisibility() {
     const sidebarToggle = document.getElementById('sidebarToggle');
     const breakpoint = 768;
+    const delay = 100;
+
 
     // Check if sidebar is visible or if the window width is less than the breakpoint
     if (!isSidebarVisible() || window.innerWidth < breakpoint) {
-        // If the sidebar is hidden or screen width is small, show the toggle button
-        sidebarToggle.style.display = 'flex';
+        // If the sidebar is hidden or screen width is small, show the toggle button after the delay
+        setTimeout(() => {
+            sidebarToggle.style.display = 'flex';
+        }, delay);
     } else {
         // If the sidebar is visible and screen width is large, hide the toggle button
         sidebarToggle.style.display = 'none';
@@ -66,8 +70,11 @@ function toggleSidebarOnLoad() {
         });
         closeSidebar.addEventListener('click', event => {
             event.preventDefault();
+            const delay = 150;
             sidebarWrapper.classList.toggle('toggled');
-            sidebarToggle.style.display = 'flex';
+            setTimeout(() => {
+                sidebarToggle.style.display = 'flex';
+            }, delay);
         });
     }
 }
