@@ -138,9 +138,6 @@ function populateChatRooms(chatRooms) {
         // If the room's ID/UUID matches the current URL, add the 'active-chatroom' class
         if(room.id === chatRoomIdOrUuid) {
             anchor.classList.add('active-chatroom');
-            anchor.addEventListener('click', function(event) {
-                event.preventDefault(); // Prevent navigation on click
-            })
         };
         listGroup.appendChild(anchor);
         // Add event listener for double-click
@@ -148,6 +145,17 @@ function populateChatRooms(chatRooms) {
             handleDoubleClickRename(span, room.id);
         });
     });
+    sidebarWrapper.addEventListener('click', function(event) {
+        let targetElement = event.target;
+        while (targetElement != this) {
+            if (targetElement.tagName === 'A' && targetElement.classList.contains('active-chatroom')) {
+                event.preventDefault(); // Prevent navigation on click
+                return;
+            }
+            targetElement = targetElement.parentNode; // Move up in the DOM
+        }
+    })
+    
 }
 
 function fetchChatRooms() {
@@ -200,6 +208,7 @@ function handleDoubleClickRename(chatItem, chatId) {
         if (e.key === 'Enter') {
             e.preventDefault();
             console.log("Enter")
+            this.setAttribute("contentEditable", "false");
             this.blur(); // Triggers the blur event
         }
     });
@@ -207,6 +216,7 @@ function handleDoubleClickRename(chatItem, chatId) {
         if (e.key === 'Escape') {
             console.log("Escape")
             this.textContent = currentName;
+            this.setAttribute("contentEditable", "false");
             this.blur(); // Triggers the blur event
         }
     });
