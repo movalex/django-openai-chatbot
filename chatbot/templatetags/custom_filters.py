@@ -22,10 +22,17 @@ def inline_code_formatting(value):
     return mark_safe(str(soup))
 
 
+def add_new_line_to_lists(text: str):
+    pattern = r"(?<!\n)\n(\d+\.\s)"
+    # Insert newline before list items
+    processed_text = re.sub(pattern, "\n\n\\1", text)
+    return processed_text
+
+
 def adjust_indentation_for_markdown(text: str):
     # unindent code blocks
     text = re.sub(r" *```(\w*)", r"\n```\1", text, flags=re.MULTILINE)
-
+    text = add_new_line_to_lists(text)
     return text
 
 
