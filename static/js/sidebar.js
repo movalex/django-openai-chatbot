@@ -17,20 +17,20 @@ function createNewChatRoom() {
         headers: headers,
         credentials: 'include' // Necessary for including cookies, such as the CSRF token cookie
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Redirect to the new chat room or update the UI accordingly
-            window.location.href = `/chatroom/${data.room_id}/`;
-        } else {
-            // Handle error
-            alert("Failed to create a new chat room.");
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("An error occurred while creating the chat room.");
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Redirect to the new chat room or update the UI accordingly
+                window.location.href = `/chatroom/${data.room_id}/`;
+            } else {
+                // Handle error
+                alert("Failed to create a new chat room.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred while creating the chat room.");
+        });
 }
 
 document.getElementById('createChatButton').addEventListener('click', createNewChatRoom);
@@ -85,7 +85,7 @@ window.addEventListener('resize', toggleSidebarButtonVisibility);
 function populateChatRooms(chatRooms) {
     // Clear existing chat rooms
     const listGroup = document.getElementById('list-group');
-    listGroup.innerHTML = '';   
+    listGroup.innerHTML = '';
     // Append each chat room to the list
     const currentPath = window.location.pathname;
     const chatRoomIdOrUuid = currentPath.split('/')[2];
@@ -136,16 +136,18 @@ function populateChatRooms(chatRooms) {
         listGroup.appendChild(anchor);
 
         // If the room's ID/UUID matches the current URL, add the 'active-chatroom' class
-        if(room.id === chatRoomIdOrUuid) {
+        if (room.id === chatRoomIdOrUuid) {
             anchor.classList.add('active-chatroom');
         };
         listGroup.appendChild(anchor);
         // Add event listener for double-click
-        span.addEventListener('dblclick', function() {
-            handleDoubleClickRename(container, room.id);
+        anchor.addEventListener('dblclick', function (event) {
+            if (this.classList.contains('active-chatroom')) {
+                handleDoubleClickRename(container, room.id);
+            }
         });
     });
-    sidebarWrapper.addEventListener('click', function(event) {
+    sidebarWrapper.addEventListener('click', function (event) {
         let targetElement = event.target;
         while (targetElement != this) {
             if (targetElement.tagName === 'A' && targetElement.classList.contains('active-chatroom')) {
@@ -155,14 +157,14 @@ function populateChatRooms(chatRooms) {
             targetElement = targetElement.parentNode; // Move up in the DOM
         }
     })
-    
+
 }
 
 function fetchChatRooms() {
     fetch('/get_chat_rooms/')
         .then(response => response.json())
         .then(data => {
-            if(data.chat_rooms) {
+            if (data.chat_rooms) {
                 populateChatRooms(data.chat_rooms);
             } else {
                 console.error('Chat rooms data is missing');
@@ -179,24 +181,24 @@ async function saveNewName(chatId, newName) {
     console.log(`Saving new name "${newName}" for chatId ${chatId}`);
     // Example AJAX call (you need to implement this according to your backend)
     fetch('/save_chat_name/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrftoken,
-      },
-      body: JSON.stringify({ chatId: chatId, newName: newName })
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({ chatId: chatId, newName: newName })
     })
-    .then(response => response.json())
-    .then(data => {
-      if(data.success) {
-        // Update the UI accordingly, if necessary
-        console.log("Chat name updated successfully.");
-      } else {
-        console.log("Failed to update chat name.");
-      }
-    })
-    .catch(error => console.error('Error:', error));
-  }
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update the UI accordingly, if necessary
+                console.log("Chat name updated successfully.");
+            } else {
+                console.log("Failed to update chat name.");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
 
 
 function handleDoubleClickRename(chatItem, chatId) {
@@ -240,7 +242,7 @@ function handleDoubleClickRename(chatItem, chatId) {
     //     this.setAttribute("contentEditable", "false");
     // });
 
-    
+
     const nameElement = chatItem.querySelector('.chat-name');
     const input = document.createElement('input');
     input.type = 'text';
@@ -254,21 +256,21 @@ function handleDoubleClickRename(chatItem, chatId) {
     input.select();
 
     // Event listener for pressing Enter key
-    input.addEventListener('keydown', function(e) {
+    input.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             this.blur(); // Triggers the blur event
         }
     });
-    input.addEventListener('keydown', function(e) {
+    input.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
             e.preventDefault();
             this.value = currentName;
             this.blur(); // Triggers the blur event
         }
     });
-    
-    input.addEventListener('blur', function() {
+
+    input.addEventListener('blur', function () {
         const newName = this.value.trim();
         if (newName && newName !== currentName) {
             // Save the new name
@@ -308,7 +310,7 @@ function hideSidebarElement(element, chatId) {
 }
 
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     fetchChatRooms();
     toggleSidebarOnLoad();
     toggleSidebarButtonVisibility();
@@ -323,19 +325,19 @@ document.addEventListener('DOMContentLoaded', function() {
     //         input.className = 'number_input';
     //         input.name = 'aname';
     //         input.value = oldNumbersValue;
-    
+
     //         e.target.parentNode.appendChild(input);
-    
+
     //         input.focus();
     //         input.addEventListener('blur', function() {
     //             this.parentNode.removeChild(this);
     //         });
     //     }
     // });
-    
-    document.getElementById('list-group').addEventListener('click', function(event) {
+
+    document.getElementById('list-group').addEventListener('click', function (event) {
         const clickedElement = event.target;
-    
+
         // Check if the clicked element or its parent is a hide button
         if (clickedElement.classList.contains('archive-chat-btn')) {
             event.preventDefault(); // Prevent default anchor action
