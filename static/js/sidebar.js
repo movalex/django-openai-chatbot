@@ -142,7 +142,7 @@ function populateChatRooms(chatRooms) {
         listGroup.appendChild(anchor);
         // Add event listener for double-click
         span.addEventListener('dblclick', function() {
-            handleDoubleClickRename(span, room.id);
+            handleDoubleClickRename(container, room.id);
         });
     });
     sidebarWrapper.addEventListener('click', function(event) {
@@ -200,101 +200,94 @@ async function saveNewName(chatId, newName) {
 
 
 function handleDoubleClickRename(chatItem, chatId) {
+
     const currentName = chatItem.textContent;
-    chatItem.setAttribute("contentEditable", "true");
-    chatItem.focus();
+
+    // chatItem.setAttribute("contentEditable", "true");
+    // chatItem.focus();
+    // // Event listener for pressing Enter key
+    // chatItem.addEventListener('keydown', function(e) {
+    //     if (e.key === 'Enter') {
+    //         e.preventDefault();
+    //         console.log("Enter")
+    //         this.setAttribute("contentEditable", "false");
+    //         this.blur(); // Triggers the blur event
+    //     }
+    // });
+    // chatItem.addEventListener('keydown', function(e) {
+    //     if (e.key === 'Escape') {
+    //         console.log("Escape")
+    //         this.textContent = currentName;
+    //         this.setAttribute("contentEditable", "false");
+    //         this.blur(); // Triggers the blur event
+    //     }
+    // });
+
+    // chatItem.addEventListener('blur', function() {
+    //     const newName = this.textContent.trim();
+    //     if (newName && newName !== currentName) {
+    //         // Save the new name
+    //         saveNewName(chatId, newName).then(() => {
+    //             // Update the UI with the new name
+    //             this.textContent = newName;
+    //         }).catch(error => {
+    //             console.error('Error updating chat name:', error);
+    //         });
+    //     } else {
+    //         // No change or empty name, revert to the old name
+    //         this.textContent = currentName;
+    //     };
+    //     this.setAttribute("contentEditable", "false");
+    // });
+
+    
+    const nameElement = chatItem.querySelector('.chat-name');
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = currentName;
+    input.className = 'form-control chat-name-input';  // TODO: adjust styling
+
+    // Replace the name element with the input field
+    chatItem.replaceChild(input, nameElement);
+    // Focus the input and select the text
+    input.focus();
+    input.select();
+
     // Event listener for pressing Enter key
-    chatItem.addEventListener('keydown', function(e) {
+    input.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            console.log("Enter")
-            this.setAttribute("contentEditable", "false");
             this.blur(); // Triggers the blur event
         }
     });
-    chatItem.addEventListener('keydown', function(e) {
+    input.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            console.log("Escape")
-            this.textContent = currentName;
-            this.setAttribute("contentEditable", "false");
+            e.preventDefault();
+            this.value = currentName;
             this.blur(); // Triggers the blur event
         }
     });
-
-    chatItem.addEventListener('blur', function() {
-        const newName = this.textContent.trim();
+    
+    input.addEventListener('blur', function() {
+        const newName = this.value.trim();
         if (newName && newName !== currentName) {
             // Save the new name
             saveNewName(chatId, newName).then(() => {
                 // Update the UI with the new name
-                this.textContent = newName;
+                nameElement.textContent = newName;
             }).catch(error => {
                 console.error('Error updating chat name:', error);
             });
         } else {
             // No change or empty name, revert to the old name
-            this.textContent = currentName;
+            this.value = currentName;
         };
+        chatItem.replaceChild(nameElement, input);
     });
-
-    // const input = document.createElement('input');
-    // input.type = 'text';
-    // input.value = currentName;
-    // input.className = 'form-control chat-name-input';  // TODO: adjust styling
-
-    // // Replace the name element with the input field
-    // chatItem.replaceChild(input, nameElement);
-    // // Focus the input and select the text
-    // input.focus();
-    // input.select();
-
-    // input.addEventListener('mousedown', function(e) {
-    //     e.stopPropagation();
-    // });
-    // // Define behavior for input blur (losing focus)
-    // input.addEventListener('click', function(e) {
-    //     e.stopPropagation();
-    // });
-
-
-    // // Event listener for pressing Enter key
-    // input.addEventListener('keydown', function(e) {
-    //     if (e.key === 'Enter') {
-    //         console.log("Enter")
-    //         this.blur(); // Triggers the blur event
-    //     }
-    // });
-    // input.addEventListener('keydown', function(e) {
-    //     if (e.key === 'Escape') {
-    //         console.log("Escape")
-    //         this.value = currentName;
-    //         this.blur(); // Triggers the blur event
-    //     }
-    // });
-    
-    // input.addEventListener('dblclick', function(e) {
-    //     this.focus();
-    //     this.select();
-    // });
-    
-    // input.addEventListener('blur', function() {
-    //     const newName = this.value.trim();
-    //     if (newName && newName !== currentName) {
-    //         // Save the new name
-    //         saveNewName(chatId, newName).then(() => {
-    //             // Update the UI with the new name
-    //             nameElement.textContent = newName;
-    //         }).catch(error => {
-    //             console.error('Error updating chat name:', error);
-    //         });
-    //     };
-    //     chatItem.replaceChild(nameElement, input);
-    // });
 };
 
 
 function hideSidebarElement(element, chatId) {
-
 
     // Call the backend to hide the chat room
     fetch(`/archive_chat_room/${chatId}/`, {
@@ -319,12 +312,32 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchChatRooms();
     toggleSidebarOnLoad();
     toggleSidebarButtonVisibility();
+
+
+    // document.body.addEventListener('click', function(e) {
+    //     if (e.target.classList.contains('.chat-name')) {
+    //         var oldNumbersValue = e.target.textContent;
+    //         var input = document.createElement('input');
+    //         input.style.fontSize = '30pt';
+    //         input.type = 'text';
+    //         input.className = 'number_input';
+    //         input.name = 'aname';
+    //         input.value = oldNumbersValue;
+    
+    //         e.target.parentNode.appendChild(input);
+    
+    //         input.focus();
+    //         input.addEventListener('blur', function() {
+    //             this.parentNode.removeChild(this);
+    //         });
+    //     }
+    // });
     
     document.getElementById('list-group').addEventListener('click', function(event) {
         const clickedElement = event.target;
     
         // Check if the clicked element or its parent is a hide button
-        if (clickedElement.classList.contains('archive-chat-btn') || clickedElement.closest('.archive-chat-btn')) {
+        if (clickedElement.classList.contains('archive-chat-btn')) {
             event.preventDefault(); // Prevent default anchor action
             event.stopPropagation();
             // chatRoomIdOrUuid = currentPath.split('/')[2];
@@ -335,8 +348,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Implement hide logic here
         }
         // Check if a chat room item was clicked
-        else if (clickedElement.classList.contains('list-group-item') || clickedElement.closest('.list-group-item')) {
-            const chatId = clickedElement.getAttribute('data-room-id') || clickedElement.closest('.list-group-item').getAttribute('data-chat-id');
+        else if (clickedElement.classList.contains('list-group-item')) {
+            const chatId = clickedElement.getAttribute('data-room-id');
             console.log('Chat room clicked:', chatId);
             // Implement navigation or other logic here, preventing default if necessary
             // event.preventDefault();
