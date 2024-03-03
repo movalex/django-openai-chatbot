@@ -147,17 +147,22 @@ function populateChatRooms(chatRooms) {
             }
         });
     });
-    sidebarWrapper.addEventListener('click', function (event) {
+    listGroup.addEventListener('click', function (event) {
         let targetElement = event.target;
         while (targetElement != this) {
             if (targetElement.tagName === 'A' && targetElement.classList.contains('active-chatroom')) {
                 event.preventDefault(); // Prevent navigation on click
                 return;
+            } else if (targetElement.tagName === 'BUTTON' || (targetElement.tagName === 'INPUT' && targetElement.type === 'button')) {
+                event.preventDefault();
+                const chatId = targetElement.closest('.list-group-item').getAttribute('data-chat-id');
+                console.log('Archive button clicked for room:', chatId);
+                archiveSidebarElement(this.parentElement, chatId);
+                return;
             }
             targetElement = targetElement.parentNode; // Move up in the DOM
         }
     })
-
 }
 
 function fetchChatRooms() {
@@ -205,44 +210,6 @@ function handleDoubleClickRename(chatItem, chatId) {
 
     const currentName = chatItem.textContent;
 
-    // chatItem.setAttribute("contentEditable", "true");
-    // chatItem.focus();
-    // // Event listener for pressing Enter key
-    // chatItem.addEventListener('keydown', function(e) {
-    //     if (e.key === 'Enter') {
-    //         e.preventDefault();
-    //         console.log("Enter")
-    //         this.setAttribute("contentEditable", "false");
-    //         this.blur(); // Triggers the blur event
-    //     }
-    // });
-    // chatItem.addEventListener('keydown', function(e) {
-    //     if (e.key === 'Escape') {
-    //         console.log("Escape")
-    //         this.textContent = currentName;
-    //         this.setAttribute("contentEditable", "false");
-    //         this.blur(); // Triggers the blur event
-    //     }
-    // });
-
-    // chatItem.addEventListener('blur', function() {
-    //     const newName = this.textContent.trim();
-    //     if (newName && newName !== currentName) {
-    //         // Save the new name
-    //         saveNewName(chatId, newName).then(() => {
-    //             // Update the UI with the new name
-    //             this.textContent = newName;
-    //         }).catch(error => {
-    //             console.error('Error updating chat name:', error);
-    //         });
-    //     } else {
-    //         // No change or empty name, revert to the old name
-    //         this.textContent = currentName;
-    //     };
-    //     this.setAttribute("contentEditable", "false");
-    // });
-
-
     const nameElement = chatItem.querySelector('.chat-name');
     const input = document.createElement('input');
     input.type = 'text';
@@ -289,7 +256,7 @@ function handleDoubleClickRename(chatItem, chatId) {
 };
 
 
-function hideSidebarElement(element, chatId) {
+function archiveSidebarElement(element, chatId) {
 
     // Call the backend to hide the chat room
     fetch(`/archive_chat_room/${chatId}/`, {
@@ -315,46 +282,4 @@ document.addEventListener('DOMContentLoaded', function () {
     toggleSidebarOnLoad();
     toggleSidebarButtonVisibility();
 
-
-    // document.body.addEventListener('click', function(e) {
-    //     if (e.target.classList.contains('.chat-name')) {
-    //         var oldNumbersValue = e.target.textContent;
-    //         var input = document.createElement('input');
-    //         input.style.fontSize = '30pt';
-    //         input.type = 'text';
-    //         input.className = 'number_input';
-    //         input.name = 'aname';
-    //         input.value = oldNumbersValue;
-
-    //         e.target.parentNode.appendChild(input);
-
-    //         input.focus();
-    //         input.addEventListener('blur', function() {
-    //             this.parentNode.removeChild(this);
-    //         });
-    //     }
-    // });
-
-    document.getElementById('list-group').addEventListener('click', function (event) {
-        const clickedElement = event.target;
-
-        // Check if the clicked element or its parent is a hide button
-        if (clickedElement.classList.contains('archive-chat-btn')) {
-            event.preventDefault(); // Prevent default anchor action
-            event.stopPropagation();
-            // chatRoomIdOrUuid = currentPath.split('/')[2];
-            const chatId = clickedElement.closest('.list-group-item').getAttribute('data-chat-id');
-            console.log('Hide button clicked for room:', chatId);
-
-            hideSidebarElement(this.parentElement, chatId);
-            // Implement hide logic here
-        }
-        // Check if a chat room item was clicked
-        else if (clickedElement.classList.contains('list-group-item')) {
-            const chatId = clickedElement.getAttribute('data-room-id');
-            console.log('Chat room clicked:', chatId);
-            // Implement navigation or other logic here, preventing default if necessary
-            // event.preventDefault();
-        }
-    });
 });
