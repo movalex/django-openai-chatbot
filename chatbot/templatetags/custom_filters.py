@@ -22,17 +22,9 @@ def inline_code_formatting(value):
     return mark_safe(str(soup))
 
 
-def add_new_line_to_lists(text: str):
-    pattern = r"(?<!\n)\n(\d+\.\s)"
-    # Insert newline before list items
-    processed_text = re.sub(pattern, "\n\n\\1", text)
-    return processed_text
-
-
-def adjust_indentation_for_markdown(text: str):
-    # unindent code blocks
-    text = re.sub(r" *```(\w*)", r"\n```\1", text, flags=re.MULTILINE)
-    text = add_new_line_to_lists(text)
+def adjust_indentation(text: str):
+    # add newline before a list
+    text = re.sub(r":\n-", r":\n\n-", text, flags=re.MULTILINE)
     return text
 
 
@@ -41,6 +33,6 @@ def markdown_to_html(markdown_text: str):
     # Regex to find code blocks and extract language
     if not isinstance(markdown_text, str):
         return ""
-    adjusted_text = adjust_indentation_for_markdown(markdown_text)
-    result = markdown(adjusted_text, extensions=["fenced_code"])
+    adjusted_text = adjust_indentation(markdown_text)
+    result = markdown(adjusted_text, tab_length=3, extensions=["pymdownx.superfences", "nl2br"])
     return mark_safe(result)
