@@ -4,3 +4,4 @@ gunicorn
 markdown
 openai
 requests
+pymdown-extensions
