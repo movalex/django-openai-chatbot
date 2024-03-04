@@ -3,9 +3,7 @@
     font-weight: 400;
 }
 
-p {
-    margin-bottom: 1em;
-}
+
 html, body {
     height: 100%;
 }
@@ -18,7 +16,10 @@ html, body {
 .width-100 {
     width: 100%;
   }
-
+  
+ol ol, ol ul, ul ol, ul ul {
+	margin-bottom: 1rem;
+}
 
 .custom-container {
     display: flex;
@@ -39,7 +40,7 @@ html, body {
     font-size: small;
     opacity: 0.42;
     line-height: 1;
-    padding-bottom: 5px;
+    padding-bottom: 2px;
 }
 
 
