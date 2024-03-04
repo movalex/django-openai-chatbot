@@ -10,7 +10,7 @@ function adjustButtonPadding() {
       const containerRect = mainContainer.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       const bottomPadding = windowHeight - (containerRect.bottom);
-      scrollButton.style.bottom = (20 + bottomPadding) + `px`;
+      scrollButton.style.bottom = (5 + bottomPadding) + `px`;
   }
 }
 
@@ -22,7 +22,7 @@ function autoAdjustTextarea() {
   // Calculate the additional height beyond the default height of the textarea
   const additionalHeight = input_textarea.clientHeight;
   // Adjust the bottom offset of the scroll button
-  adjustButtonPadding() 
+  adjustButtonPadding();
 }
 
 function checkScroll() {
@@ -129,6 +129,7 @@ async function submitForm(e) {
   input_textarea.value = ''; // Clear input field
   input_textarea.style.height = 'auto'; // Reset height
   scrollToBottom();
+  adjustButtonPadding(); // reset scroll button placement
 
   try {
     const response = await fetchBotResponse(userMessage);
