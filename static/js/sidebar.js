@@ -1,7 +1,9 @@
 const sidebarWrapper = document.getElementById('sidebar-wrapper');
 const sidebarToggle = document.body.querySelector('#sidebarToggle');
 const closeSidebar = document.body.querySelector('#closeSidebarButton');
+const listGroup = document.getElementById('list-group');
 var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
 
 function createNewChatRoom() {
     // Retrieve the CSRF token from the document
@@ -84,7 +86,6 @@ window.addEventListener('resize', toggleSidebarButtonVisibility);
 
 function populateChatRooms(chatRooms) {
     // Clear existing chat rooms
-    const listGroup = document.getElementById('list-group');
     listGroup.innerHTML = '';
     // Append each chat room to the list
     const currentPath = window.location.pathname;
@@ -104,7 +105,6 @@ function populateChatRooms(chatRooms) {
 
         const span = document.createElement('span');
         span.className = 'chat-name small';
-        span.setAttribute('contenteditable', 'false');
         // Make the span take up the remaining space and center its content
         span.style.flexGrow = '1';
         span.style.textAlign = 'left';
@@ -147,22 +147,12 @@ function populateChatRooms(chatRooms) {
             }
         });
     });
-    listGroup.addEventListener('click', function (event) {
-        let targetElement = event.target;
-        while (targetElement != this) {
-            if (targetElement.tagName === 'A' && targetElement.classList.contains('active-chatroom')) {
-                event.preventDefault(); // Prevent navigation on click
-                return;
-            } else if (targetElement.tagName === 'BUTTON' || (targetElement.tagName === 'INPUT' && targetElement.type === 'button')) {
-                event.preventDefault();
-                const chatId = targetElement.closest('.list-group-item').getAttribute('data-chat-id');
-                console.log('Archive button clicked for room:', chatId);
-                archiveSidebarElement(this.parentElement, chatId);
-                return;
-            }
-            targetElement = targetElement.parentNode; // Move up in the DOM
-        }
-    })
+    const savedPosition = localStorage.getItem('sidebarScrollPosition');
+    console.log(savedPosition);
+    if (savedPosition) {
+        listGroup.scrollTop = savedPosition;
+    }
+
 }
 
 function fetchChatRooms() {
@@ -281,5 +271,27 @@ document.addEventListener('DOMContentLoaded', function () {
     fetchChatRooms();
     toggleSidebarOnLoad();
     toggleSidebarButtonVisibility();
+    
+    sidebarWrapper.addEventListener('click', function (event) {
+        let targetElement = event.target;
+        while (targetElement != this) {
+            if (targetElement.tagName === 'A' && targetElement.classList.contains('active-chatroom')) {
+                event.preventDefault(); // Prevent navigation on click
+                return;
+            } else if (targetElement.tagName === 'BUTTON' || (targetElement.tagName === 'INPUT' && targetElement.type === 'button')) {
+                event.preventDefault();
+                const chatId = targetElement.closest('.list-group-item').getAttribute('data-chat-id');
+                console.log('Archive button clicked for room:', chatId);
+                archiveSidebarElement(this.parentElement, chatId);
+                return;
+            }
+            targetElement = targetElement.parentNode; // Move up in the DOM
+        }
+    });
+});
 
+listGroup.addEventListener('scroll', () => {
+    // Save the current scroll position
+    const scrollPosition = listGroup.scrollTop;
+    localStorage.setItem('sidebarScrollPosition', scrollPosition);
 });
