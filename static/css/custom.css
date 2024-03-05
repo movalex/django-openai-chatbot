@@ -43,7 +43,6 @@ ol ol, ol ul, ul ol, ul ul {
     padding-bottom: 2px;
 }
 
-
 #main-content {
     position: relative;
 }
@@ -65,11 +64,19 @@ ol ol, ol ul, ul ol, ul ul {
     justify-content: left;
 }
 
-
 #sidebar-wrapper.toggled {
     margin-left: -280px;
 }
+
 .list-group-item:hover {
+    background-color: #24313e;
+}
+.active-chatroom {
+    background-color: #24313e;
+}
+
+.list-group-item:active,
+.list-group-item:focus {
     background-color: #24313e;
 }
 
@@ -130,9 +137,7 @@ ol ol, ol ul, ul ol, ul ul {
     overflow-y: auto;
 }
 
-.active-chatroom {
-    background-color: #24313e;
-}
+
 
 #closeSidebarButton {
     position: relative;
