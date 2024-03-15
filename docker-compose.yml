@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  django_app:
+    build: .
+    image: django-openai-chatbot-django_app
+    command: >
+      gunicorn -c /app/gunicorn.conf.py django_chatbot.wsgi:application
+      --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=$OPENAI_API_KEY
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./staticfiles:/app/staticfiles
+    #   - ./nginx-entrypoint.sh:/docker-entrypoint.d/nginx-entrypoint.sh
+    # entrypoint: ["/docker-entrypoint.d/nginx-entrypoint.sh"]
+    depends_on:
+      - django_app
