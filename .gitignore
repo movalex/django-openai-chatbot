@@ -2,8 +2,18 @@ __pycache__/
 venv/
 staticfiles/
 .vscode/
+.DS_Store
 
 *.py[cod]
+
+# Database
 *.sqlite3
+
+# vscode workspace
 *.code-workspace
-.DS_Store
+
+# docker-compose env files
+.env
+
+# local env files
+.env*.local
