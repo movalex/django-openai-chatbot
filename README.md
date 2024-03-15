@@ -30,7 +30,7 @@ To install Django-OpenAI-Chatbot, follow these steps:
 
 ## Usage
 
-After installation, you can access the Django-OpenAI-Chatbot by navigating to `http://localhost:8000` in your web browser.
+After installation, you can access the Django-OpenAI-Chatbot by navigating to `http://localhost:8888` in your web browser.
 
 ## Configuration
 
