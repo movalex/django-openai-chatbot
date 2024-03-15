@@ -13,7 +13,7 @@
         - each element of the chat list is determined by the assistant settings
         - change model and the knowledge base is only allowed on assistand level, no model settings in the nav bar
 - bottom of the sidebar is user settings and logiut button
-- Submit form in the assistants chat has attach button for fiel uploading
+- Submit form in the assistants chat has attach     button for fiel uploading
 - Assistant settings:
     * Instructions text field
     * Knowledge base file upload section
