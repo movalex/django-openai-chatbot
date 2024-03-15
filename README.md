@@ -1,36 +1,67 @@
+# Django-OpenAI-Chatbot
 
-# TODO
-### UI
-* add a good looking bootstrap sidebar
-* add chats list to the sidebar
-* better submit form placement on large screens
+This project is a Django-based application that integrates with OpenAI to provide a chatbot service. It uses Gunicorn as the WSGI HTTP Server to serve the Django application with NGINX as a reverse proxy for handling static files. SSL configuration can be added within the NGINX settings.
 
-#### Sidebar elements as seen by the user
-- top of the sidebar is the chatlist with just api requests
-    * each chat list element have its own settings inside the nav bar (change the model is possible during the current chat session)
-- Assistant name (with settings button)
-    * chat name
-        - each element of the chat list is determined by the assistant settings
-        - change model and the knowledge base is only allowed on assistand level, no model settings in the nav bar
-- bottom of the sidebar is user settings and logiut button
-- Submit form in the assistants chat has attach     button for fiel uploading
-- Assistant settings:
-    * Instructions text field
-    * Knowledge base file upload section
-    * functions text field
+The repository has basic Dockerfile for your Django application and a basic NGINX configuration in the ./nginx directory. You might need to adjust paths and settings according to your project's specific setup.
 
-### API
-* auto-rename the chat lists
-* add assistants API handling
-    - assistant elements to the sidebar as parent elemet of the chat list
-    - assistant chat settings are determined by assistant settings
-    - add assistant instructions and functions calling
-* allow choose between normal chat and the assistant
+## Prerequisites
 
+Before you begin, ensure you have met the following requirements:
+- Docker and Docker Compose are installed on your machine.
+- You have a basic understanding of Docker container management.
 
-### Chat formatting improvements
-* add use 2spaces tab length markdown rule for nested lists:
-    - example:
-    ```python
-    markdown.markdown(text, tab_length=2)
-    ```
+## Installation
+
+To install Django-OpenAI-Chatbot, follow these steps:
+
+1. Clone the repository to your local machine:
+
+   ```bash
+   git clone https://github.com/yourgithubusername/django-openai-chatbot.git
+   cd django-openai-chatbot
+   ```
+
+2. Build and start your containers with Docker Compose:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+## Usage
+
+After installation, you can access the Django-OpenAI-Chatbot by navigating to `http://localhost:8000` in your web browser.
+
+## Configuration
+
+The primary configuration is done through the `docker-compose.yml` file. You can adjust service settings, such as ports and volume mounts, as needed.
+
+## Development
+
+For development purposes, you can override the command in the docker-compose.yml file to use Django's development server:
+
+```
+services:
+  django_app:
+    command: python manage.py runserver 0.0.0.0:8000
+```
+Then, start your containers with Docker Compose:
+
+```
+docker-compose up
+```
+
+## Contributing to Django-OpenAI-Chatbot
+
+To contribute to Django-OpenAI-Chatbot, follow these steps:
+
+1. Fork this repository.
+2. Create a new branch: `git checkout -b branch_name`.
+3. Make your changes and commit them: `git commit -m 'commit_message'`
+4. Push to the original branch: `git push origin django-openai-chatbot/<location>`
+5. Create the pull request.
+
+Alternatively, see the GitHub documentation on [creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
+
+## License
+
+This project uses the following license: [MIT License - Open Source Initiative](https://opensource.org/licenses/MIT)
