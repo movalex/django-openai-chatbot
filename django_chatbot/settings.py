@@ -16,11 +16,12 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 
 # Get DEBUG setting from environment variable
-DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
+# DEBUG = os.environ.get("DJANGO_DEBUG", False) == "True"
+DEBUG = False
 
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": False,
+    "disable_existing_loggers": True,
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
@@ -35,6 +36,13 @@ LOGGING = {
 }
 
 ALLOWED_HOSTS = ["*"]
+
+# Disable cookie security temporarily
+SESSION_COOKIE_SECURE = False  # True if using HTTPS
+CSRF_COOKIE_SECURE = False  # True if HTTPS
+
+# Also temporarily
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8888']
 
 
 # Application definition
