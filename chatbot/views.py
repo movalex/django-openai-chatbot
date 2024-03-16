@@ -132,7 +132,7 @@ def handle_post_request(request, chat_room):
 
 def handle_get_request(request, chat_room):
     chats = Chat.objects.filter(user=request.user, chat_room=chat_room)
-    default_model = GPT_MODELS["GPT3.5 Turbo"]  # This should be driven by user profile
+    default_model = GPT_MODELS["GPT4 Turbo"]  # This should be driven by chatroom settings
     return render(
         request,
         "chatbot.html",
@@ -241,10 +241,15 @@ def login(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
+        remember_me = request.POST.get("remember-me")  # Access the Remember Me checkbox value
         user = auth.authenticate(request, username=username, password=password)
         error_message = None
         if user is not None:
             auth.login(request, user)
+            if remember_me:
+                request.session.set_expiry(1209600)  # Sessions expire after 2 weeks
+            else:
+                request.session.set_expiry(0)   # Session expires at browser close
             user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
             last_opened_chat = user_profile.last_opened_chat
             if last_opened_chat:
