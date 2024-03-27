@@ -9,7 +9,7 @@ class ChatRoom(models.Model):
     name = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     is_hidden = models.BooleanField(default=False)
-    # participants = models.ManyToManyField(User)  # if multiple human participants expected per chat room
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name

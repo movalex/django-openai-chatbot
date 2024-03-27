@@ -54,7 +54,7 @@ def get_chat_rooms(request):
         return JsonResponse({"error": "Unauthorized"}, status=401)
 
     # Get chat rooms associated with the user
-    chat_rooms = ChatRoom.objects.filter(user=request.user, is_hidden=False).values("id", "name")
+    chat_rooms = ChatRoom.objects.filter(user=request.user, is_hidden=False).order_by('-created_at').values("id", "name")
     # Return the chat rooms as JSON
     return JsonResponse({"chat_rooms": list(chat_rooms)})
 
