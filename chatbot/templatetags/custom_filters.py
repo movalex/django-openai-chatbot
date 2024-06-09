@@ -34,5 +34,5 @@ def markdown_to_html(markdown_text: str):
     if not isinstance(markdown_text, str):
         return ""
     adjusted_text = adjust_indentation(markdown_text)
-    result = markdown(adjusted_text, tab_length=3, extensions=["pymdownx.superfences"])
+    result = markdown(adjusted_text, tab_length=3, extensions=["pymdownx.superfences", "tables"])
     return mark_safe(result)
