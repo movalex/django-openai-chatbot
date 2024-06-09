@@ -16,8 +16,8 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 
 # Get DEBUG setting from environment variable
-# DEBUG = os.environ.get("DJANGO_DEBUG", False) == "True"
-DEBUG = False
+DEBUG = os.environ.get("DJANGO_DEBUG", False) == "True"
+# DEBUG = False
 
 LOGGING = {
     "version": 1,
