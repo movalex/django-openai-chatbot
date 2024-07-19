@@ -26,8 +26,8 @@ MAX_USED_CONTEXT = 8
 TRIM_CONTEXT = True
 GPT_MODELS = {
     "GPT4o": "gpt-4o",
+    "GPT4o Mini": "gpt-4o-mini",
     "GPT4 Turbo": "gpt-4-turbo-preview",
-    "GPT3.5 Turbo": "gpt-3.5-turbo-0125",
 }
 
 
@@ -55,7 +55,11 @@ def get_chat_rooms(request):
         return JsonResponse({"error": "Unauthorized"}, status=401)
 
     # Get chat rooms associated with the user
-    chat_rooms = ChatRoom.objects.filter(user=request.user, is_hidden=False).order_by('-created_at').values("id", "name")
+    chat_rooms = (
+        ChatRoom.objects.filter(user=request.user, is_hidden=False)
+        .order_by("-created_at")
+        .values("id", "name")
+    )
     # Return the chat rooms as JSON
     return JsonResponse({"chat_rooms": list(chat_rooms)})
 
@@ -242,7 +246,9 @@ def login(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
-        remember_me = request.POST.get("remember-me")  # Access the Remember Me checkbox value
+        remember_me = request.POST.get(
+            "remember-me"
+        )  # Access the Remember Me checkbox value
         user = auth.authenticate(request, username=username, password=password)
         error_message = None
         if user is not None:
@@ -250,7 +256,7 @@ def login(request):
             if remember_me:
                 request.session.set_expiry(1209600)  # Sessions expire after 2 weeks
             else:
-                request.session.set_expiry(0)   # Session expires at browser close
+                request.session.set_expiry(0)  # Session expires at browser close
             user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
             last_opened_chat = user_profile.last_opened_chat
             if last_opened_chat:
