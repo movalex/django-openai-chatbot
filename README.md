@@ -3,6 +3,8 @@
 This project is a Django-based application that integrates with OpenAI to provide a chatbot service. It uses Gunicorn as the WSGI HTTP Server to serve the Django application with NGINX as a reverse proxy for handling static files. 
 To enable HTTPS support, add SSL configuration to your NGINX settings. This involves obtaining SSL certificates and adding `ssl_certificate` and `ssl_certificate_key` directives to your NGINX server block. For detailed instructions, refer to the NGINX documentation on SSL/TLS configuration.
 
+![](https://i.imgur.com/cNTCTFA.png)
+
 The repository has basic Dockerfile for your Django application and a basic NGINX configuration in the ./nginx directory. You might need to adjust paths and settings according to your project's specific setup.
 
 ## Prerequisites
