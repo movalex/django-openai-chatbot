@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponseNotAllowed
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse, HttpResponseNotAllowed
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from django.contrib.auth.models import User
@@ -27,7 +27,13 @@ TRIM_CONTEXT = True
 GPT_MODELS = {
     "GPT4o": "gpt-4o",
     "GPT4o Mini": "gpt-4o-mini",
-    "GPT4 Turbo": "gpt-4-turbo-preview",
+    "GPT4.1": "gpt-4.1",
+    "GPT4.1 Mini": "gpt-4.1-mini",
+    "GPT4.1 Nano": "gpt-4.1-nano",
+    "GPT o1": "gpt-o1",
+    "GPT o1 Mini": "gpt-o1-mini",
+    "GPT o3": "gpt-o1",
+    "GPT o3 Mini": "gpt-o1-mini",
 }
 
 
@@ -41,6 +47,7 @@ def format_output(value):
 
 
 def ask_openai(message, chat_context, model):
+
     response = openai.chat.completions.create(
         model=model,
         messages=chat_context + [{"role": "user", "content": message}],
