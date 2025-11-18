@@ -21,3 +21,9 @@ staticfiles/
 # local env files
 .env*.local
 /.venv/
+
+# Test coverage
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
