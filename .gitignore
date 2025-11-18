@@ -4,6 +4,7 @@ staticfiles/
 .vscode/
 .DS_Store
 .idea/
+.junie/
 
 
 *.py[cod]
