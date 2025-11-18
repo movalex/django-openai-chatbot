@@ -5,3 +5,10 @@ markdown
 openai
 requests
 pymdown-extensions
+
+# Development dependencies
+pytest>=8.0.0
+pytest-django>=4.7.0
+pytest-cov>=4.1.0
+pytest-mock>=3.12.0
+factory-boy>=3.3.0

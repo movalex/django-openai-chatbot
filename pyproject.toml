@@ -13,3 +13,39 @@ dependencies = [
     "pymdown-extensions>=10.17.1",
     "requests>=2.32.5",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-django>=4.7.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "factory-boy>=3.3.0",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "django_chatbot.settings"
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--cov=chatbot",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+]
+testpaths = ["chatbot/tests"]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Tests that take longer to run",
+]
+
+[tool.coverage.run]
+omit = [
+    "*/migrations/*",
+    "*/tests/*",
+    "*/test_*.py",
+    "*/__pycache__/*",
+]
