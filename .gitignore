@@ -3,6 +3,7 @@ staticfiles/
 .venv/
 .vscode/
 .DS_Store
+.idea/
 
 
 *.py[cod]
@@ -18,3 +19,4 @@ staticfiles/
 
 # local env files
 .env*.local
+/.venv/
