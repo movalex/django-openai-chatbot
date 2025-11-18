@@ -15,7 +15,6 @@ class ChatRoom(models.Model):
         return self.name
 
 
-# Create your models here.
 class Chat(models.Model):
     chat_room = models.ForeignKey(ChatRoom, related_name='messages', on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
