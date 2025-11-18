@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # activate virtualenv
-source $HOME/git/django-openai-chatbot/venv/bin/activate
+source "$HOME"/git/django-openai-chatbot/.venv/bin/activate
 # get the API keys
 source ~/.zshrc
 
