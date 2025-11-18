@@ -1,0 +1,15 @@
+[project]
+name = "django-openai-chatbot"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9.13"
+dependencies = [
+    "bs4>=0.0.2",
+    "django==4.2.2",
+    "gunicorn>=23.0.0",
+    "markdown>=3.9",
+    "openai>=2.8.0",
+    "pymdown-extensions>=10.17.1",
+    "requests>=2.32.5",
+]
