@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project adheres to Semantic Versioning (SemVer).
 
+## [0.2.1] - 2025-11-25
+
+### Added
+- Comprehensive pytest test suite with 84 tests covering models, views, and template tags
+- Test fixtures and Factory Boy data factories for reusable test data
+- TESTING.md documentation with test organization, commands, and guidelines
+- Pytest configuration with markers (unit, integration, slow) and coverage reporting
+- Mock implementations for OpenAI API calls in test suite
+
+### Changed
+- Migrated testing infrastructure from Django's built-in test runner to pytest-django
+
 ## [0.2.0] - 2025-11-14
 
 SemVer rationale: Minor version bump. Since the last recorded changes include adding a new OpenAI model (feature) and adjustments to the supported model list, we treat this as a backward-compatible feature release. A removal of `gpt3-turbo` is noted below; if your deployment depended on that specific model, treat this as a breaking change in your environment.
