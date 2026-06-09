@@ -6,3 +6,25 @@
 
 *.key
 *.key.pub
+
+# python / uv
+.venv/
+__pycache__/
+*.pyc
+
+# django / local data
+db.sqlite3
+staticfiles/
+
+# tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+.coverage.*
+
+# vcs / editors / tools
+.git/
+.idea/
+.playwright-mcp/
