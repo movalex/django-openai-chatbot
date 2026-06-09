@@ -23,15 +23,9 @@ MAX_CONTEXT_SIZE = 2000
 MAX_USED_CONTEXT = 8
 TRIM_CONTEXT = True
 GPT_MODELS = {
-    "GPT4o": "gpt-4o",
-    "GPT4o Mini": "gpt-4o-mini",
     "GPT4.1": "gpt-4.1",
     "GPT4.1 Mini": "gpt-4.1-mini",
     "GPT4.1 Nano": "gpt-4.1-nano",
-    "GPT o1": "gpt-o1",
-    "GPT o1 Mini": "gpt-o1-mini",
-    "GPT o3": "gpt-o1",
-    "GPT o3 Mini": "gpt-o1-mini",
 }
 
 
@@ -138,7 +132,7 @@ def handle_post_request(request, chat_room):
 
 def handle_get_request(request, chat_room):
     chats = Chat.objects.filter(user=request.user, chat_room=chat_room)
-    default_model = GPT_MODELS["GPT4o"]  # This should be driven by chatroom settings
+    default_model = GPT_MODELS["GPT4.1 Mini"]  # This should be driven by chatroom settings
     return render(
         request,
         "chatbot.html",
