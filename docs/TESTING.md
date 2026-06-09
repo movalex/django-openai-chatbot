@@ -5,8 +5,8 @@ This project uses pytest for testing with comprehensive coverage of models, view
 ## Quick Start
 
 ```bash
-# Install test dependencies
-uv pip install -r requirements.txt
+# Install dependencies (runtime + dev)
+uv sync --extra dev
 
 # Run all tests
 uv run pytest
@@ -98,9 +98,7 @@ chatbot/tests/
 
 ## Configuration Files
 
-- `pytest.ini` - Pytest configuration
-- `pyproject.toml` - Contains pytest settings and dev dependencies
-- `.coveragerc` - (optional) Coverage configuration
+- `pyproject.toml` - pytest, coverage, and dev-dependency configuration
 
 ## Continuous Integration
 
@@ -108,7 +106,7 @@ For CI/CD pipelines:
 
 ```bash
 # Install dependencies
-uv pip install -r requirements.txt
+uv sync --extra dev
 
 # Run tests with coverage
 uv run pytest --cov=chatbot --cov-report=xml --cov-report=term
@@ -163,7 +161,7 @@ See `chatbot/tests/README.md` for detailed guidelines on:
 
 ## Dependencies
 
-Test dependencies (installed via requirements.txt):
+Test dependencies (the `dev` extra in `pyproject.toml`; install with `uv sync --extra dev`):
 - pytest >= 8.0.0
 - pytest-django >= 4.7.0
 - pytest-cov >= 4.1.0
@@ -173,7 +171,7 @@ Test dependencies (installed via requirements.txt):
 ## Troubleshooting
 
 **Issue**: `ModuleNotFoundError: No module named 'pytest'`
-**Solution**: Run `uv pip install -r requirements.txt`
+**Solution**: Run `uv sync --extra dev`
 
 **Issue**: Database errors
 **Solution**: Ensure `DJANGO_SETTINGS_MODULE=django_chatbot.settings` is set

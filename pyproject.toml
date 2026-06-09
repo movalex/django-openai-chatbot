@@ -3,10 +3,11 @@ name = "django-openai-chatbot"
 version = "0.2.1"
 description = "Django web application providing a chatbot interface powered by OpenAI GPT models"
 readme = "README.md"
-requires-python = ">=3.9.13"
+requires-python = ">=3.13"
 dependencies = [
     "bs4>=0.0.2",
     "django==4.2.2",
+    "django-environ>=0.13.0",
     "gunicorn>=23.0.0",
     "markdown>=3.9",
     "openai>=2.8.0",
@@ -14,7 +15,7 @@ dependencies = [
     "requests>=2.32.5",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "pytest>=8.0.0",
     "pytest-django>=4.7.0",
@@ -55,7 +56,7 @@ omit = [
 ]
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py313"
 line-length = 100
 extend-exclude = ["migrations", "staticfiles"]
 
@@ -70,9 +71,8 @@ ignore = ["E501"]
 # Incremental adoption: django-stubs gives ORM/HttpRequest typing, but the
 # existing code is largely untyped, so this is intentionally lenient for now.
 # Strictness ratchets up as type hints are added in later phases.
-# mypy requires >=3.10 as its analysis target; the runtime floor in
-# [project].requires-python is tracked separately.
-python_version = "3.10"
+# Analysis target matches the project's runtime Python.
+python_version = "3.13"
 plugins = ["mypy_django_plugin.main"]
 ignore_missing_imports = true
 check_untyped_defs = false
