@@ -1,7 +1,11 @@
-import pytest
 import uuid
-from django.contrib.auth.models import User
-from chatbot.models import ChatRoom, Chat, ChatSession, UserProfile
+from datetime import timedelta
+
+import pytest
+from django.db import IntegrityError
+from django.utils import timezone
+
+from chatbot.models import Chat, ChatRoom, ChatSession, UserProfile
 
 
 @pytest.mark.unit
@@ -10,10 +14,7 @@ class TestChatRoomModel:
 
     def test_create_chat_room(self, user):
         """Test creating a chat room."""
-        chat_room = ChatRoom.objects.create(
-            name="Test Room",
-            user=user
-        )
+        chat_room = ChatRoom.objects.create(name="Test Room", user=user)
         assert chat_room.name == "Test Room"
         assert chat_room.user == user
         assert chat_room.is_hidden is False
@@ -30,11 +31,7 @@ class TestChatRoomModel:
 
     def test_chat_room_can_be_hidden(self, user):
         """Test that chat rooms can be hidden."""
-        chat_room = ChatRoom.objects.create(
-            name="Hidden Room",
-            user=user,
-            is_hidden=True
-        )
+        chat_room = ChatRoom.objects.create(name="Hidden Room", user=user, is_hidden=True)
         assert chat_room.is_hidden is True
 
     def test_chat_room_cascade_delete(self, user, chat_room):
@@ -57,6 +54,11 @@ class TestChatRoomModel:
         """Test that chat rooms can be ordered by creation time."""
         room1 = ChatRoom.objects.create(name="First Room", user=user)
         room2 = ChatRoom.objects.create(name="Second Room", user=user)
+        # auto_now_add timestamps can collide in fast test runs; force a gap so
+        # ordering by -created_at is deterministic.
+        now = timezone.now()
+        ChatRoom.objects.filter(pk=room1.pk).update(created_at=now - timedelta(minutes=1))
+        ChatRoom.objects.filter(pk=room2.pk).update(created_at=now)
 
         rooms = ChatRoom.objects.filter(user=user).order_by("-created_at")
         assert list(rooms) == [room2, room1]
@@ -69,10 +71,7 @@ class TestChatModel:
     def test_create_chat(self, user, chat_room):
         """Test creating a chat message."""
         chat = Chat.objects.create(
-            chat_room=chat_room,
-            user=user,
-            message="Hello",
-            response="Hi there!"
+            chat_room=chat_room, user=user, message="Hello", response="Hi there!"
         )
         assert chat.message == "Hello"
         assert chat.response == "Hi there!"
@@ -104,16 +103,10 @@ class TestChatModel:
     def test_multiple_chats_in_room(self, user, chat_room):
         """Test multiple chat messages in a room."""
         chat1 = Chat.objects.create(
-            chat_room=chat_room,
-            user=user,
-            message="First message",
-            response="First response"
+            chat_room=chat_room, user=user, message="First message", response="First response"
         )
         chat2 = Chat.objects.create(
-            chat_room=chat_room,
-            user=user,
-            message="Second message",
-            response="Second response"
+            chat_room=chat_room, user=user, message="Second message", response="Second response"
         )
 
         assert chat_room.messages.count() == 2
@@ -129,10 +122,7 @@ class TestChatSessionModel:
         """Test creating a chat session."""
         session_id = f"{user.id}-{chat_room.id}"
         session = ChatSession.objects.create(
-            user=user,
-            chat_room=chat_room,
-            session_id=session_id,
-            context="[]"
+            user=user, chat_room=chat_room, session_id=session_id, context="[]"
         )
         assert session.user == user
         assert session.chat_room == chat_room
@@ -148,18 +138,12 @@ class TestChatSessionModel:
         """Test that session_id must be unique."""
         session_id = f"{user.id}-{chat_room.id}"
         ChatSession.objects.create(
-            user=user,
-            chat_room=chat_room,
-            session_id=session_id,
-            context="[]"
+            user=user, chat_room=chat_room, session_id=session_id, context="[]"
         )
 
-        with pytest.raises(Exception):  # IntegrityError
+        with pytest.raises(IntegrityError):
             ChatSession.objects.create(
-                user=user,
-                chat_room=chat_room,
-                session_id=session_id,
-                context="[]"
+                user=user, chat_room=chat_room, session_id=session_id, context="[]"
             )
 
     def test_chat_session_cascade_delete_with_user(self, chat_session, user):
@@ -177,15 +161,16 @@ class TestChatSessionModel:
     def test_chat_session_context_storage(self, user, chat_room):
         """Test storing context in chat session."""
         import json
+
         context = [
             {"role": "user", "content": "Hello"},
-            {"role": "assistant", "content": "Hi there!"}
+            {"role": "assistant", "content": "Hi there!"},
         ]
         session = ChatSession.objects.create(
             user=user,
             chat_room=chat_room,
             session_id=f"{user.id}-{chat_room.id}",
-            context=json.dumps(context)
+            context=json.dumps(context),
         )
 
         stored_context = json.loads(session.context)
@@ -204,10 +189,7 @@ class TestUserProfileModel:
 
     def test_user_profile_with_last_opened_chat(self, user, chat_room):
         """Test user profile with last opened chat."""
-        profile = UserProfile.objects.create(
-            user=user,
-            last_opened_chat=chat_room
-        )
+        profile = UserProfile.objects.create(user=user, last_opened_chat=chat_room)
         assert profile.last_opened_chat == chat_room
 
     def test_user_profile_cascade_delete(self, user_profile, user):
@@ -218,10 +200,7 @@ class TestUserProfileModel:
 
     def test_user_profile_set_null_on_room_delete(self, user, chat_room):
         """Test that deleting chat room sets last_opened_chat to NULL."""
-        profile = UserProfile.objects.create(
-            user=user,
-            last_opened_chat=chat_room
-        )
+        profile = UserProfile.objects.create(user=user, last_opened_chat=chat_room)
         chat_room.delete()
         profile.refresh_from_db()
         assert profile.last_opened_chat is None
@@ -230,7 +209,7 @@ class TestUserProfileModel:
         """Test that each user can have only one profile."""
         UserProfile.objects.create(user=user)
 
-        with pytest.raises(Exception):  # IntegrityError
+        with pytest.raises(IntegrityError):
             UserProfile.objects.create(user=user)
 
     def test_update_last_opened_chat(self, user):
@@ -238,10 +217,7 @@ class TestUserProfileModel:
         room1 = ChatRoom.objects.create(name="Room 1", user=user)
         room2 = ChatRoom.objects.create(name="Room 2", user=user)
 
-        profile = UserProfile.objects.create(
-            user=user,
-            last_opened_chat=room1
-        )
+        profile = UserProfile.objects.create(user=user, last_opened_chat=room1)
         assert profile.last_opened_chat == room1
 
         profile.last_opened_chat = room2

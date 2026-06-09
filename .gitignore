@@ -5,6 +5,7 @@ staticfiles/
 .DS_Store
 .idea/
 .junie/
+.playwright-mcp/
 
 
 *.py[cod]

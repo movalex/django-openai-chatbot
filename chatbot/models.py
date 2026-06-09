@@ -1,10 +1,10 @@
 import uuid
-from django.db import models
+
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class ChatRoom(models.Model):
-    name = models.CharField(max_length=255)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -16,7 +16,9 @@ class ChatRoom(models.Model):
 
 
 class Chat(models.Model):
-    chat_room = models.ForeignKey(ChatRoom, related_name='messages', on_delete=models.CASCADE, null=True)
+    chat_room = models.ForeignKey(
+        ChatRoom, related_name="messages", on_delete=models.CASCADE, null=True
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField()
     response = models.TextField()
@@ -28,7 +30,9 @@ class Chat(models.Model):
 
 class ChatSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, related_name='chat_sessions', null=True)
+    chat_room = models.ForeignKey(
+        ChatRoom, on_delete=models.CASCADE, related_name="chat_sessions", null=True
+    )
     session_id = models.CharField(max_length=255, unique=True)
     context = models.TextField()
 
@@ -38,4 +42,9 @@ class ChatSession(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    last_opened_chat = models.ForeignKey('ChatRoom', on_delete=models.SET_NULL, null=True, blank=True)
+    last_opened_chat = models.ForeignKey(
+        "ChatRoom", on_delete=models.SET_NULL, null=True, blank=True
+    )
+
+    def __str__(self):
+        return f"{self.user.username} profile"

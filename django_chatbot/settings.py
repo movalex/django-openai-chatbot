@@ -1,8 +1,7 @@
-
 import os
 from pathlib import Path
-from django.core.management.utils import get_random_secret_key
 
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,7 +41,7 @@ SESSION_COOKIE_SECURE = False  # True if using HTTPS
 CSRF_COOKIE_SECURE = False  # True if HTTPS
 
 # Also temporarily
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8888']
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8888"]
 
 
 # Application definition

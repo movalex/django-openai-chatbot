@@ -1,9 +1,9 @@
 import re
-from django import template
-from django.utils.html import mark_safe
+
 from bs4 import BeautifulSoup
+from django import template
+from django.utils.safestring import mark_safe
 from markdown import markdown
-from pprint import pp
 
 register = template.Library()
 

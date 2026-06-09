@@ -17,14 +17,17 @@ Django-based web application providing a chatbot interface powered by OpenAI's G
 ## Development Commands
 
 ### Package Management
-Use `uv` for virtual environment management:
+Use `uv`. Dependencies live in `pyproject.toml` and are locked in `uv.lock` (the single source of truth). `requirements.txt` is generated from the lock for the Docker image only — do not edit it by hand.
 
 ```bash
-# Run commands in virtual environment
+# Install runtime + dev dependencies into the project venv
+uv sync --extra dev
+
+# Run a command in the venv
 uv run python manage.py <command>
 
-# Install dependencies
-uv pip install -r requirements.txt
+# Regenerate requirements.txt after changing dependencies
+uv export --no-dev --no-emit-project --no-hashes -o requirements.txt
 ```
 
 ### Database Operations
@@ -78,21 +81,27 @@ gunicorn -c ./gunicorn.conf.py django_chatbot.wsgi:application --bind 0.0.0.0:80
 
 ### Testing
 
+Tests run under pytest (pytest-django). All tests live in the `chatbot/tests/` package.
+
 ```bash
-# Run all tests
-python manage.py test -v 2
+# Run the whole suite (coverage is configured in pyproject.toml)
+uv run --extra dev pytest
 
-# Run specific test class
-python manage.py test chatbot.tests.FiltersTest -v 2
-
-# Run specific test method
-python manage.py test chatbot.tests.FiltersTest.test_markdown_output -v 2
-
-# Run tests in Docker
-docker-compose run --rm django_app python manage.py test -v 2
+# Run a single module / class / test, or by keyword
+uv run --extra dev pytest chatbot/tests/test_models.py
+uv run --extra dev pytest chatbot/tests/test_views.py::TestLoginView
+uv run --extra dev pytest -k markdown
 ```
 
-**Note:** There is both `chatbot/tests.py` (module) and `chatbot/tests/` (directory). The module shadows the directory, so Django will not discover tests in `chatbot/tests/` via the `chatbot.tests` label. Add new tests to `chatbot/tests.py` or create new top-level modules like `chatbot/test_*.py`.
+### Linting, formatting, type-checking
+
+```bash
+uv run --extra dev ruff check .      # lint
+uv run --extra dev ruff format       # format
+uv run --extra dev mypy chatbot      # type-check (django-stubs)
+```
+
+Pre-commit hooks (ruff + mypy + basic file checks) are defined in `.pre-commit-config.yaml`; enable with `uv run --extra dev pre-commit install`.
 
 ## Architecture
 
@@ -300,19 +309,23 @@ chat_session.save()
 
 ### Testing Considerations
 
-- Current test in `chatbot/tests.py` has known HTML output mismatch issues
-- When adding tests, avoid the `chatbot/tests/` directory due to module shadowing
-- Use `chatbot/test_*.py` pattern for new test modules
-- Test database uses in-memory SQLite for speed
+- All tests live in the `chatbot/tests/` package (`test_*.py`), with shared fixtures in `conftest.py` and factory_boy factories in `factories.py` — reuse and extend these.
+- DB-touching tests use the `db` fixture or `@pytest.mark.django_db`.
+- OpenAI calls are mocked via `@patch("chatbot.views.ask_openai")`; tests never hit the live API.
+- Test database uses SQLite for speed (production moves to Postgres in a later phase).
 
 ## Known Issues and TODOs
 
-1. **Test Layout:** Module `chatbot/tests.py` shadows package `chatbot/tests/`, preventing test discovery in the directory
-2. **Registration:** Only available when `DEBUG=True` (line 290 in views.py)
-3. **Error Handling:** Generic `except:` clause in register view (line 312) should specify exception types
-4. **Model Duplication:** `ChatRoom.name` field defined twice (lines 7 and 9 in models.py)
-5. **HTTPS:** NGINX configuration needs SSL directives for production HTTPS deployment
-6. **Context Trimming:** Function `trim_chat_context_if_needed()` doesn't reassign the trimmed context (views.py:186-188)
+See `docs/ROADMAP.md` for the full refactor plan. Outstanding items:
+
+1. **Registration:** Only available when `DEBUG=True` (in `register()` in views.py)
+2. **HTTPS:** NGINX configuration needs SSL directives for production HTTPS deployment
+3. **Context Trimming:** `trim_chat_context_if_needed()` reassigns a local without persisting it — effectively dead (addressed in the data-model rework)
+4. **Module-global OpenAI key:** `openai.api_key` is set at import time, blocking per-user keys (addressed in the OpenAI-client rework)
+5. **Invalid model ids:** `GPT_MODELS` contains placeholder ids (e.g. `gpt-o1`); replaced by a DB-backed model catalog in a later phase
+6. **`save_chat_name` ownership:** the rename endpoint lacks an ownership check (IDOR) — fixed in the security-hardening phase
+
+Recently resolved: test-layout collision (single `chatbot/tests/` package under pytest), duplicate `ChatRoom.name` field, bare `except` in register, and ruff/mypy/pre-commit tooling.
 
 ## Logging
 

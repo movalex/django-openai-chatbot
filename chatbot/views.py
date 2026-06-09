@@ -1,22 +1,20 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse, HttpResponseNotAllowed
-from django.contrib.auth.decorators import login_required
-from django.contrib import auth
-from django.contrib.auth.models import User
+import json
+import logging
+import os
+
+import openai
 from django.conf import settings
+from django.contrib import auth
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
+from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_POST
 
-import json
-import logging
-import openai
-import os
-import uuid
-
-from .templatetags.custom_filters import markdown_to_html, inline_code_formatting
-
-from .models import Chat, ChatSession, ChatRoom, UserProfile
+from .models import Chat, ChatRoom, ChatSession, UserProfile
+from .templatetags.custom_filters import inline_code_formatting, markdown_to_html
 
 openai_api_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = openai_api_key
@@ -124,15 +122,11 @@ def handle_post_request(request, chat_room):
     )
     chat_context = get_chat_context(chat_session, request)
 
-    response, error_msg = get_openai_response(
-        user_message, chat_context, selected_model
-    )
+    response, error_msg = get_openai_response(user_message, chat_context, selected_model)
     if response is None and error_msg:
         return JsonResponse({"error": error_msg}, status=403)
 
-    chat_context, safe_formatted_reply = update_chat_context(
-        chat_context, user_message, response
-    )
+    chat_context, safe_formatted_reply = update_chat_context(chat_context, user_message, response)
 
     trim_chat_context_if_needed(chat_context)
 
@@ -231,9 +225,7 @@ def save_chat_name(request):
         chat_room.save()
         return JsonResponse({"success": True})
     except ChatRoom.DoesNotExist:
-        return JsonResponse(
-            {"success": False, "error": "Chat room not found"}, status=404
-        )
+        return JsonResponse({"success": False, "error": "Chat room not found"}, status=404)
 
 
 @require_POST
@@ -253,9 +245,7 @@ def login(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
-        remember_me = request.POST.get(
-            "remember-me"
-        )  # Access the Remember Me checkbox value
+        remember_me = request.POST.get("remember-me")  # Access the Remember Me checkbox value
         user = auth.authenticate(request, username=username, password=password)
         error_message = None
         if user is not None:
@@ -303,17 +293,14 @@ def register(request):
                 user.save()
 
                 # Create a default chat room for the new user
-                default_room_name = f"{username}'s Default Chat"
                 default_room = create_chat_room(user)
                 default_room.save()
 
                 auth.login(request, user)
                 return redirect("chat_room", chat_room_id=default_room.id)
-            except:
+            except Exception:
                 error_message = "Error creating account"
-                return render(
-                    request, "register.html", {"error_message": error_message}
-                )
+                return render(request, "register.html", {"error_message": error_message})
         else:
             error_message = "Password dont match"
             logger.error(error_message)

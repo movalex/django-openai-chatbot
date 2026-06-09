@@ -1,7 +1,8 @@
 import factory
-from factory.django import DjangoModelFactory
 from django.contrib.auth.models import User
-from chatbot.models import ChatRoom, Chat, ChatSession, UserProfile
+from factory.django import DjangoModelFactory
+
+from chatbot.models import Chat, ChatRoom, ChatSession, UserProfile
 
 
 class UserFactory(DjangoModelFactory):

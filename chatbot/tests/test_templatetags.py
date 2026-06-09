@@ -1,9 +1,10 @@
 import pytest
 from django.utils.safestring import SafeString
+
 from chatbot.templatetags.custom_filters import (
-    markdown_to_html,
+    adjust_indentation,
     inline_code_formatting,
-    adjust_indentation
+    markdown_to_html,
 )
 
 
