@@ -6,6 +6,7 @@ staticfiles/
 .idea/
 .junie/
 .playwright-mcp/
+/docs/phases
 
 
 *.py[cod]
