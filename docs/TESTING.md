@@ -172,7 +172,7 @@ Test dependencies (the `dev` group in `pyproject.toml`, installed by default wit
 **Solution**: Run `uv sync`
 
 **Issue**: Database errors
-**Solution**: Ensure `DJANGO_SETTINGS_MODULE=django_chatbot.settings` is set
+**Solution**: Ensure `DJANGO_SETTINGS_MODULE=config.settings` is set
 
 **Issue**: Import errors
 **Solution**: Run from project root with activated virtual environment

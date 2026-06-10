@@ -183,7 +183,7 @@ pytest --cov=chatbot --cov-fail-under=80
 If you encounter database errors, ensure Django settings are properly configured:
 
 ```bash
-export DJANGO_SETTINGS_MODULE=django_chatbot.settings
+export DJANGO_SETTINGS_MODULE=config.settings
 ```
 
 ### Import errors

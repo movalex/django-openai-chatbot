@@ -73,7 +73,7 @@ docker-compose up --build
 ./start_gunicorn.sh
 
 # Or manually
-gunicorn -c ./gunicorn.conf.py django_chatbot.wsgi:application --bind 0.0.0.0:8000 --workers 3
+gunicorn -c ./gunicorn.conf.py config.wsgi:application --bind 0.0.0.0:8000 --workers 3
 ```
 
 ### Testing
@@ -104,10 +104,10 @@ Pre-commit hooks (ruff + mypy + basic file checks) are defined in `.pre-commit-c
 
 ### Core Application Structure
 
-**Django Project:** `django_chatbot`
-- Settings: `django_chatbot/settings.py`
-- Root URL config: `django_chatbot/urls.py`
-- WSGI: `django_chatbot/wsgi.py`
+**Django Project:** `config`
+- Settings: `config/settings.py`
+- Root URL config: `config/urls.py`
+- WSGI: `config/wsgi.py`
 
 **Main App:** `chatbot`
 - Views: `chatbot/views.py` (handles all chat, auth, and room management)
@@ -214,7 +214,7 @@ In Docker, NGINX serves `/static/` from `./staticfiles`.
 
 ### Database Configuration
 
-SQLite database path resolution (django_chatbot/settings.py:94-105):
+SQLite database path resolution (config/settings.py:94-105):
 1. If `DJANGO_DB_PATH` env var is set and path exists: use `<DJANGO_DB_PATH>/db.sqlite3`
 2. Otherwise: use `<BASE_DIR>/db.sqlite3`
 

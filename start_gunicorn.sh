@@ -6,5 +6,5 @@ source "$HOME"/git/django-openai-chatbot/.venv/bin/activate
 source ~/.zshrc
 
 # Start Gunicorn
-exec gunicorn -c ./gunicorn.conf.py django_chatbot.wsgi:application --bind 0.0.0.0:8000 --workers 3
+exec gunicorn -c ./gunicorn.conf.py config.wsgi:application --bind 0.0.0.0:8000 --workers 3
 

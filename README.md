@@ -2,7 +2,7 @@
 
 This project is a Django-based web application that integrates with OpenAI to provide a chatbot experience through a browser UI.
 
-The app runs as a standard Django project (`django_chatbot`) with a `chatbot` app, served by Gunicorn behind NGINX in Docker. Static files are collected into `staticfiles` and served directly by NGINX.
+The app runs as a standard Django project (`config`) with a `chatbot` app, served by Gunicorn behind NGINX in Docker. Static files are collected into `staticfiles` and served directly by NGINX.
 
 The repository includes:
 - A Dockerfile for building the Django application image (dependencies installed with [uv](https://docs.astral.sh/uv/))
@@ -19,7 +19,7 @@ To enable HTTPS support, you will need to extend the NGINX configuration with SS
 ## Tech stack
 
 - **Language:** Python 3.13
-- **Web framework:** Django 4.2.2 (`django_chatbot` project, `chatbot` app)
+- **Web framework:** Django 4.2.2 (`config` project, `chatbot` app)
 - **WSGI server:** Gunicorn
 - **Reverse proxy / static:** NGINX
 - **Database:** SQLite (file `db.sqlite3`, configurable via `DJANGO_DB_PATH`)
@@ -68,7 +68,7 @@ OPENAI_API_KEY=sk-...      # required to call the OpenAI API
 DJANGO_DEBUG=True          # enable Django debug mode for local development
 ```
 
-The project loads `.env` automatically at startup via `django-environ` (see `django_chatbot/settings.py`). Real environment variables take precedence over the file. The full list is in [Environment variables](#environment-variables).
+The project loads `.env` automatically at startup via `django-environ` (see `config/settings.py`). Real environment variables take precedence over the file. The full list is in [Environment variables](#environment-variables).
 
 ---
 
@@ -135,19 +135,19 @@ Once the containers are up, access the application via NGINX at http://localhost
 - **Django management:** `uv run python manage.py <command>` (e.g. `uv run python manage.py runserver 0.0.0.0:8000`)
 - **Gunicorn (Docker):** defined in `docker-compose.yml`:
   ```bash
-  gunicorn -c /app/gunicorn.conf.py django_chatbot.wsgi:application --bind 0.0.0.0:8000
+  gunicorn -c /app/gunicorn.conf.py config.wsgi:application --bind 0.0.0.0:8000
   ```
 - **Container entrypoint:** `entrypoint.sh` — collects static files, applies migrations, then execs the container command.
 - **Local Gunicorn:**
   ```bash
-  uv run gunicorn -c ./gunicorn.conf.py django_chatbot.wsgi:application --bind 0.0.0.0:8000 --workers 3
+  uv run gunicorn -c ./gunicorn.conf.py config.wsgi:application --bind 0.0.0.0:8000 --workers 3
   ```
 
 ---
 
 ## Environment variables
 
-The following environment variables are read by the project (see `django_chatbot/settings.py` and `docker-compose.yml`). They can be placed in `.env`, which is loaded automatically.
+The following environment variables are read by the project (see `config/settings.py` and `docker-compose.yml`). They can be placed in `.env`, which is loaded automatically.
 
 - `OPENAI_API_KEY`
   - Required to make outbound OpenAI requests.
@@ -208,7 +208,7 @@ django-openai-chatbot/
 │   ├── migrations/           # Django migrations
 │   ├── templatetags/         # Custom template tags/filters (e.g. markdown_to_html)
 │   └── tests/                # pytest suite (conftest fixtures, factories, test modules)
-├── django_chatbot/           # Django project configuration (settings, URLs, WSGI/ASGI)
+├── config/           # Django project configuration (settings, URLs, WSGI/ASGI)
 ├── docs/                     # Project documentation (roadmap, phase guides)
 ├── templates/                # HTML templates
 ├── static/                   # Source static assets (CSS, JS, images)
@@ -242,7 +242,7 @@ django-openai-chatbot/
 - **Gunicorn**
   - Started in Docker with:
     ```bash
-    gunicorn -c /app/gunicorn.conf.py django_chatbot.wsgi:application --bind 0.0.0.0:8000
+    gunicorn -c /app/gunicorn.conf.py config.wsgi:application --bind 0.0.0.0:8000
     ```
   - Logging: access and error logs go to stdout/stderr; log level is `error` by default; timeout is 120s.
 
