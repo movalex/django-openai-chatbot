@@ -158,8 +158,7 @@ To run tests in CI/CD pipelines:
 
 ```bash
 # Install dependencies
-pip install -r requirements.txt
-
+uv sync
 # Run tests with coverage
 pytest --cov=chatbot --cov-report=xml --cov-report=term
 

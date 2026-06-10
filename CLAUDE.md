@@ -17,17 +17,14 @@ Django-based web application providing a chatbot interface powered by OpenAI's G
 ## Development Commands
 
 ### Package Management
-Use `uv`. Dependencies live in `pyproject.toml` and are locked in `uv.lock` (the single source of truth). `requirements.txt` is generated from the lock for the Docker image only — do not edit it by hand.
+Use `uv`. Dependencies live in `pyproject.toml` and are locked in `uv.lock`
 
 ```bash
 # Install runtime + dev dependencies into the project venv
-uv sync --extra dev
-
+uv sync
 # Run a command in the venv
 uv run python manage.py <command>
 
-# Regenerate requirements.txt after changing dependencies
-uv export --no-dev --no-emit-project --no-hashes -o requirements.txt
 ```
 
 ### Database Operations
@@ -85,23 +82,23 @@ Tests run under pytest (pytest-django). All tests live in the `chatbot/tests/` p
 
 ```bash
 # Run the whole suite (coverage is configured in pyproject.toml)
-uv run --extra dev pytest
+uv run pytest
 
 # Run a single module / class / test, or by keyword
-uv run --extra dev pytest chatbot/tests/test_models.py
-uv run --extra dev pytest chatbot/tests/test_views.py::TestLoginView
-uv run --extra dev pytest -k markdown
+uv run pytest chatbot/tests/test_models.py
+uv run pytest chatbot/tests/test_views.py::TestLoginView
+uv run pytest -k markdown
 ```
 
 ### Linting, formatting, type-checking
 
 ```bash
-uv run --extra dev ruff check .      # lint
-uv run --extra dev ruff format       # format
-uv run --extra dev mypy chatbot      # type-check (django-stubs)
+uv run ruff check .      # lint
+uv run ruff format       # format
+uv run mypy chatbot      # type-check (django-stubs)
 ```
 
-Pre-commit hooks (ruff + mypy + basic file checks) are defined in `.pre-commit-config.yaml`; enable with `uv run --extra dev pre-commit install`.
+Pre-commit hooks (ruff + mypy + basic file checks) are defined in `.pre-commit-config.yaml`; enable with `uv run pre-commit install`.
 
 ## Architecture
 
