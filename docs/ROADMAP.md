@@ -20,6 +20,8 @@ A learning-driven build. Phases land one at a time, human-reviewed:
 - **Data safety first** — chat history is preserved through the Postgres move and
   the schema redesign; transient state (session blobs) is disposable.
 - **Streaming via SSE** on sync workers (no WebSockets/Channels/ASGI migration).
+- **Provider-agnostic LLM access** via LiteLLM — one OpenAI-shaped interface over
+  OpenAI, Azure OpenAI, Azure AI Foundry, OpenRouter, etc.; models swapped by id.
 - **PostgreSQL** in dev and prod (parity so full-text search is testable locally).
 - **First feature cluster: user control** — DB-backed settings, profile, real
   light/dark theme, per-user API keys + tiers.
@@ -36,8 +38,9 @@ Tags: **[MIG]** schema migration · **[DATA]** touches existing chat data · **[
 - **P2 — Security & settings hardening** [INFRA] — env-driven `SECRET_KEY`/`ALLOWED_HOSTS`,
   secure-cookie/HSTS prod flags, split `settings/`, ownership check on rename (IDOR).
 - **P3 — PostgreSQL migration** [INFRA][DATA] — SQLite → Postgres with zero chat loss.
-- **P4 — Model catalog + per-request OpenAI client** [MIG] — DB-backed models + prices;
-  drop the module-global API key.
+- **P4 — Model catalog + multi-provider LLM layer (LiteLLM)** [MIG] — DB-backed model
+  registry (provider, model id, pricing) behind one unified client; OpenAI + Azure
+  OpenAI + Azure AI Foundry + others; drop the module-global key.
 - **P5 — Normalized `Message` model** [MIG][DATA] — replace the `Chat`-pair + `ChatSession`-blob
   duplication with one ordered message table; migrate existing history.
 - **P6 — Settings infrastructure** [MIG] — global / per-user / per-room preferences with a
