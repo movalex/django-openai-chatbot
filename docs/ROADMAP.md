@@ -22,6 +22,10 @@ A learning-driven build. Phases land one at a time, human-reviewed:
 - **Streaming via SSE** on sync workers (no WebSockets/Channels/ASGI migration).
 - **Provider-agnostic LLM access** via LiteLLM — one OpenAI-shaped interface over
   OpenAI, Azure OpenAI, Azure AI Foundry, OpenRouter, etc.; models swapped by id.
+- **Frontend: Django-centered (htmx)** — keep server-rendered templates; replace the
+  ad-hoc DOM JS with htmx fragment swaps, not a JSON-API + SPA split. One small JS
+  module stays for the streaming chat pane. Adopted at P8. See
+  `docs/phases/00-frontend-architecture.md`.
 - **PostgreSQL** in dev and prod (parity so full-text search is testable locally).
 - **First feature cluster: user control** — DB-backed settings, profile, real
   light/dark theme, per-user API keys + tiers.
@@ -49,7 +53,9 @@ Tags: **[MIG]** schema migration · **[DATA]** touches existing chat data · **[
 ### Cluster 1 — User control
 
 - **P7 — Encrypted per-user API keys + user tiers** [MIG].
-- **P8 — Settings UI + profile page + real light/dark theme**.
+- **P8 — Settings UI + profile page + real light/dark theme** — also the **htmx
+  on-ramp**: add htmx + `django-htmx`, convert room CRUD + settings forms to
+  fragment-returning views (the streaming pane stays custom JS, see P9).
 
 ### Cluster 2 — Chat UX
 
