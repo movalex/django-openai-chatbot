@@ -89,7 +89,15 @@ def chatbot(request, chat_room_id=None):
                 user_profile.last_opened_chat = chat_room
                 user_profile.save()
                 return redirect("chat_room", chat_room_id=chat_room.id)
-            # TODO: Handle the case where no chatrooms exist for the user
+            chat_room = create_chat_room(request.user)
+            if chat_room:
+                # Update last opened chatroom in user profile
+                user_profile.last_opened_chat = chat_room
+                user_profile.save()
+                return redirect("chat_room", chat_room_id=chat_room.id)
+            else:
+                logger.error("Unable to create default chat room for user %s", request.user.username)
+                return HttpResponse("Unable to create default chat room", status=500)
 
     if request.method == "POST":
         return handle_post_request(request, chat_room=chat_room)
@@ -104,7 +112,7 @@ def chatbot(request, chat_room_id=None):
 def handle_post_request(request, chat_room):
     user_message = request.POST.get("message")
 
-    logger.debug(request.POST)
+    logger.debug(list(request.POST.keys()))
 
     selected_model = request.POST.get("model_id")
     if selected_model is None:
@@ -114,18 +122,21 @@ def handle_post_request(request, chat_room):
     chat_session, created = ChatSession.objects.get_or_create(
         session_id=session_id, chat_room=chat_room, user=request.user
     )
-    chat_context = get_chat_context(chat_session, request)
+    chat_context = get_chat_context(chat_session)
 
-    response, error_msg = get_openai_response(user_message, chat_context, selected_model)
-    if response is None and error_msg:
-        return JsonResponse({"error": error_msg}, status=403)
+    try:
+        response = get_openai_response(user_message, chat_context, selected_model)
+    except openai.PermissionDeniedError:
+        return JsonResponse({"error": "Permission denied"}, status=403)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
-    chat_context, safe_formatted_reply = update_chat_context(chat_context, user_message, response)
+    chat_context, safe_formatted_reply, assistant_response = update_chat_context(chat_context, user_message, response)
 
-    trim_chat_context_if_needed(chat_context)
+    trim_chat_context(chat_context)
 
     save_chat_session(chat_session, chat_context)
-    save_chat_message(request.user, user_message, response, chat_room)
+    save_chat_message(request.user, user_message, assistant_response, chat_room)
 
     return JsonResponse({"message": user_message, "response": safe_formatted_reply})
 
@@ -140,26 +151,26 @@ def handle_get_request(request, chat_room):
     )
 
 
-def get_chat_context(chat_session, request):
+def get_chat_context(chat_session):
     try:
         return json.loads(chat_session.context) if chat_session.context else []
     except json.JSONDecodeError:
-        return request.session.get("chat_context", [])
+        logger.warning("Corrupt context for session %s, starting fresh", chat_session.session_id)
+        return []
 
 
 def get_openai_response(user_message, chat_context, selected_model):
     chat_used_context = chat_context[-MAX_USED_CONTEXT * 2 :]
     try:
         response = ask_openai(user_message, chat_used_context, selected_model)
-        return response, None
+        return response
     except openai.PermissionDeniedError:
         error_message = "Permission denied to OpenAI services"
         logger.error(error_message)
-        return None, error_message
+        raise
     except Exception as e:
-        err = f"Unknown Error: {str(e)}"
-        logger.error(err)
-        return None, err
+        logger.error(e)
+        raise
 
 
 def update_chat_context(chat_context, user_message, response):
@@ -168,12 +179,12 @@ def update_chat_context(chat_context, user_message, response):
 
     chat_context.append({"role": "user", "content": user_message})
     chat_context.append({"role": "assistant", "content": assistant_response})
-    return chat_context, safe_formatted_reply
+    return chat_context, safe_formatted_reply, assistant_response
 
 
-def trim_chat_context_if_needed(chat_context):
+def trim_chat_context(chat_context):
     if TRIM_CONTEXT and len(chat_context) > MAX_CONTEXT_SIZE * 2:
-        chat_context = chat_context[-MAX_CONTEXT_SIZE * 2 :]
+        chat_context[:] = chat_context[-MAX_CONTEXT_SIZE * 2 :]
 
 
 def save_chat_session(chat_session, chat_context):
@@ -181,8 +192,7 @@ def save_chat_session(chat_session, chat_context):
     chat_session.save()
 
 
-def save_chat_message(user, user_message, response, chat_room):
-    assistant_response = response.choices[0].message.content.strip()
+def save_chat_message(user, user_message, assistant_response, chat_room):
     chat = Chat(
         user=user,
         message=user_message,
@@ -193,9 +203,9 @@ def save_chat_message(user, user_message, response, chat_room):
     chat.save()
 
 
-def create_chat_room(user, room_name=None):
+def create_chat_room(user):
     # If no room name is specified, use a default name based on the user's username
-    room_name = room_name or "New Conversation"
+    room_name = "New Conversation"
     return ChatRoom.objects.create(name=room_name, user=user)
 
 
@@ -209,10 +219,8 @@ def create_chat_room_view(request):
 @require_POST
 def save_chat_name(request):
     data = json.loads(request.body)
-    print(data)
     chat_id = data.get("chatId")
     new_name = data.get("newName")
-    print(new_name)
     try:
         chat_room = ChatRoom.objects.get(id=chat_id)
         chat_room.name = new_name
@@ -260,7 +268,7 @@ def login(request):
 
             default_room = create_chat_room(user)
             if not default_room:
-                logger.error("Unable to create deafult chat room")
+                logger.error("Unable to create default chat room")
                 return redirect("login")
             return redirect("chat_room", chat_room_id=default_room.id)
         else:
@@ -272,7 +280,7 @@ def login(request):
 
 def register(request):
     if not settings.DEBUG:
-        logger.warn("Registration is temporary disabled")
+        logger.warning("Registration is temporary disabled")
         return render(request, "registration_disabled.html")
 
     if request.method == "POST":
@@ -284,11 +292,8 @@ def register(request):
         if password1 == password2:
             try:
                 user = User.objects.create_user(username, email, password1)
-                user.save()
-
                 # Create a default chat room for the new user
                 default_room = create_chat_room(user)
-                default_room.save()
 
                 auth.login(request, user)
                 return redirect("chat_room", chat_room_id=default_room.id)
@@ -296,7 +301,7 @@ def register(request):
                 error_message = "Error creating account"
                 return render(request, "register.html", {"error_message": error_message})
         else:
-            error_message = "Password dont match"
+            error_message = "Password do not match"
             logger.error(error_message)
             return render(request, "register.html", {"error_message": error_message})
     return render(request, "register.html")

@@ -364,15 +364,11 @@ class TestChatContext:
 
     def test_get_chat_context_handles_invalid_json(self, user, chat_room):
         """Test that invalid JSON in context is handled gracefully."""
-        from unittest.mock import Mock
 
         session_id = f"{user.id}-{chat_room.id}"
         session = ChatSession.objects.create(
             user=user, chat_room=chat_room, session_id=session_id, context="invalid json"
         )
-
-        request = Mock()
-        request.session = {"chat_context": []}
-        context = views.get_chat_context(session, request)
+        context = views.get_chat_context(session)
 
         assert context == []

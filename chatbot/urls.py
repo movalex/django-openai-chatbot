@@ -12,7 +12,7 @@ urlpatterns = [
     path("archive_chat_room/<uuid:chat_room_id>/", views.archive_chat, name="archive_chat"),
     path("save_chat_name/", views.save_chat_name, name="save_chat_name"),
     path("get_chat_rooms/", views.get_chat_rooms, name="get_chat_rooms"),
-    path("login", views.login, name="login"),
-    path("register", views.register, name="register"),
-    path("logout", views.logout, name="logout"),
+    path("login/", views.login, name="login"),
+    path("register/", views.register, name="register"),
+    path("logout/", views.logout, name="logout"),
 ]
