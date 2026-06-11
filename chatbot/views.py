@@ -111,9 +111,6 @@ def chatbot(request, chat_room_id=None):
 
 def handle_post_request(request, chat_room):
     user_message = request.POST.get("message")
-
-    logger.debug(list(request.POST.keys()))
-
     selected_model = request.POST.get("model_id")
     if selected_model is None:
         return JsonResponse({"error": "Model ID not provided"}, status=400)
