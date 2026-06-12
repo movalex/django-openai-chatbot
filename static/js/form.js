@@ -1,7 +1,9 @@
-let form = document.querySelector(".submit-form")
-let input_textarea = document.querySelector("#chat-input")
-let scrollButton = document.querySelector("#scrollToBottomBtn")
-let chatContainer = document.querySelector(".chat-container");
+(() => {
+"use strict";
+const form = document.querySelector(".submit-form")
+const input_textarea = document.querySelector("#chat-input")
+const scrollButton = document.querySelector("#scrollToBottomBtn")
+const chatContainer = document.querySelector(".chat-container");
 const mainContainer = document.querySelector('.main-chat-body');
 
 function adjustButtonPadding() {
@@ -28,7 +30,7 @@ function autoAdjustTextarea() {
 function checkScroll() {
   const scrollContainer = document.querySelector(".main-chat-body");
   const chatList = document.querySelector(".chat-container");
-  
+
   // Check if the container is scrolled to the bottom
 
   const offset = 5;
@@ -216,4 +218,5 @@ function scrollToBottom() {
     mainContainer.scrollTop = mainContainer.scrollHeight;
 }
 scrollButton.addEventListener('click', scrollToBottom);
+})();
 

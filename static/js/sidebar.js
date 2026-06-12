@@ -1,17 +1,19 @@
+(() => {
+"use strict";
 const sidebarWrapper = document.getElementById('sidebar-wrapper');
 const sidebarToggle = document.body.querySelector('#sidebarToggle');
 const closeSidebar = document.body.querySelector('#closeSidebarButton');
 const listGroup = document.getElementById('list-group');
-var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
 
 function createNewChatRoom() {
     // Retrieve the CSRF token from the document
 
     // Set up the request headers
-    var headers = new Headers();
+    const headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    headers.append('X-CSRFToken', csrftoken);
+    headers.append('X-CSRFToken', csrfToken);
 
     // Make the POST request using fetch
     fetch('/create_chat_room/', {
@@ -148,7 +150,6 @@ function populateChatRooms(chatRooms) {
         });
     });
     const savedPosition = localStorage.getItem('sidebarScrollPosition');
-    console.log(savedPosition);
     if (savedPosition) {
         listGroup.scrollTop = savedPosition;
     }
@@ -161,40 +162,21 @@ function fetchChatRooms() {
         .then(data => {
             if (data.chat_rooms) {
                 populateChatRooms(data.chat_rooms);
-            } else {
-                console.error('Chat rooms data is missing');
             }
         })
-        .catch(e => {
-            console.error('Fetch ChatRooms error:', e);
-        });
 }
 
 
 async function saveNewName(chatId, newName) {
-    // Implement the AJAX call to save the new name to the backend
-    console.log(`Saving new name "${newName}" for chatId ${chatId}`);
-    // Example AJAX call (you need to implement this according to your backend)
-    fetch('/save_chat_name/', {
+    await fetch('/save_chat_name/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken,
+            'X-CSRFToken': csrfToken,
         },
         body: JSON.stringify({ chatId: chatId, newName: newName })
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Update the UI accordingly, if necessary
-                console.log("Chat name updated successfully.");
-            } else {
-                console.log("Failed to update chat name.");
-            }
-        })
-        .catch(error => console.error('Error:', error));
+    });
 }
-
 
 function handleDoubleClickRename(chatItem, chatId) {
 
@@ -254,7 +236,7 @@ function archiveSidebarElement(element, chatId) {
         headers: {
             'Content-Type': 'application/json',
             // Include CSRF token as needed for Django
-            'X-CSRFToken': csrftoken
+            'X-CSRFToken': csrfToken
         }
     }).then(response => {
         if (response.ok) {
@@ -295,3 +277,4 @@ listGroup.addEventListener('scroll', () => {
     const scrollPosition = listGroup.scrollTop;
     localStorage.setItem('sidebarScrollPosition', scrollPosition);
 });
+})();
