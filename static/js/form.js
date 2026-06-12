@@ -170,11 +170,17 @@ function addUserMessage(message) {
 function addBotResponse(response) {
   const userBotDiv = document.createElement("div");
   userBotDiv.className = "bot-chat-container";
-  userBotDiv.innerHTML = `
-  <div class="bot-icon"><i class="fa-solid fa-robot"></i></div>
-  <div class="bot-response">${response}</div>
-  `
-  chatContainer.appendChild(userBotDiv)
+
+  const botMsg = document.createElement("div");
+  botMsg.className = "bot-response";
+  botMsg.innerHTML = response;
+
+  const botPic = document.createElement("div");
+  botPic.className = "bot-icon";
+  botPic.innerHTML = `<i class="fa-solid fa-robot"></i>`
+
+  userBotDiv.append(botPic, botMsg);
+  chatContainer.appendChild(userBotDiv);
 }
 
 async function fetchBotResponse(userMessage) {
