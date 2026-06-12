@@ -152,13 +152,19 @@ function toggleSpinner(isLoading) {
 }
 
 function addUserMessage(message) {
-  const userMessageDiv = document.createElement("div");
-  userMessageDiv.className = "user-chat-container";
-  userMessageDiv.innerHTML = `
-  <div class="user-pic"><i class="fa-solid fa-circle-user"></i></div>
-  <div class="user-message">${message}</div>
-  `
-  chatContainer.appendChild(userMessageDiv);
+  const row = document.createElement("div");
+  row.className = "user-chat-container";
+
+  const pic = document.createElement("div");
+  pic.className = "user-pic";
+  pic.innerHTML = `<i class="fa-solid fa-circle-user"></i>`;
+
+  const msg = document.createElement("div");
+  msg.className = "user-message";
+  msg.textContent = message;
+
+  row.append(pic, msg);
+  chatContainer.appendChild(row);
 }
 
 function addBotResponse(response) {
