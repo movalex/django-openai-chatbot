@@ -1,25 +1,10 @@
 import re
 
-from bs4 import BeautifulSoup
 from django import template
 from django.utils.safestring import mark_safe
 from markdown import markdown
 
 register = template.Library()
-
-
-@register.filter(name="inline_code_formatting")
-def inline_code_formatting(value):
-    soup = BeautifulSoup(markdown(value), "html.parser")
-
-    # Process `code` elements for inline code
-    for code in soup.find_all("code"):
-        if not code.find_parent("pre"):
-            # This is inline code, not part of a preformatted block
-            code.wrap(soup.new_tag("span", **{"class": "inline-code"}))
-
-    # Convert soup back to string and mark as safe
-    return mark_safe(str(soup))
 
 
 def adjust_indentation(text: str):

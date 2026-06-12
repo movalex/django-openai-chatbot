@@ -3,7 +3,6 @@ from django.utils.safestring import SafeString
 
 from chatbot.templatetags.custom_filters import (
     adjust_indentation,
-    inline_code_formatting,
     markdown_to_html,
 )
 
@@ -132,51 +131,6 @@ Another paragraph with **bold** text."""
 
 
 @pytest.mark.unit
-class TestInlineCodeFormatting:
-    """Test cases for inline_code_formatting filter."""
-
-    def test_inline_code_wrapping(self):
-        """Test that inline code gets wrapped in span."""
-        markdown_text = "Use `variable` in code"
-        result = inline_code_formatting(markdown_text)
-
-        assert 'class="inline-code"' in result
-        assert "<code>variable</code>" in result
-        assert isinstance(result, SafeString)
-
-    def test_code_block_not_wrapped(self):
-        """Test that code blocks are not wrapped in inline-code span."""
-        markdown_text = """```python
-code block
-```"""
-        result = inline_code_formatting(markdown_text)
-
-        # Pre blocks should not have inline-code class
-        assert isinstance(result, SafeString)
-
-    def test_multiple_inline_codes(self):
-        """Test multiple inline code elements."""
-        markdown_text = "Use `foo` and `bar` together"
-        result = inline_code_formatting(markdown_text)
-
-        assert result.count('class="inline-code"') == 2
-        assert "<code>foo</code>" in result
-        assert "<code>bar</code>" in result
-
-    def test_mixed_code_and_block(self):
-        """Test mixing inline code and code blocks."""
-        markdown_text = """Use `inline` code
-
-```
-block code
-```"""
-        result = inline_code_formatting(markdown_text)
-
-        assert 'class="inline-code"' in result
-        assert isinstance(result, SafeString)
-
-
-@pytest.mark.unit
 class TestAdjustIndentation:
     """Test cases for adjust_indentation helper function."""
 
@@ -213,19 +167,6 @@ class TestAdjustIndentation:
 @pytest.mark.integration
 class TestTemplateTagsIntegration:
     """Integration tests for template tags working together."""
-
-    def test_markdown_with_code_formatting(self):
-        """Test markdown_to_html and inline_code_formatting together."""
-        markdown_text = "Use `code` in **bold** text"
-
-        # First convert markdown
-        html = markdown_to_html(markdown_text)
-        assert "<code>code</code>" in html
-        assert "<strong>bold</strong>" in html
-
-        # Then apply inline code formatting
-        formatted = inline_code_formatting(markdown_text)
-        assert 'class="inline-code"' in formatted
 
     def test_complex_markdown_document(self):
         """Test complex markdown document with various elements."""

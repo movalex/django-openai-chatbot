@@ -85,7 +85,6 @@ Current test coverage includes:
 
 ### Template Tags (test_templatetags.py)
 - **markdown_to_html**: Markdown conversion, code blocks, tables, lists, headers, links
-- **inline_code_formatting**: Inline code wrapping, code block handling
 - **adjust_indentation**: List formatting adjustments
 
 ## Test Markers

@@ -93,7 +93,7 @@
                 <div class="bot-icon">
                   <i class="fa-solid fa-robot"></i>
                 </div>
-                <div class="bot-response">{{ chat.response|markdown_to_html|inline_code_formatting }}</div>
+                <div class="bot-response">{{ chat.response|markdown_to_html }}</div>
               </div>
             {% endif %}
           {% endfor %}

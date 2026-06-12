@@ -10,11 +10,10 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
-from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_POST
 
 from .models import Chat, ChatRoom, ChatSession, UserProfile
-from .templatetags.custom_filters import inline_code_formatting, markdown_to_html
+from .templatetags.custom_filters import markdown_to_html
 
 openai_api_key = os.getenv("OPENAI_API_KEY")
 openai.api_key = openai_api_key
@@ -28,14 +27,7 @@ GPT_MODELS = {
     "GPT4.1 Nano": "gpt-4.1-nano",
 }
 
-
 logger = logging.getLogger(__name__)
-
-
-def format_output(value):
-    html_content = markdown_to_html(value)
-    result = inline_code_formatting(html_content)
-    return mark_safe(result)
 
 
 def ask_openai(message, chat_context, model):
@@ -172,7 +164,7 @@ def get_openai_response(user_message, chat_context, selected_model):
 
 def update_chat_context(chat_context, user_message, response):
     assistant_response = response.choices[0].message.content.strip()
-    safe_formatted_reply = format_output(assistant_response)
+    safe_formatted_reply = markdown_to_html(assistant_response)
 
     chat_context.append({"role": "user", "content": user_message})
     chat_context.append({"role": "assistant", "content": assistant_response})
