@@ -124,8 +124,8 @@
   <script src="{% static 'js/csrf.js' %}"></script>
   <script src="{% static 'js/sidebar.js' %}"></script>
   <script src="{% static 'js/form.js' %}"></script>
-  <script src="{% static 'js/highlight.js' %}"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+  <script>hljs?.highlightAll();</script>
   <script>
     var selectedModel = '{{default_model}}' // Default model ID
     document.getElementById('modelIdField').value = selectedModel // Set the initial value

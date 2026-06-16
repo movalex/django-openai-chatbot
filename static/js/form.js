@@ -76,14 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Function to insert text at the current cursor position in a textarea
 function insertAtCursor(myField, myValue) {
-  // IE support
-  if (document.selection) {
-      myField.focus();
-      const sel = document.selection.createRange();
-      sel.text = myValue;
-  }
-  // Mozilla and Webkit support
-  else if (myField.selectionStart || myField.selectionStart == '0') {
+  if (myField.selectionStart || myField.selectionStart === '0') {
       const startPos = myField.selectionStart;
       const endPos = myField.selectionEnd;
       myField.value = myField.value.substring(0, startPos)
@@ -109,6 +102,13 @@ form.addEventListener("submit", submitForm)
 const button = document.getElementById('submit-btn');
 const spinner = button.querySelector('.spinner-border');
 const icon = button.querySelector('.fa-square-arrow-up-right');
+
+function toggleSpinner(isLoading) {
+  spinner.style.display = isLoading ? "inline-block" : "none";
+  icon.style.display = isLoading ? 'none' : 'flex';
+  // Optionally, disable the button to prevent multiple submissions
+  button.disabled = isLoading;
+}
 
 // Function to manually trigger form submission
 function triggerFormSubmit() {
@@ -146,13 +146,6 @@ async function submitForm(e) {
   }
 }
 
-function toggleSpinner(isLoading) {
-  spinner.style.display = isLoading ? "inline-block" : "none";
-  icon.style.display = isLoading ? 'none' : 'flex';
-  // Optionally, disable the button to prevent multiple submissions
-  button.disabled = isLoading;
-}
-
 function addUserMessage(message) {
   const row = document.createElement("div");
   row.className = "user-chat-container";
@@ -183,11 +176,11 @@ function addBotResponse(response) {
 
   userBotDiv.append(botPic, botMsg);
   chatContainer.appendChild(userBotDiv);
+  window.hljs?.highlightAll(); // Highlight code blocks in the new bot response, if Highlight.js is loaded
 }
 
 async function fetchBotResponse(userMessage) {
 
-  spinner.style.display = "flex"
   const url = ""
   const csrfToken = getCsrfToken(); // Get the CSRF token using the function from csrf.js
   const selectedModel = document.getElementById('modelIdField').value; // Get the value of the hidden field
@@ -206,9 +199,8 @@ async function fetchBotResponse(userMessage) {
     alert(errorMessage);
     throw new Error(`HTTP error! Status: ${response.status}\n Error Message: ${errorMessage}`);
   }
-  spinner.style.display = "none";
+  toggleSpinner(false);
   scrollToBottom();
-  loadHighlightJs();
   return result.response;
 }
 window.addEventListener('load', scrollToBottom);
