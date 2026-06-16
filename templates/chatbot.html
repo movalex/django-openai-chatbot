@@ -23,7 +23,7 @@
             <li><a class="dropdown-item" href="#">Profile</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
-          </ul>      
+          </ul>
       </div>
       <div class="button-container">
         <button type="button" class="btn btn-dark" id="closeSidebarButton" aria-label="Close">
@@ -53,7 +53,7 @@
             <span class="navbar-toggler-icon"></span>
           </button>
         </div>
-      
+
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbarDark" aria-labelledby="offcanvasNavbarDarkLabel">
           <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasNavbarDarkLabel">Settings</h5>
@@ -66,12 +66,15 @@
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Choose GPT Model
                 </a>
-                <select class="form-select" id="floatingSelect" aria-label="Choose a GPT Model">
-                {% for model_name, model_id in gpt_models.items %}
+                <select class="form-select"
+                        id="floatingSelect"
+                        aria-label="Choose a GPT Model"
+                        data-default-model="{{ default_model }}">
+                  {% for model_name, model_id in gpt_models.items %}
                   <option value="{{ model_id }}" {% if model_id == default_model %}selected{% endif %}>
                     {{ model_name }}
-                  </option>                           
-                    {% endfor %}
+                  </option>
+                  {% endfor %}
                 </select>
               </li>
             </ul>
@@ -124,15 +127,8 @@
   <script src="{% static 'js/csrf.js' %}"></script>
   <script src="{% static 'js/sidebar.js' %}"></script>
   <script src="{% static 'js/form.js' %}"></script>
+  <script src="{% static 'js/model.js' %}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
   <script>hljs?.highlightAll();</script>
-  <script>
-    var selectedModel = '{{default_model}}' // Default model ID
-    document.getElementById('modelIdField').value = selectedModel // Set the initial value
-    document.getElementById('floatingSelect').addEventListener('change', function () {
-      selectedModel = this.value
-      document.getElementById('modelIdField').value = selectedModel
-    })
-  </script>
 
 {% endblock %}
