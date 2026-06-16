@@ -135,8 +135,6 @@ function populateChatRooms(chatRooms) {
         // Append the container to the anchor
         anchor.appendChild(container);
 
-        listGroup.appendChild(anchor);
-
         // If the room's ID/UUID matches the current URL, add the 'active-chatroom' class
         if (room.id === chatRoomIdOrUuid) {
             anchor.classList.add('active-chatroom');
