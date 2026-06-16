@@ -4,7 +4,7 @@ const sidebarWrapper = document.getElementById('sidebar-wrapper');
 const sidebarToggle = document.body.querySelector('#sidebarToggle');
 const closeSidebar = document.body.querySelector('#closeSidebarButton');
 const listGroup = document.getElementById('list-group');
-const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+const csrfToken = getCsrfToken()
 
 
 function createNewChatRoom() {

@@ -189,7 +189,7 @@ async function fetchBotResponse(userMessage) {
 
   spinner.style.display = "flex"
   const url = ""
-  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  const csrfToken = getCsrfToken(); // Get the CSRF token using the function from csrf.js
   const selectedModel = document.getElementById('modelIdField').value; // Get the value of the hidden field
 
   const response = await fetch(url, {
